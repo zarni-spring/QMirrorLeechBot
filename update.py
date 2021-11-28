@@ -4,6 +4,7 @@ import requests
 import logging
 
 from dotenv import load_dotenv
+from requests.exceptions import RequestException
 
 if os.path.exists('log.txt'):
     with open('log.txt', 'r+') as f:
@@ -17,10 +18,6 @@ CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
 try:
     if len(CONFIG_FILE_URL) == 0:
         raise TypeError
-except TypeError:
-    CONFIG_FILE_URL = None
-
-if CONFIG_FILE_URL is not None:
     try:
         res = requests.get(CONFIG_FILE_URL)
         if res.status_code == 200:
@@ -29,8 +26,10 @@ if CONFIG_FILE_URL is not None:
                 f.close()
         else:
             logging.error(f"Failed to download config.env {res.status_code}")
-    except Exception as e:
+    except RequestException as e:
         logging.error(str(e))
+except TypeError:
+    pass
 
 load_dotenv('config.env', override=True)
 
@@ -42,22 +41,15 @@ except TypeError:
     UPSTREAM_REPO = None
 
 if UPSTREAM_REPO is not None:
-    if not os.path.exists('.git'):
-        subprocess.run([f"git init -q \
-                          && git config --global user.email e.anastayyar@gmail.com \
-                          && git config --global user.name mltb \
-                          && git add . \
-                          && git commit -sm update -q \
-                          && git remote add origin {UPSTREAM_REPO} \
-                          && git fetch origin -q \
-                          && git reset --hard origin/master -q"], shell=True)
-    else:
-        subprocess.run([f"rm -rf .git \
-                          && git init -q \
-                          && git config --global user.email e.anastayyar@gmail.com \
-                          && git config --global user.name mltb \
-                          && git add . \
-                          && git commit -sm update -q \
-                          && git remote add origin {UPSTREAM_REPO} \
-                          && git fetch origin -q \
-                          && git reset --hard origin/master -q"], shell=True)
+    if os.path.exists('.git'):
+        subprocess.run(["rm", "-rf", ".git"])
+
+    subprocess.run([f"git init -q \
+                      && git config --global user.email e.anastayyar@gmail.com \
+                      && git config --global user.name mltb \
+                      && git add . \
+                      && git commit -sm update -q \
+                      && git remote add origin {UPSTREAM_REPO} \
+                      && git fetch origin -q \
+                      && git reset --hard origin/master -q"], shell=True)
+

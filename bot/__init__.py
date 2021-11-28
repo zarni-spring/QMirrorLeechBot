@@ -14,6 +14,7 @@ import telegram.ext as tg
 from pyrogram import Client
 from psycopg2 import Error
 from dotenv import load_dotenv
+from requests.exceptions import RequestException
 
 faulthandler.enable()
 
@@ -27,14 +28,36 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 LOGGER = logging.getLogger(__name__)
 
+
 load_dotenv('config.env', override=True)
 
-SERVER_PORT = os.environ.get('SERVER_PORT', None)
+
+def getConfig(name: str):
+    return os.environ[name]
+
 try:
+    NETRC_URL = getConfig('NETRC_URL')
+    if len(NETRC_URL) == 0:
+        raise KeyError
+    try:
+        res = requests.get(NETRC_URL)
+        if res.status_code == 200:
+            with open('.netrc', 'wb+') as f:
+                f.write(res.content)
+                f.close()
+        else:
+            logging.error(f"Failed to download .netrc {res.status_code}")
+    except RequestException as e:
+        logging.error(str(e))
+except KeyError:
+    pass
+try:
+    SERVER_PORT = getConfig('SERVER_PORT')
     if len(SERVER_PORT) == 0:
-        raise TypeError
-except TypeError:
+        raise KeyError
+except KeyError:
     SERVER_PORT = 80
+
 PORT = os.environ.get('PORT', SERVER_PORT)
 web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
 alive = subprocess.Popen(["python3", "alive.py"])
@@ -47,9 +70,6 @@ Interval = []
 DRIVES_NAMES = []
 DRIVES_IDS = []
 INDEX_URLS = []
-
-def getConfig(name: str):
-    return os.environ[name]
 
 def mktable():
     try:
@@ -79,8 +99,7 @@ aria2 = aria2p.API(
 )
 
 def get_client() -> qba.TorrentsAPIMixIn:
-    qb_client = qba.Client(host="localhost", port=8090)
-    return qb_client
+    return qba.Client(host="localhost", port=8090)
 
 """
 trackers = subprocess.check_output(["curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all | awk '$0'"], shell=True).decode('utf-8')
@@ -90,6 +109,7 @@ trackerslist.remove("")
 trackerslist = "\n\n".join(trackerslist)
 get_client().application.set_preferences({"add_trackers":f"{trackerslist}"})
 """
+
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
@@ -357,18 +377,27 @@ try:
 except KeyError:
     CUSTOM_FILENAME = None
 try:
+    PHPSESSID = getConfig('PHPSESSID')
+    CRYPT = getConfig('CRYPT')
+    if len(PHPSESSID) == 0 or len(CRYPT) == 0:
+        raise KeyError
+except KeyError:
+    PHPSESSID = None
+    CRYPT = None
+try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
         raise KeyError
-    else:
+    try:
         res = requests.get(TOKEN_PICKLE_URL)
         if res.status_code == 200:
             with open('token.pickle', 'wb+') as f:
                 f.write(res.content)
                 f.close()
         else:
-            logging.error(f"Failed to download token.pickle {res.status_code}")
-            raise KeyError
+            logging.error(f"Failed to download token.pickle, link got HTTP response: {res.status_code}")
+    except RequestException as e:
+        logging.error(str(e))
 except KeyError:
     pass
 try:
@@ -376,13 +405,16 @@ try:
     if len(ACCOUNTS_ZIP_URL) == 0:
         raise KeyError
     else:
-        res = requests.get(ACCOUNTS_ZIP_URL)
-        if res.status_code == 200:
-            with open('accounts.zip', 'wb+') as f:
-                f.write(res.content)
-                f.close()
-        else:
-            logging.error(f"Failed to download accounts.zip {res.status_code}")
+        try:
+            res = requests.get(ACCOUNTS_ZIP_URL)
+            if res.status_code == 200:
+                with open('accounts.zip', 'wb+') as f:
+                    f.write(res.content)
+                    f.close()
+            else:
+                logging.error(f"Failed to download accounts.zip, link got HTTP response: {res.status_code}")
+        except RequestException as e:
+            logging.error(str(e))
             raise KeyError
         subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
         os.remove("accounts.zip")
@@ -392,15 +424,32 @@ try:
     MULTI_SEARCH_URL = getConfig('MULTI_SEARCH_URL')
     if len(MULTI_SEARCH_URL) == 0:
         raise KeyError
-    else:
+    try:
         res = requests.get(MULTI_SEARCH_URL)
         if res.status_code == 200:
             with open('drive_folder', 'wb+') as f:
                 f.write(res.content)
                 f.close()
         else:
-            logging.error(f"Failed to download drive_folder {res.status_code}")
-            raise KeyError
+            logging.error(f"Failed to download drive_folder, link got HTTP response: {res.status_code}")
+    except RequestException as e:
+        logging.error(str(e))
+except KeyError:
+    pass
+try:
+    YT_COOKIES_URL = getConfig('YT_COOKIES_URL')
+    if len(YT_COOKIES_URL) == 0:
+        raise KeyError
+    try:
+        res = requests.get(YT_COOKIES_URL)
+        if res.status_code == 200:
+            with open('cookies.txt', 'wb+') as f:
+                f.write(res.content)
+                f.close()
+        else:
+            logging.error(f"Failed to download cookies.txt, link got HTTP response: {res.status_code}")
+    except RequestException as e:
+        logging.error(str(e))
 except KeyError:
     pass
 

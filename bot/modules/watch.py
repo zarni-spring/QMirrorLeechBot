@@ -68,9 +68,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}]+ba/b"
-            buttons.sbutton(str(i), f"quality {msg_id} {video_format}")
-        buttons.sbutton("Best Videos", f"quality {msg_id} {best_video}")
-        buttons.sbutton("Best Audios", f"quality {msg_id} {best_audio}")
+            buttons.sbutton(str(i), f"qual {msg_id} {video_format} true")
+        buttons.sbutton("Best Videos", f"qual {msg_id} {best_video} true")
+        buttons.sbutton("Best Audios", f"qual {msg_id} {best_audio} true")
     else:
         formats = result['formats']
         formats_dict = {}
@@ -82,7 +82,10 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
                 quality = f"{frmt['height']}p{frmt['fps']}-{frmt['ext']}"
             else:
                 quality = f"{frmt['height']}p-{frmt['ext']}"
-            if quality not in formats_dict or quality in formats_dict and formats_dict[quality][1] < frmt['tbr']:
+            if (
+                quality not in formats_dict
+                or formats_dict[quality][1] < frmt['tbr']
+            ):
                 if frmt.get('filesize'):
                     size = frmt['filesize']
                 elif frmt.get('filesize_approx'):
@@ -98,11 +101,11 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None):
             else:
                 video_format = f"bv*[height={qual_fps_ext[0]}][ext={qual_fps_ext[2]}]+ba/b"
             buttonName = f"{forDict} ({get_readable_file_size(formats_dict[forDict][0])})"
-            buttons.sbutton(str(buttonName), f"quality {msg_id} {video_format}")
-        buttons.sbutton("Best Video", f"quality {msg_id} {best_video}")
-        buttons.sbutton("Best Audio", f"quality {msg_id} {best_audio}")
+            buttons.sbutton(str(buttonName), f"qual {msg_id} {video_format} f")
+        buttons.sbutton("Best Video", f"qual {msg_id} {best_video} f")
+        buttons.sbutton("Best Audio", f"qual {msg_id} {best_audio} f")
 
-    buttons.sbutton("Cancel", f"quality {msg_id} cancel")
+    buttons.sbutton("Cancel", f"qual {msg_id} cancel f")
     YTBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
     sendMarkup('Choose video/playlist quality', bot, update, YTBUTTONS)
 
@@ -119,8 +122,9 @@ def select_format(update, context):
     elif data[2] != "cancel":
         query.answer()
         qual = data[2]
+        playlist = data[3]
         ydl = YoutubeDLHelper(listener)
-        threading.Thread(target=ydl.add_download,args=(link, f'{DOWNLOAD_DIR}{task_id}', name, qual)).start()
+        threading.Thread(target=ydl.add_download,args=(link, f'{DOWNLOAD_DIR}{task_id}', name, qual, playlist)).start()
     del listener_dict[task_id]
     query.message.delete()
 
@@ -144,7 +148,7 @@ leech_watch_handler = CommandHandler(BotCommands.LeechWatchCommand, leechWatch,
                                 filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 leech_zip_watch_handler = CommandHandler(BotCommands.LeechZipWatchCommand, leechWatchZip,
                                     filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-quality_handler = CallbackQueryHandler(select_format, pattern="quality", run_async=True)
+quality_handler = CallbackQueryHandler(select_format, pattern="qual", run_async=True)
 
 dispatcher.add_handler(watch_handler)
 dispatcher.add_handler(zip_watch_handler)

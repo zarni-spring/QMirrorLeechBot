@@ -7,7 +7,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Select files from Torrent before downloading using qbittorrent
 - Leech (splitting, thumbnail for each user, setting as document or as media for each user)
 - Size limiting for Torrent/Direct, Zip/Unzip, Mega and Clone
-- Stop duplicates for all tasks except youtube-dl tasks
+- Stop duplicates for all tasks except yt-dlp tasks
 - Zip/Unzip G-Drive links
 - Counting files/folders from Google Drive link
 - View Link button, extra button to open file index link in broswer instead of direct download
@@ -24,7 +24,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - YT-DLP quality buttons
 - Search for torrents with Torrent Search API
 - Docker image support for `linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6` (**Note**: Use `anasty17/mltb-oracle:latest` for oracle or if u faced problem with arm64 docker run)
-- Update bot at startup or with restart command
+- Update bot at startup and with restart command using `UPSTREAM_REPO`
 - Many bugs have been fixed
 
 ## From Other Repositories
@@ -32,7 +32,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Mirror Mega.nz links to Google Drive (If you have non-premium Mega account, it will limit download to 5GB per 6 hours)
 - Copy files from someone's Drive to your Drive (Using Autorclone)
 - Download/Upload progress, Speeds and ETAs
-- Mirror all Youtube-dl supported links
+- Mirror all yt-dlp supported links
 - Docker support
 - Uploading to Team Drive
 - Index Link support
@@ -43,44 +43,29 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Multiple Trackers support
 - Shell and Executor
 - Sudo with or without Database
-- Custom Filename* (Only for direct links, Telegram files and Youtube-dl. Not for Mega links, Gdrive links or Torrents)
+- Custom Filename* (Only for direct links, Telegram files and yt-dlp. Not for Mega links, Gdrive links or Torrents)
 - Extract or Compress password protected files.
 - Extract these filetypes and uploads to Google Drive
-> ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, HFS, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, NTFS, RPM, SquashFS, UDF, VHD, XAR, Z, tar.xz
+  > ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, HFS, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, NTFS, RPM, SquashFS, UDF, VHD, XAR, Z, tar.xz
 
 - Direct links Supported:
->letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles, fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream, sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com, streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business account), uptobox.com (Uptobox account must be premium), solidfiles.com
+  >letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles, fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream, sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com, streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business account), uptobox.com (Uptobox account must be premium), solidfiles.com
 
 # How to deploy?
 
-## Deploying on Heroku
-- Deploying on Heroku with Github Workflow.
-**Note**: Use heroku branch to avoid suspension or deploy master branch twice with same app name. If you are using heroku branch and not using specific `UPSTREAM_REPO` so you don't need to deploy again for update, only dyno or restart command is enough.
-<p><a href="https://telegra.ph/Heroku-Deployment-11-23"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
+## Prerequisites
 
-- Deploying on Heroku with helper script and Goorm IDE (works on VPS too)
-<p><a href="https://telegra.ph/Deploying-your-own-Mirrorbot-10-19"> <img src="https://img.shields.io/badge/Deploy%20Guide-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
-
-- Deploying on Heroku with heroku-cli and Goorm IDE
-<p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/Deploy%20Guide-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
-
-## Deploying on VPS
-
-### 1) Installing requirements
+### 1. Installing requirements
 
 - Clone this repo:
 ```
 git clone https://github.com/anasty17/mirror-leech-telegram-bot mirrorbot/ && cd mirrorbot
 ```
-
-- Install requirements
-For Debian based distros
+- For Debian based distros
 ```
 sudo apt install python3
 ```
-Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/)
-
-OR
+Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/) or by commands below.
 ```
 sudo apt install snapd
 sudo snap install docker
@@ -93,29 +78,10 @@ sudo pacman -S docker python
 ```
 pip3 install -r requirements-cli.txt
 ```
-------
-### Generate Database (optional)
-<details>
-    <summary><b>Click Here For More Details</b></summary>
-
-**1. Using ElephantSQL**
-- Go to https://elephantsql.com and create account (skip this if you already have **ElephantSQL** account)
-- Hit `Create New Instance`
-- Follow the further instructions in the screen
-- Hit `Select Region`
-- Hit `Review`
-- Hit `Create instance`
-- Select your database name
-- Copy your database url, and fill to `DATABASE_URL` in config
-
-**2. Using Heroku PostgreSQL**
-<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="160""/></a></p>
-
-</details>
 
 ------
 
-### 2) Setting up config file
+### 2. Setting up config file
 
 ```
 cp config_sample.env config.env
@@ -148,7 +114,9 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link. Archive the accounts folder to a zip file. Fill this with the direct link of that file.
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
-- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#multi-search-ids). Upload **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable.
+- `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder
+- `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only.
+- `NETRC_URL`: Use this incase you want to deploy heroku branch without filling `UPSTREAM_REPO` variable, since after restart this file will cloned from github as empty file. Use gist raw link and remove commit id from the link, so you can edit it from gists only.
 - `DATABASE_URL`: Your Database URL. See [Generate Database](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#generate-database) to generate database (**NOTE**: If you use database you can save your Sudo ID permanently using `/addsudo` command).
 - `AUTHORIZED_CHATS`: Fill user_id and chat_id (not username) of groups/users you want to authorize. Separate them with space, Examples: `-0123456789 -1122334455 6915401739`.
 - `SUDO_USERS`: Fill user_id (not username) of users whom you want to give sudo permission. Separate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want to save Sudo ID permanently without database, you must fill your Sudo Id here).
@@ -178,13 +146,13 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `UPSTREAM_REPO`: Your github repository link, If your repo is private add  `https://{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). (**NOTE**: Any change in docker or requirements you need to deploy again with updated repo to take effect)
 - `SHORTENER_API`: Fill your Shortener API key.
 - `SHORTENER`: Shortener URL.
-Supported URL Shorteners:
->exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly, shorte.st, linkvertise.com , ouo.io
-- `SEARCH_API_LINK`: Search api app link. Get your api from deploying this [repository](https://github.com/Ryuk-me/Torrents-Api). **Note**: Don't add slash at the end
-Supported Sites:
->rarbg, 1337x, yts, etzv, tgx, torlock, piratebay, nyaasi, ettv
+  - Supported URL Shorteners:
+  >exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly, shorte.st, linkvertise.com , ouo.io
+- `SEARCH_API_LINK`: Search api app link. Get your api from deploying this [repository](https://github.com/Ryuk-me/Torrents-Api). **Note**: Don't add slash at the end.
+  - Supported Sites:
+  >rarbg, 1337x, yts, etzv, tgx, torlock, piratebay, nyaasi, ettv
+- `PHPSESSID` and `CRYPT`: Cookies for gdtot google drive link generator. Check setup [here](https://github.com/anasty17/mirror-leech-telegram-bot/tree/master#Gdtot Cookies).
 
-### Add more buttons (Optional Field)
 Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them empty.
 - `BUTTON_FOUR_NAME`:
 - `BUTTON_FOUR_URL`:
@@ -197,7 +165,7 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 
 ------
 
-### 3) Getting Google OAuth API credential file and token.pickle
+### 3. Getting Google OAuth API credential file and token.pickle
 - Visit the [Google Cloud Console](https://console.developers.google.com/apis/credentials)
 - Go to the OAuth Consent tab, fill it, and save.
 - Go to the Credentials tab and click Create Credentials -> OAuth Client ID
@@ -213,7 +181,7 @@ python3 generate_drive_token.py
 ```
 ------
 
-### 4) Final steps for deploying on VPS
+## Deploying on VPS Using Docker
 
 **IMPORTANT NOTE**: You must set `SERVER_PORT` variable to `80` or any other port you want to use.
 
@@ -221,7 +189,7 @@ python3 generate_drive_token.py
 ```
 sudo dockerd
 ```
-**Note**: If not started or starting do this command below then try to start.
+- **Note**: If not started or not starting, run the command below then try to start.
 ```
 sudo apt install docker.io
 ```
@@ -233,11 +201,19 @@ sudo docker build . -t mirror-bot
 ```
 sudo docker run -p 80:80 mirror-bot
 ```
-#### OR
+- To stop the image:
+```
+sudo docker ps
+```
+```
+sudo docker stop id
+```
 
-#### Using Docker-compose, you can edit and build your image in seconds:
+----
 
-**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/anasty17/mirror-leech-telegram-bot/blob/master/docker-compose.yml)
+## Deploying on VPS Using docker-compose
+
+**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/anasty17/mirror-leech-telegram-bot/blob/master/docker-compose.yml) also.
 
 ```
 sudo apt install docker-compose
@@ -248,35 +224,41 @@ sudo docker-compose up
 ```
 - After editing files with nano for example (nano start.sh):
 ```
+sudo docker-compose up --build
+```
+- or
+```
 sudo docker-compose build
 sudo docker-compose up
 ```
-OR
-```
-sudo docker-compose up --build
-```
-- To stop Docker:
-If docker-compose
+- To stop the image:
 ```
 sudo docker-compose stop
 ```
-**Note**: To start the docker again `sudo docker-compose start`
+- To run the image:
 ```
-sudo docker ps
+sudo docker-compose start
 ```
-```
-sudo docker stop id
-```
-- To clear the container (this will not affect the image):
+- Tutorial video from Tortoolkit repo for docker-compose and checking ports
+<p><a href="https://youtu.be/c8_TU1sPK08"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
+
+------
+
+### Notes for docker
+
+* To clear the container (this will not affect on the image):
 ```
 sudo docker container prune
 ```
-- To delete the image:
+* To delete the images:
 ```
 sudo docker image prune -a
 ```
-- Tutorial video from Tortoolkit repo
-<p><a href="https://youtu.be/c8_TU1sPK08"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
+
+------
+
+## Deploying on Heroku
+<p><a href="https://github.com/anasty17/mirror-leech-telegram-bot/tree/heroku"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
 
 ------
 
@@ -299,15 +281,15 @@ qbzipleech - Leech Torrent/Magnet and upload as .zip using qb
 qbunzipleech - Leech Torrent and extract using qb
 clone - Copy file/folder to Drive
 count - Count file/folder of Drive
-watch - Mirror Youtube-dl supported link
-zipwatch - Mirror Youtube playlist link and upload as .zip
-leechwatch - Leech through Youtube-dl supported link
-leechzipwatch - Leech Youtube playlist link and upload as .zip
+watch - Mirror yt-dlp supported link
+zipwatch - Mirror playlist link and upload as .zip
+leechwatch - Leech through yt-dlp supported link
+leechzipwatch - Leech playlist link and upload as .zip
 leechset - Leech settings
 setthumb - Set Thumbnail
 status - Get Mirror Status message
 list - [query] Search files in Drive
-search - [site] [query] Search for torrents with API
+search - [query] Search for torrents with API
 cancel - Cancel a task
 cancelall - Cancel all tasks
 del - [drive_url] Delete file from Drive
@@ -319,23 +301,26 @@ ping - Ping the Bot
 help - All cmds with description
 ```
 ------
+
 ## Using Service Accounts for uploading to avoid user rate limit
 >For Service Account to work, you must set `USE_SERVICE_ACCOUNTS` = "True" in config file or environment variables.
 >**NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
-### Generate Service Accounts. [What is Service Account?](https://cloud.google.com/iam/docs/service-accounts)
+### 1. Generate Service Accounts. [What is Service Account?](https://cloud.google.com/iam/docs/service-accounts)
 Let us create only the Service Accounts that we need.
+
 **Warning**: Abuse of this feature is not the aim of this project and we do **NOT** recommend that you make a lot of projects, just one project and 100 SAs allow you plenty of use, its also possible that over abuse might get your projects banned by Google.
 
 >**NOTE**: If you have created SAs in past from this script, you can also just re download the keys by running:
-
-    python3 gen_sa_accounts.py --download-keys project_id
-
+```
+python3 gen_sa_accounts.py --download-keys project_id
+```
 >**NOTE:** 1 Service Account can upload/copy around 750 GB a day, 1 project can make 100 Service Accounts so you can upload 75 TB a day or clone 2 TB from each file creator (uploader email).
 
->**NOTE:** Add Service Accounts to team drive or google group no need to add them in both.
+#### Two methods to create service accounts
+Choose one of these methods
 
-#### 1) Create Service Accounts to Current Project (Recommended Method)
+##### 1. Create Service Accounts in existed Project (Recommended Method)
 - List your projects ids
 ```
 python3 gen_sa_accounts.py --list-projects
@@ -353,49 +338,110 @@ python3 gen_sa_accounts.py --create-sas $PROJECTID
 python3 gen_sa_accounts.py --download-keys $PROJECTID
 ```
 
-#### 2) Another Quick Method
+##### 2. Create Service Accounts in New Project
 ```
 python3 gen_sa_accounts.py --quick-setup 1 --new-only
 ```
 A folder named accounts will be created which will contain keys for the Service Accounts.
 
-### a) Add Service Accounts to Google Group
+### 2. Add Service Accounts
+
+#### Two methods to add service accounts
+Choose one of these methods
+
+##### 1. Add Them To Google Group then to Team Drive (Recommended)
 - Mount accounts folder
 ```
 cd accounts
 ```
 - Grab emails form all accounts to emails.txt file that would be created in accounts folder
+- `For Windows using PowerShell`
+```
+$emails = Get-ChildItem .\**.json |Get-Content -Raw |ConvertFrom-Json |Select -ExpandProperty client_email >>emails.txt
+```
+- `For Linux / MacOs`
 ```
 grep -oPh '"client_email": "\K[^"]+' *.json > emails.txt
 ```
 - Unmount acounts folder
 ```
-cd -
+cd ..
 ```
-Then add emails from emails.txt to Google Group, after that add this Google Group to your Shared Drive and promote it to manager.
+Then add emails from emails.txt to Google Group, after that add this Google Group to your Shared Drive and promote it to manager and delete email.txt file from accounts folder
 
-### b) Add Service Accounts to the Team Drive
+##### 2. Add Them To Team Drive Directly
 - Run:
 ```
 python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ```
 ------
+
+### Generate Database
+
+**1. Using ElephantSQL**
+- Go to https://elephantsql.com and create account (skip this if you already have **ElephantSQL** account)
+- Hit `Create New Instance`
+- Follow the further instructions in the screen
+- Hit `Select Region`
+- Hit `Review`
+- Hit `Create instance`
+- Select your database name
+- Copy your database url, and fill to `DATABASE_URL` in config
+
+**2. Using Heroku PostgreSQL**
+<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="160""/></a></p>
+
+------
+
 ## Multi Search IDs
 To use list from multi TD/folder. Run driveid.py in your terminal and follow it. It will generate **drive_folder** file or u can simply create `drive_folder` file in working directory and fill it, check below format:
 ```
 MyTdName folderID/tdID IndexLink(if available)
 MyTdName2 folderID/tdID IndexLink(if available)
 ```
----
+-----
+
 ## Yt-dlp and Index Authentication Using .netrc File
-For using your premium accounts in Youtube-dl or for protected Index Links, edit the netrc file according to following format:
+For using your premium accounts in yt-dlp or for protected Index Links, edit the netrc file according to following format:
 ```
-machine host login username password my_youtube_password
+machine host login username password my_password
 ```
-**Note**: For `youtube` authentication use cookies.txt file.
+**Note**: For `youtube` authentication use [cookies.txt](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl) file.
 
 For Index Link with only password without username, even http auth will not work, so this is the solution.
 ```
 machine example.workers.dev password index_password
 ```
-Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
+Where host is the name of extractor (eg. Twitch). Multiple accounts of different hosts can be added each separated by a new line.
+
+-----
+
+## Gdtot Cookies
+To Clone or Leech gdtot link follow these steps:
+1. Login/Register to [gdtot](https://new.gdtot.top).
+2. Copy this script and paste it in browser address bar.
+   - **Note**: After pasting it check at the beginning of the script in broswer address bar if `javascript:` exists or not, if not so write it as shown below.
+   ```
+   javascript:(function () {
+     const input = document.createElement('input');
+     input.value = JSON.stringify({url : window.location.href, cookie : document.cookie});
+     document.body.appendChild(input);
+     input.focus();
+     input.select();
+     var result = document.execCommand('copy');
+     document.body.removeChild(input);
+     if(result)
+       alert('Cookie copied to clipboard');
+     else
+       prompt('Failed to copy cookie. Manually copy below cookie\n\n', input.value);
+   })();
+   ```
+   - After pressing enter your browser will prompt a alert.
+3. Now you'll get this type of data in your clipboard
+   ```
+   {"url":"https://new.gdtot.org/","cookie":"PHPSESSID=k2xxxxxxxxxxxxxxxxxxxxj63o; crypt=NGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWdSVT0%3D"}
+
+   ```
+4. From this you have to paste value of PHPSESSID and crypt in config.env file.
+
+-----
