@@ -203,13 +203,9 @@ input[type="submit"]:hover, input[type="submit"]:focus{
           src="https://telegra.ph/file/cc06d0c613491080cc174.png"
           alt="logo"
         />
-        <a href="https://t.me/anas_tayyar">
+        <a>
           <h2 class="name">Qbittorrent Selection</h2>
         </a>
-      </div>
-      <div class="social">
-        <a href="https://www.github.com/anasty17/mirror-leech-telegram-bot"><i class="fab fa-github"></i></a>
-        <a href="https://t.me/anas_tayyar"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
     <section>
@@ -528,13 +524,9 @@ section span{
           src="https://telegra.ph/file/cc06d0c613491080cc174.png"
           alt="logo"
         />
-        <a href="https://t.me/anas_tayyar">
+        <a>
           <h2 class="name">Qbittorrent Selection</h2>
         </a>
-      </div>
-      <div class="social">
-        <a href="https://www.github.com/anasty17/mirror-leech-telegram-bot"><i class="fab fa-github"></i></a>
-        <a href="https://t.me/anas_tayyar"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
     <section>
@@ -684,7 +676,7 @@ async def set_priority(request):
 @routes.get('/')
 async def homepage(request):
 
-    return web.Response(text="<h1>See mirror-leech-telegram-bot <a href='https://www.github.com/anasty17/mirror-leech-telegram-bot'>@GitHub</a> By <a href='https://github.com/anasty17'>Anas</a></h1>", content_type="text/html")
+    return web.Response(text="<h1>Bot is running.</h1>", content_type="text/html")
 
 async def e404_middleware(app, handler):
 
@@ -693,11 +685,11 @@ async def e404_middleware(app, handler):
         try:
             response = await handler(request)
             if response.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>mirror-leech-telegram-bot</h3>", content_type="text/html")
+                return web.Response(text="<h1>404: Page not found</h2><br>", content_type="text/html")
             return response
         except web.HTTPException as ex:
             if ex.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>mirror-leech-telegram-bot</h3>", content_type="text/html")
+                return web.Response(text="<h1>404: Page not found</h2><br>", content_type="text/html")
             raise
     return middleware_handler
 
