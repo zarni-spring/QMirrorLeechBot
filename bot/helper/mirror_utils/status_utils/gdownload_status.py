@@ -1,4 +1,4 @@
-# Implement By - @anasty17 (https://github.com/SlamDevs/slam-mirrorbot/pull/220)
+# https://github.com/SlamDevs/slam-mirrorbot/pull/220
 # (c) https://github.com/SlamDevs/slam-mirrorbot
 # All rights reserved
 

@@ -4,7 +4,6 @@ import requests
 import logging
 
 from dotenv import load_dotenv
-from requests.exceptions import RequestException
 
 if os.path.exists('log.txt'):
     with open('log.txt', 'r+') as f:
@@ -26,7 +25,7 @@ try:
                 f.close()
         else:
             logging.error(f"Failed to download config.env {res.status_code}")
-    except RequestException as e:
+    except Exception as e:
         logging.error(str(e))
 except TypeError:
     pass
@@ -45,8 +44,8 @@ if UPSTREAM_REPO is not None:
         subprocess.run(["rm", "-rf", ".git"])
 
     subprocess.run([f"git init -q \
-                      && git config --global user.email e.anastayyar@gmail.com \
-                      && git config --global user.name mltb \
+                      && git config --global user.email anonym@ous.com \
+                      && git config --global user.name asdf \
                       && git add . \
                       && git commit -sm update -q \
                       && git remote add origin {UPSTREAM_REPO} \
