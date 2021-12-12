@@ -61,7 +61,7 @@ except KeyError:
 PORT = os.environ.get('PORT', SERVER_PORT)
 web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
 alive = subprocess.Popen(["python3", "alive.py"])
-nox = subprocess.Popen(["qbittorrent-nox", "--profile=."])
+subprocess.Popen(["qbittorrent-nox", "--profile=."])
 if not os.path.exists('.netrc'):
     subprocess.run(["touch", ".netrc"])
 subprocess.run(["cp", ".netrc", "/root/.netrc"])
@@ -131,6 +131,7 @@ def aria2c_init():
         pass
 
 threading.Thread(target=aria2c_init).start()
+time.sleep(1)
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
@@ -396,6 +397,11 @@ try:
     EQUAL_SPLITS = EQUAL_SPLITS.lower() == 'true'
 except KeyError:
     EQUAL_SPLITS = False
+try:
+    QB_SEED = getConfig('QB_SEED')
+    QB_SEED = QB_SEED.lower() == 'true'
+except KeyError:
+    QB_SEED = False
 try:
     CUSTOM_FILENAME = getConfig('CUSTOM_FILENAME')
     if len(CUSTOM_FILENAME) == 0:

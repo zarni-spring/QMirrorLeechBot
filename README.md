@@ -4,6 +4,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 
 ## From This Repo
 - Fully non-credit repo (For protect repo from ban etc.)
+- Some more trackers
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
 ## From Other Repositories
 - qBittorrent
@@ -29,7 +30,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Docker image support for `linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6` (**Note**: Use `anasty17/mltb-oracle:latest` for oracle or if u faced problem with arm64 docker run)
 - Update bot at startup and with restart command using `UPSTREAM_REPO`
 - Clone/Zip/Unzip/Count from gdtot links (main script from [Yusuf](https://github.com/oxosec)) and delete first cloned file from main drive or TeamDrive
-- Magnet link extractor by [VarnaX-279](https://github.com/VarnaX-279)
+- Qbittorrent seed until reaching specific ratio or time
 - Many bugs have been fixed
 - Mirror direct download links, Torrent, and Telegram files to Google Drive
 - Mirror Mega.nz links to Google Drive (If you have non-premium Mega account, it will limit download to 5GB per 6 hours)
@@ -110,8 +111,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `GDRIVE_FOLDER_ID`: This is the Folder/TeamDrive ID of the Google Drive Folder to which you want to upload all the mirrors.
 - `DOWNLOAD_DIR`: The path to the local folder where the downloads should be downloaded to
 - `DOWNLOAD_STATUS_UPDATE_INTERVAL`: A short interval of time in seconds after which the Mirror progress/status message is updated. (I recommend to keep it to `7` seconds at least)
-- `AUTO_DELETE_MESSAGE_DURATION`: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**NOTE**: Set to `-1` to never automatically delete messages)
-- `BASE_URL_OF_BOT`: (Required only for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. Format of URL should be `http://myip` (where `myip` is the IP/Domain of your bot) or if you have chosen other port than `80` then fill in this format `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Don't add slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
+- `AUTO_DELETE_MESSAGE_DURATION`: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**NOTE**: Set to `-1` to disable auto message deletion)
+- `BASE_URL_OF_BOT`: Valid BASE URL where the bot is deployed to use qbittorrent web selection. Format of URL should be `http://myip`, where `myip` is the IP/Domain(public) of your bot or if you have chosen port other than `80` so write it in this format `http://myip:port` (`http` and not `https`). This Var is optional on VPS and required for Heroku specially to avoid app sleeping/idling. For Heroku fill `https://yourappname.herokuapp.com`. Still got idling? You can use http://cron-job.org to ping your Heroku app. (**NOTE**: Don't add slash at the end).
 </details>
 
 **2. Optional Fields**
@@ -125,12 +126,12 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `MULTI_SEARCH_URL`: Check `drive_folder` setup [here](https://github.com/HuzunluArtemis/QMirrorLeechBot/tree/main#multi-search-ids). Write **drive_folder** file [here](https://gist.github.com/). Open the raw file of that gist, it's URL will be your required variable. Should be in this form after removing commit id: https://gist.githubusercontent.com/username/gist-id/raw/drive_folder
 - `YT_COOKIES_URL`: Youtube authentication cookies. Check setup [Here](https://github.com/ytdl-org/youtube-dl#how-do-i-pass-cookies-to-youtube-dl). Use gist raw link and remove commit id from the link, so you can edit it from gists only.
 - `NETRC_URL`: To create .netrc file contains authentication for aria2c and yt-dlp. Use gist raw link and remove commit id from the link, so you can edit it from gists only. **NOTE**: After editing .nterc you need to restart the docker or if deployed on heroku so restart dyno in case your edits related to aria2c authentication.
-  - **NOTE**: All above url variables used incase you want edit them in future easily without deploying again or if you want to deploy from public fork else you can add token.pickle, accounts folder, drive_folder, .netrc and cookies.txt directly to root.
-- `DATABASE_URL`: Your Database URL. See [Generate Database](https://github.com/HuzunluArtemis/QMirrorLeechBot/tree/main#generate-database) to generate database (**NOTE**: If you use database you can save your Sudo ID permanently).
+  - **NOTE**: All above url variables used incase you want edit them in future easily without deploying again or if you want to deploy from public fork. If deploying using cli or private fork you can leave these variables empty add token.pickle, accounts folder, drive_folder, .netrc and cookies.txt directly to root but you can't update them without rebuild OR simply leave all above variables and use private UPSTREAM_REPO.
+- `DATABASE_URL`: (NOT RECOMMENDED FOR NOW) Your Database URL. See [Generate Database](https://github.com/HuzunluArtemis/QMirrorLeechBot/tree/main#generate-database) to generate database (**NOTE**: If you use database you can save your Sudo ID permanently).
 - `AUTHORIZED_CHATS`: Fill user_id and chat_id (not username) of groups/users you want to authorize. Separate them with space, Examples: `-0123456789 -1122334455 6915401739`.
 - `SUDO_USERS`: Fill user_id (not username) of users whom you want to give sudo permission. Separate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want to save Sudo ID permanently without database, you must fill your Sudo Id here).
 - `IS_TEAM_DRIVE`: Set to `False` or leave it empty to get public google drive links else `True` so only who have access to your Folder/TeamDrive can open the links. `Bool`
-- `USE_SERVICE_ACCOUNTS`: (Leave empty if unsure) Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/HuzunluArtemis/QMirrorLeechBot/tree/main#generate-service-accounts-what-is-service-account) section below.
+- `USE_SERVICE_ACCOUNTS`: (Leave empty if unsure) Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/HuzunluArtemis/QMirrorLeechBot#generate-service-accounts-what-is-service-account) section below.
 - `INDEX_URL`: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index The URL should not have any trailing '/' at the end.
 - `MEGA_API_KEY`: Mega.nz API key to mirror mega.nz links. Get it from [Mega SDK Page](https://mega.nz/sdk)
 - `MEGA_EMAIL_ID`: E-Mail ID used to sign up on mega.nz for using premium account (Leave though)
@@ -145,15 +146,17 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`, if yes make it `True`, compatible with [BhadooIndex](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code. `Bool`
 - `UPTOBOX_TOKEN`: Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).
 - `IGNORE_PENDING_REQUESTS`: If you want the bot to ignore pending requests after it restarts, set this to `True`. `Bool`
-- `STATUS_LIMIT`: Limit the no. of tasks shown in status message with buttons. (**NOTE**: Recommended limit is `4` tasks).
+- `STATUS_LIMIT`: Limit the no. of tasks shown in status message with buttons. **NOTE**: Recommended limit is `4` tasks.
 - `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. `Bool`
 - `SERVER_PORT`: Only For VPS even if `IS_VPS` is `False`, which is the **BASE_URL_OF_BOT** Port.
 - `WEB_PINCODE`: If empty or `False` means no more pincode required while qbit web selection. `Bool`
+- `QB_SEED`: If `True` qbit torrent will be seeded after and while uploading until reaching specific ratio or time, edit `MaxRatio` or `GlobalMaxSeedingMinutes` or both from qbittorrent.conf (`-1` means no limit, but u can cancel manually by gid). **NOTE**: Don't change `MaxRatioAction`. `Bool`
+  - **Qbittorrent Note**: To auto cancel dead torrents after specific time, edit these two numbers (999999) in seconds. [1st](https://github.com/HuzunluArtemis/QMirrorLeechBot/blob/9d3e402f5bfd745aed7c9255318869c14bd43ffe/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L144) for metadata download timeout and [2nd](https://github.com/HuzunluArtemis/QMirrorLeechBot/blob/9d3e402f5bfd745aed7c9255318869c14bd43ffe/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L197) for stalled download timeout.
 - `TG_SPLIT_SIZE`: Size of split in bytes, leave it empty for max size `2GB`.
 - `AS_DOCUMENT`: Default Telegram file type upload. Empty or `False` means as media. `Bool`
 - `EQUAL_SPLITS`: Split files larger than **TG_SPLIT_SIZE** into equal parts size (Not working with zip cmd). `Bool`
 - `CUSTOM_FILENAME`: Add custom word to leeched file name.
-- `UPSTREAM_REPO`: Your github repository link, If your repo is private add  `https://{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect - DON'T delete .gitignore file.
+- `UPSTREAM_REPO`: Your github repository link, if your repo is private add `https://{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). So you can update your appllication from filled repository on each restart. **NOTE**: Any change in docker or requirements you need to deploy/build again with updated repo to take effect - DON'T delete .gitignore file.
 - `SHORTENER_API`: Fill your Shortener API key.
 - `SHORTENER`: Shortener URL.
   - Supported URL Shorteners:
@@ -181,6 +184,7 @@ Three buttons are already added including Drive Link, Index Link, and View Link,
 - Go to the OAuth Consent tab, fill it, and save.
 - Go to the Credentials tab and click Create Credentials -> OAuth Client ID
 - Choose Desktop and Create.
+- Publish your OAuth consent screen App to prevent **token.pickle** from expire
 - Use the download button to download your credentials.
 - Move that file to the root of mirrorbot, and rename it to **credentials.json**
 - Visit [Google API page](https://console.developers.google.com/apis/library)
@@ -192,9 +196,26 @@ python3 generate_drive_token.py
 ```
 ------
 
-## Deploying on VPS Using Docker
+## Deploying on VPS
 
-**IMPORTANT NOTE**: You must set `SERVER_PORT` variable to `80` or any other port you want to use.
+**IMPORTANT NOTES**:
+1. You must set `SERVER_PORT` variable to `80` or any other port you want to use.
+2. To clear the container (this will not affect on the image):
+```
+sudo docker container prune
+```
+3. To delete the images:
+```
+sudo docker image prune -a
+```
+4. Use `anasty17/mltb-oracle:latest` for oracle or if u faced problem with arm64 docker run.
+   - Tutorial Video for Deploying on Oracle VPS:
+     - Thanks to [Wiszky](https://github.com/vishnoe115)
+     - No need to use sudo su, you can also use sudo before each cmd!
+<p><a href="https://youtu.be/IzUG7U7v4U4?t=968"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
+
+
+### Deploying on VPS Using Docker
 
 - Start Docker daemon (skip if already running):
 ```
@@ -222,7 +243,7 @@ sudo docker stop id
 
 ----
 
-## Deploying on VPS Using docker-compose
+### Deploying on VPS Using docker-compose
 
 **NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/HuzunluArtemis/QMirrorLeechBot/blob/main/docker-compose.yml) also.
 
