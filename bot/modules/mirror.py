@@ -3,6 +3,7 @@ import urllib
 import pathlib
 import os
 import subprocess
+import threading
 import re
 import time
 import shutil
@@ -382,6 +383,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
                 return
             else:
                 link = file.get_file().file_path
+
     if len(mesg) > 1:
         try:
             ussr = urllib.parse.quote(mesg[1], safe='')
@@ -393,6 +395,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
 
     LOGGER.info(link)
     gdtot_link = bot_utils.is_gdtot_link(link)
+
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link):
         help_msg = "<b>Send link along with command line:</b>"
         help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙]"
@@ -429,7 +432,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
         if not isZip and not extract and not isLeech:
             gmsg = f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\n\n"
             gmsg += f"Use /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\n\n"
-            gmsg += f"Use /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file"
+            gmsg += f"Use /{BotCommands.UnzipMirrorCommand} to extracts Google Drive archive file"
             sendMessage(gmsg, bot, update)
             return
         gd_dl = GdDownloadHelper()
