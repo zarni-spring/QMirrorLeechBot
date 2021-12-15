@@ -6,6 +6,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Fully non-credit repo (For protect repo from ban etc.)
 - Some more trackers
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
+- Better YTDL Playlist naming: `%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s`
 ## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
