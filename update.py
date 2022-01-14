@@ -4,8 +4,6 @@ from os import path as ospath, environ
 from subprocess import run as srun
 from requests import get as rget
 from dotenv import load_dotenv
-import pkg_resources
-from subprocess import call
 
 if ospath.exists('log.txt'):
     with open('log.txt', 'r+') as f:
@@ -14,10 +12,6 @@ if ospath.exists('log.txt'):
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
-
-# update everything
-packages = [dist.project_name for dist in pkg_resources.working_set]
-call("pip install --upgrade " + ' '.join(packages), shell=True)
 
 CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL', None)
 try:
