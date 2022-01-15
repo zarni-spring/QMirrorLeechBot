@@ -179,7 +179,7 @@ def aria2c_init():
         aria2.add_uris([link], {'dir': DOWNLOAD_DIR})
         sleep(40)
         aria2.remove_all(force=True)
-        aria2.remove_files(force=True)
+        aria2.remove_files(downloads=aria2.get_downloads(), force=True)
         sleep(2)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
