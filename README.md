@@ -8,6 +8,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
 - Better YTDL Playlist naming: `%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s`
 - Update every python package before start bot
+- Custom finished & unfinished string. (You can get from [1](https://coolsymbol.com/) [2](https://changaco.oy.lc/unicode-progress-bars/) [3](https://text-symbols.com/) or leave empty for default)
 ## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
