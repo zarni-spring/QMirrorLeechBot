@@ -34,8 +34,7 @@ LOGGER = logging.getLogger(__name__)
 load_dotenv('config.env', override=True)
 
 def getConfig(name: str):
-    LOGGER.info(f"Got {name}: {environ.get(name)}")
-    return environ.get(name)
+    return environ[name]
 
 try:
     NETRC_URL = getConfig('NETRC_URL')
