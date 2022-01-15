@@ -13,23 +13,19 @@ from time import sleep, time
 from threading import Thread, Lock
 from pyrogram import Client
 from dotenv import load_dotenv
-# update everything
 import pkg_resources
 from subprocess import call
-packages = [dist.project_name for dist in pkg_resources.working_set]
-call("pip install --upgrade " + ' '.join(packages), shell=True)
-
 faulthandler.enable()
-
 socket.setdefaulttimeout(600)
-
 botStartTime = time()
-
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
+
+packages = [dist.project_name for dist in pkg_resources.working_set]
+call("pip install --upgrade " + ' '.join(packages), shell=True)
 
 load_dotenv('config.env', override=True)
 
@@ -520,6 +516,13 @@ try:
     qbclient.search_install_plugin(SEARCH_PLUGINS)
 except KeyError:
     SEARCH_PLUGINS = None
+
+try:
+    FINISHED_PROGRESS_STR = getConfig('FINISHED_PROGRESS_STR') 
+    UN_FINISHED_PROGRESS_STR = getConfig('UN_FINISHED_PROGRESS_STR')
+except:
+    FINISHED_PROGRESS_STR = '●' # '■'
+    UN_FINISHED_PROGRESS_STR = '○' # '□'
 
 updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
