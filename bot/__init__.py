@@ -177,11 +177,10 @@ def aria2c_init():
         logging.info("Initializing Aria2c")
         link = "https://releases.ubuntu.com/21.10/ubuntu-21.10-desktop-amd64.iso.torrent"
         aria2.add_uris([link], {'dir': DOWNLOAD_DIR})
-        sleep(3)
-        downloads = aria2.get_downloads()
-        sleep(30)
-        for download in downloads:
-            aria2.remove([download], force=True, files=True)
+        sleep(40)
+        aria2.remove_all(force=True)
+        aria2.remove_files(force=True)
+        sleep(2)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
         pass
