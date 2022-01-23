@@ -87,7 +87,7 @@ def setLeechType(update, context):
         path = f"Thumbnails/{user_id}.jpg"
         if ospath.lexists(path):
             msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
-            sendPhoto(text=msg, bot=context.bot, message=message, photo=path)
+            sendPhoto(text=msg, bot=context.bot, message=message.reply_to_message, photo=path)
         else: query.answer(text="Send new settings command.")
     elif data[2] == "close":
         try:
