@@ -52,7 +52,7 @@ def editMessage(text: str, message: Message, reply_markup=None):
 
 def sendPhoto(text: str, bot, update: Update, reply_markup: InlineKeyboardMarkup, photo, destroy=0):
     try:
-        if destroy != 0:
+        if destroy == 0:
             return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
             caption=text, reply_markup=reply_markup, parse_mode='html')
         else:
