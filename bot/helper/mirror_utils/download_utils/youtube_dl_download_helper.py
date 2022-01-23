@@ -128,7 +128,7 @@ class YoutubeDLHelper:
                     return
             if self.__is_cancelled: raise ValueError
             self.__onDownloadComplete()
-        except ValueError: self.__onDownloadError("Download Stopped by User!")
+        except ValueError: self.__onDownloadError("Download Stopped by User.")
 
     def add_download(self, link, path, name, qual, playlist):
         if playlist: self.opts['ignoreerrors'] = True
@@ -153,5 +153,5 @@ class YoutubeDLHelper:
     def cancel_download(self):
         self.__is_cancelled = True
         LOGGER.info(f"Cancelling Download: {self.name}")
-        if not self.__downloading: self.__onDownloadError("Download Cancelled by User!")
+        if not self.__downloading: self.__onDownloadError("Download Cancelled by User.")
 

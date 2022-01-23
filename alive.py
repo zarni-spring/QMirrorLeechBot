@@ -9,7 +9,7 @@ try:
     if BASE_URL.endswith('/'): BASE_URL = BASE_URL.rstrip('/')
 except TypeError: BASE_URL = None
 PORT = environ.get('PORT', None)
-if PORT is not None and BASE_URL is not None:
+if PORT and BASE_URL:
     while True:
         try:
             rget(BASE_URL).status_code
