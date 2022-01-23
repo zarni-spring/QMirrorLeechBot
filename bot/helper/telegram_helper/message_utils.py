@@ -97,13 +97,13 @@ def sendLogFile(bot, update: Update):
                           reply_to_message_id=update.message.message_id,
                           chat_id=update.message.chat_id)
 
-def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
+def auto_delete_message(bot, cmd_message=None, bot_message=None):
     if AUTO_DELETE_MESSAGE_DURATION != -1:
         sleep(AUTO_DELETE_MESSAGE_DURATION)
         try:
             # Skip if None is passed meaning we don't want to delete bot xor cmd message
-            deleteMessage(bot, cmd_message)
-            deleteMessage(bot, bot_message)
+            if cmd_message: deleteMessage(bot, cmd_message)
+            if bot_message: deleteMessage(bot, bot_message)
         except AttributeError:
             pass
 
