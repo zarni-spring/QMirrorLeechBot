@@ -76,7 +76,7 @@ def setLeechType(update, context):
         query.answer(text="Your File Will Deliver As Media.")
         editLeechType(message, query)
     elif data[2] == "thumb":
-        path = f"Thumbnails/{user_id}.jpg"
+        path = os.path.join("Thumbnails", f"{user_id}.jpg")
         if ospath.lexists(path):
             osremove(path)
             if DB_URI: DbManger().user_rm_thumb(user_id, path)
@@ -85,6 +85,7 @@ def setLeechType(update, context):
         else: query.answer(text="Send new settings command.")
     elif data[2] == "showthumb":
         path = os.path.join("Thumbnails", f"{user_id}.jpg")
+        print(path)
         if ospath.lexists(path):
             msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
             sendPhoto(text=msg, bot=context.bot, message=message.reply_to_message, photo=path)
