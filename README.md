@@ -332,6 +332,7 @@ restart - Restart the Bot
 stats - Bot Usage Stats
 ping - Ping the Bot
 wayback - Archive a webpage
+speedtest - Speed Test
 help - All cmds with description
 ```
 ------
