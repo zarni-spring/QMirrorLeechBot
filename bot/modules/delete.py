@@ -13,9 +13,12 @@ from bot.helper.ext_utils.bot_utils import is_gdrive_link
 def deletefile(update, context):
     args = update.message.text.split(" ", maxsplit=1)
     reply_to:Message = update.message.reply_to_message
+    link = None
     if len(args) > 1: link = args[1]
     elif reply_to:
-        if reply_to.reply_markup: LOGGER.info(reply_to.reply_markup.to_json())
+        if reply_to.reply_markup:
+            dict = reply_to.reply_markup.to_dict()
+            link = dict['inline_keyboard'][0][0]['url']
         else: link = reply_to.text
 
     else: link = ''

@@ -14,6 +14,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Speedtest with picture
 - Removed all username cc's. Don not trust a username.
 - WayBack Machine Archiver
+- Delete file/folder from drive with replying message
 ## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
