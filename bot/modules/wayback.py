@@ -64,5 +64,5 @@ def getRandomUserAgent():
 
 
 WAYBACK_HANDLER = CommandHandler(BotCommands.WayBackCommand, wayback,
-    filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+    filters=CustomFilters.owner_filter | CustomFilters.authorized_chat | CustomFilters.authorized_user , run_async=True)
 dispatcher.add_handler(WAYBACK_HANDLER)
