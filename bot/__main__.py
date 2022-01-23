@@ -20,6 +20,7 @@ from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, search, rss, wayback
 
 
 def stats(update, context):
@@ -67,7 +68,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update, None)
     else:
-        sendMarkup('Not Authorized user', context.bot, update, None)
+        sendMarkup('Not authorized user.', context.bot, update, None)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
@@ -235,8 +236,8 @@ botcmds = [
         (f'{BotCommands.PingCommand}','Ping the bot'),
         (f'{BotCommands.RestartCommand}','Restart the bot'),
         (f'{BotCommands.LogCommand}','Get the bot Log'),
-        (f'{BotCommands.HelpCommand}','Get detailed help'),
-        (f'{BotCommands.WayBackCommand}','Archive a webpage')
+        (f'{BotCommands.WayBackCommand}','Archive a webpage'),
+        (f'{BotCommands.HelpCommand}','Get detailed help')
     ]
 
 def main():
