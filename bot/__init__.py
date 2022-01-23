@@ -509,6 +509,12 @@ except:
     FINISHED_PROGRESS_STR = '●' # '■'
     UN_FINISHED_PROGRESS_STR = '○' # '□'
 
+try:
+    UPDATE_EVERYTHING_WHEN_RESTART = getConfig('UPDATE_EVERYTHING_WHEN_RESTART')
+    UPDATE_EVERYTHING_WHEN_RESTART = UPDATE_EVERYTHING_WHEN_RESTART.lower() == 'true'
+except KeyError:
+    UPDATE_EVERYTHING_WHEN_RESTART = True
+
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher

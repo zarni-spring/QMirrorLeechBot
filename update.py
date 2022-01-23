@@ -13,8 +13,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
-packages = [dist.project_name for dist in pkg_resources.working_set]
-subprocess.call("pip install --upgrade " + ' '.join(packages), shell=True)
+
 
 CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL', None)
 try:
@@ -34,6 +33,10 @@ except TypeError:
     pass
 
 load_dotenv('config.env', override=True)
+
+if environ.get('UPDATE_EVERYTHING_WHEN_RESTART', True):
+    packages = [dist.project_name for dist in pkg_resources.working_set]
+    subprocess.call("pip install --upgrade " + ' '.join(packages), shell=True)
 
 UPSTREAM_REPO = environ.get('UPSTREAM_REPO', None)
 try:
