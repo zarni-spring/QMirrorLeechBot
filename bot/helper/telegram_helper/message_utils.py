@@ -93,8 +93,8 @@ def deleteMessage(bot, message: Message):
 
 def sendLogFile(bot, update: Update):
     botusername = (bot.get_me())['username']
-    with open(f'{botusername}.log.txt', 'rb') as f:
-        bot.send_document(document=f, filename=f.name,
+    with open('log.txt', 'rb') as f:
+        bot.send_document(document=f, filename=f'{botusername}.log.txt',
                           reply_to_message_id=update.message.message_id,
                           chat_id=update.message.chat_id)
 
