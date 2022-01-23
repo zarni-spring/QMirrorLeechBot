@@ -262,39 +262,29 @@ class MirrorListener:
                 buttons.buildbutton(f"{BUTTON_SIX_NAME}", f"{BUTTON_SIX_URL}")
             if self.isQbit and QB_SEED and not self.extract:
                if self.isZip:
-                   try:
-                       osremove(f'{DOWNLOAD_DIR}{self.uid}/{name}')
-                   except:
-                       pass
+                   try: osremove(f'{DOWNLOAD_DIR}{self.uid}/{name}')
+                   except: pass
                return sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
             else:
-                try:
-                    clean_download(f'{DOWNLOAD_DIR}{self.uid}')
-                except FileNotFoundError:
-                    pass
+                try: clean_download(f'{DOWNLOAD_DIR}{self.uid}')
+                except FileNotFoundError: pass
                 with download_dict_lock:
                     del download_dict[self.uid]
                     count = len(download_dict)
                 sendMarkup(msg, self.bot, self.update, InlineKeyboardMarkup(buttons.build_menu(2)))
-                if count == 0:
-                    self.clean()
-                else:
-                    update_all_messages()
+                if count == 0: self.clean()
+                else: update_all_messages()
 
     def onUploadError(self, error):
         e_str = error.replace('<', '').replace('>', '')
         with download_dict_lock:
-            try:
-                clean_download(download_dict[self.uid].path())
-            except FileNotFoundError:
-                pass
+            try: clean_download(download_dict[self.uid].path())
+            except FileNotFoundError: pass
             del download_dict[self.message.message_id]
             count = len(download_dict)
         sendMessage(f"{self.tag} {e_str}", self.bot, self.update)
-        if count == 0:
-            self.clean()
-        else:
-            update_all_messages()
+        if count == 0: self.clean()
+        else: update_all_messages()
 
 def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None):
     mesg = update.message.text.split('\n')

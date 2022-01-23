@@ -1,4 +1,5 @@
 from threading import Thread
+from telegram import Message
 from telegram.ext import CommandHandler
 
 from bot import dispatcher, LOGGER
@@ -11,13 +12,13 @@ from bot.helper.ext_utils.bot_utils import is_gdrive_link
 
 def deletefile(update, context):
     args = update.message.text.split(" ", maxsplit=1)
-    reply_to = update.message.reply_to_message
-    if len(args) > 1:
-        link = args[1]
+    reply_to:Message = update.message.reply_to_message
+    if len(args) > 1: link = args[1]
     elif reply_to:
-        link = reply_to.text
-    else:
-        link = ''
+        if reply_to.reply_markup: print(reply_to.reply_markup.to_json())
+        else: link = reply_to.text
+
+    else: link = ''
     if is_gdrive_link(link):
         LOGGER.info(link)
         drive = gdriveTools.GoogleDriveHelper()
