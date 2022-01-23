@@ -17,7 +17,7 @@ def wayback(update, context):
         if len(link) != 2:
             help_msg = "<b>Send link after command:</b>"
             help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {link}" + "</code>"
-            help_msg += "\n<b>By replying to link:</b>"
+            help_msg += "\n<b>By replying to message (including link):</b>"
             help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {message}" + "</code>"
             return editMessage(help_msg, sent)
         link = link[1]

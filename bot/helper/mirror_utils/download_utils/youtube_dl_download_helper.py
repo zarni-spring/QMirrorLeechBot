@@ -145,8 +145,8 @@ class YoutubeDLHelper:
         LOGGER.info(f"Downloading with YT-DLP: {link}")
         self.extractMetaData(link, name)
         if self.__is_cancelled: return
-        if self.is_playlist:  self.opts['outtmpl'] = os.path.join(path, self.name,
-            "%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s")
+        if self.is_playlist:
+            self.opts['outtmpl'] = os.path.join(path, self.name, "%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s")
         else: self.opts['outtmpl'] = os.path.join(path, self.name)
         self.__download(link)
 

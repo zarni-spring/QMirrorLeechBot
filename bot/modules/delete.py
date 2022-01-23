@@ -15,7 +15,7 @@ def deletefile(update, context):
     reply_to:Message = update.message.reply_to_message
     if len(args) > 1: link = args[1]
     elif reply_to:
-        if reply_to.reply_markup: print(reply_to.reply_markup.to_json())
+        if reply_to.reply_markup: LOGGER.info(reply_to.reply_markup.to_json())
         else: link = reply_to.text
 
     else: link = ''
