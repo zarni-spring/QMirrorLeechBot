@@ -30,7 +30,7 @@ def select_type(update, context):
     data = query.data
     data = data.split(" ")
     if user_id != int(data[1]):
-        query.answer(text="Not Yours!", show_alert=True)
+        query.answer(text="Not Yours.")
     elif data[2] in ["root", "recu"]:
         query.answer()
         buttons = button_build.ButtonMaker()
@@ -48,7 +48,7 @@ def select_type(update, context):
         Thread(target=_list_drive, args=(key, msg, list_method, item_type)).start()
     else:
         query.answer()
-        editMessage("list has been canceled!", msg)
+        editMessage("list has been canceled.", msg)
 
 def _list_drive(key, bmsg, list_method, item_type):
     LOGGER.info(f"listing: {key}")

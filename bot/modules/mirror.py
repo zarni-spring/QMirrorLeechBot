@@ -134,7 +134,7 @@ class MirrorListener:
                         osremove(m_path)
                         LOGGER.info(f"Deleting archive: {m_path}")
                     else:
-                        LOGGER.error('Unable to extract archive! Uploading anyway')
+                        LOGGER.error('Unable to extract archive. Uploading anyway')
                         path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
             except NotSupportedExtractionArchive:
                 LOGGER.info("Not any valid archive, uploading file as it is.")
@@ -196,7 +196,7 @@ class MirrorListener:
     def onUploadComplete(self, link: str, size, files, folders, typ, name: str):
         if self.isLeech:
             count = len(files)
-            msg = f'<b>Name: </b><code>{name}</code>\n\n'
+            msg = f'<b>Name: </b><code>{name}</code>\n'
             msg += f'<b>Size: </b>{size}\n'
             msg += f'<b>Total Files: </b>{count}'
             if typ != 0:
@@ -230,12 +230,12 @@ class MirrorListener:
             else:
                 update_all_messages()
         else:
-            msg = f'<b>Name: </b><code>{name}</code>\n\n<b>Size: </b>{size}'
-            msg += f'\n\n<b>Type: </b>{typ}'
+            msg = f'<b>Name: </b><code>{name}</code>\n<b>Size: </b>{size}'
+            msg += f'\n<b>Type: </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
                 msg += f'\n<b>SubFolders: </b>{folders}'
                 msg += f'\n<b>Files: </b>{files}'
-            msg += f'\n\n<b>cc: </b>{self.tag}'
+            msg += f'\n<b>cc: </b>{self.tag}'
             buttons = ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)
@@ -323,10 +323,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     if len(pswdMsg) > 1:
         pswd = pswdMsg[1]
 
-    if update.message.from_user.username:
-        tag = f"@{update.message.from_user.username}"
-    else:
-        tag = update.message.from_user.mention_html(update.message.from_user.first_name)
+    tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name} (<code>{str(update.message.from_user.id)}</code>)")
 
     reply_to = update.message.reply_to_message
     if reply_to is not None:
@@ -342,10 +339,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
             or len(link) == 0
         ):
             if not reply_to.from_user.is_bot:
-                if reply_to.from_user.username:
-                    tag = f"@{reply_to.from_user.username}"
-                else:
-                    tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
+                tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name} (<code>{str(reply_to.from_user.id)}</code>)")
 
             if file is None:
                 reply_text = reply_to.text

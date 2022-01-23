@@ -39,7 +39,7 @@ def sendMarkup(text: str, bot, update: Update, reply_markup: InlineKeyboardMarku
 
 def editMessage(text: str, message: Message, reply_markup=None):
     try:
-        bot.edit_message_text(text=text, message_id=message.message_id,
+        return bot.edit_message_text(text=text, message_id=message.message_id,
                               chat_id=message.chat.id,reply_markup=reply_markup,
                               parse_mode='HTMl', disable_web_page_preview=True)
     except RetryAfter as r:
@@ -50,8 +50,24 @@ def editMessage(text: str, message: Message, reply_markup=None):
         LOGGER.error(str(e))
         return
 
+def sendPhoto(text: str, bot, update: Update, reply_markup: InlineKeyboardMarkup, photo, destroy=0):
+    try:
+        if destroy != 0:
+            return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
+            caption=text, reply_markup=reply_markup, parse_mode='html', disable_web_page_preview=True)
+        else:
+            return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
+            caption=text, reply_markup=reply_markup, parse_mode='html', disable_web_page_preview=True, ttl_seconds=destroy)
+    except RetryAfter as r:
+        LOGGER.warning(str(r))
+        sleep(r.retry_after * 1.5)
+        return sendPhoto(text, bot, update, reply_markup, photo, destroy)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return
+
 def sendRss(text: str, bot):
-    if rss_session is None:
+    if rss_session:
         try:
             return bot.send_message(RSS_CHAT_ID, text, parse_mode='HTMl', disable_web_page_preview=True)
         except RetryAfter as r:

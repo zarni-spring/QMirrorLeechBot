@@ -1,13 +1,14 @@
 # Leech Settings V2 Implement By - @VarnaX-279
 
 from os import remove as osremove, path as ospath, mkdir
+import os
 from threading import Thread
 from PIL import Image
 from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup
 
 from bot import AS_DOC_USERS, AS_MEDIA_USERS, dispatcher, AS_DOCUMENT, app, AUTO_DELETE_MESSAGE_DURATION, DB_URI
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, auto_delete_message
+from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, auto_delete_message, sendPhoto
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper import button_build
@@ -18,7 +19,7 @@ def getleechinfo(from_user):
     user_id = from_user.id
     name = from_user.full_name
     buttons = button_build.ButtonMaker()
-    thumbpath = f"Thumbnails/{user_id}.jpg"
+    thumbpath = os.path.join("Thumbnails", f"{user_id}.jpg")
     if (
         user_id in AS_DOC_USERS
         or user_id not in AS_MEDIA_USERS
@@ -33,8 +34,8 @@ def getleechinfo(from_user):
     if ospath.exists(thumbpath):
         thumbmsg = "Exists"
         buttons.sbutton("Delete Thumbnail", f"leechset {user_id} thumb")
-    else:
-        thumbmsg = "Not Exists"
+        buttons.sbutton("Show Thumbnail", f"leechset {user_id} showthumb")
+    else: thumbmsg = "Not Exists"
 
     if AUTO_DELETE_MESSAGE_DURATION == -1:
         buttons.sbutton("Close", f"leechset {user_id} close")
@@ -61,59 +62,55 @@ def setLeechType(update, context):
     user_id = query.from_user.id
     data = query.data
     data = data.split(" ")
-    if user_id != int(data[1]):
-        query.answer(text="Not Yours!", show_alert=True)
+    if user_id != int(data[1]): query.answer(text="Not Yours.")
     elif data[2] == "doc":
-        if user_id in AS_MEDIA_USERS:
-            AS_MEDIA_USERS.remove(user_id)
+        if user_id in AS_MEDIA_USERS: AS_MEDIA_USERS.remove(user_id)
         AS_DOC_USERS.add(user_id)
-        if DB_URI is not None:
-            DbManger().user_doc(user_id)
-        query.answer(text="Your File Will Deliver As Document!", show_alert=True)
+        if DB_URI: DbManger().user_doc(user_id)
+        query.answer(text="Your File Will Deliver As Document.")
         editLeechType(message, query)
     elif data[2] == "med":
-        if user_id in AS_DOC_USERS:
-            AS_DOC_USERS.remove(user_id)
+        if user_id in AS_DOC_USERS: AS_DOC_USERS.remove(user_id)
         AS_MEDIA_USERS.add(user_id)
-        if DB_URI is not None:
-            DbManger().user_media(user_id)
-        query.answer(text="Your File Will Deliver As Media!", show_alert=True)
+        if DB_URI: DbManger().user_media(user_id)
+        query.answer(text="Your File Will Deliver As Media.")
         editLeechType(message, query)
     elif data[2] == "thumb":
         path = f"Thumbnails/{user_id}.jpg"
         if ospath.lexists(path):
             osremove(path)
-            if DB_URI is not None:
-                DbManger().user_rm_thumb(user_id, path)
-            query.answer(text="Thumbnail Removed!", show_alert=True)
+            if DB_URI: DbManger().user_rm_thumb(user_id, path)
+            query.answer(text="Thumbnail removed.")
             editLeechType(message, query)
-        else:
-            query.answer(text="Old Settings", show_alert=True)
+        else: query.answer(text="Send new settings command.")
+    elif data[2] == "showthumb":
+        path = f"Thumbnails/{user_id}.jpg"
+        if ospath.lexists(path):
+            msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a> ({str(user_id)})"
+            sendPhoto(text=msg, bot=context.bot, update=update, reply_markup=None, destroy=60)
+        else: query.answer(text="Send new settings command.")
     elif data[2] == "close":
         try:
             query.message.delete()
             query.message.reply_to_message.delete()
-        except:
-            pass
+        except: pass
 
 def setThumb(update, context):
     user_id = update.message.from_user.id
     reply_to = update.message.reply_to_message
-    if reply_to is not None and reply_to.photo:
+    if reply_to and reply_to.photo:
         path = "Thumbnails/"
-        if not ospath.isdir(path):
-            mkdir(path)
+        if not ospath.isdir(path): mkdir(path)
         photo_msg = app.get_messages(update.message.chat.id, reply_to_message_ids=update.message.message_id)
         photo_dir = app.download_media(photo_msg, file_name=path)
         des_dir = ospath.join(path, str(user_id) + ".jpg")
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
-        if DB_URI is not None:
+        if DB_URI:
             DbManger().user_save_thumb(user_id, des_dir)
         msg = f"Custom thumbnail saved for <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a>."
         sendMessage(msg, context.bot, update)
-    else:
-        sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
+    else: sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
 
 leech_set_handler = CommandHandler(BotCommands.LeechSetCommand, leechSet, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 set_thumbnail_handler = CommandHandler(BotCommands.SetThumbCommand, setThumb, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)

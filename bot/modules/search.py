@@ -80,7 +80,7 @@ def torserbut(update, context):
     data = query.data
     data = data.split(" ")
     if user_id != int(data[1]):
-        query.answer(text="Not Yours!", show_alert=True)
+        query.answer(text="Not Yours.")
     elif data[2] == 'api':
         query.answer()
         button = _api_buttons(user_id)
