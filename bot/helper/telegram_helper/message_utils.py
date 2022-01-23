@@ -54,10 +54,10 @@ def sendPhoto(text: str, bot, update: Update, reply_markup: InlineKeyboardMarkup
     try:
         if destroy != 0:
             return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
-            caption=text, reply_markup=reply_markup, parse_mode='html', disable_web_page_preview=True)
+            caption=text, reply_markup=reply_markup, parse_mode='html')
         else:
             return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
-            caption=text, reply_markup=reply_markup, parse_mode='html', disable_web_page_preview=True, ttl_seconds=destroy)
+            caption=text, reply_markup=reply_markup, parse_mode='html', ttl_seconds=destroy)
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
