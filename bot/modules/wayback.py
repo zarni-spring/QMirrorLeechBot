@@ -14,7 +14,7 @@ def wayback(update, context):
     if message.reply_to_message: link = message.reply_to_message.text
     else:
         link = message.text.split(' ', 1)
-        if len(link) == 1:
+        if len(link) != 2:
             help_msg = "<b>Send link after command:</b>"
             help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {link}" + "</code>"
             help_msg += "\n<b>By replying to link:</b>"
