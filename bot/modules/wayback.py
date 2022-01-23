@@ -1,15 +1,15 @@
+import waybackpy, re, random
 from telegram.ext import CommandHandler
-
 from bot import LOGGER, dispatcher
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
-import waybackpy, re, random
+
 
 def wayback(update, context):
     message = update.effective_message
-    cmd = message.text.split(' ', 1)
     sent = sendMessage('Running WayBack. Wait about 20 secs.', context.bot, update)
+    cmd = message.text.split(' ', 1)
     if len(cmd) == 1: return editMessage('No url was given for wayback.', sent)
     cmd = cmd[1]
     link = None
@@ -62,7 +62,6 @@ def getRandomUserAgent():
     ]
     return agents[random.randint(0, len(agents)-1)]
 
-
-WAYBACK_HANDLER = CommandHandler(BotCommands.WayBackCommand, wayback,
-    filters=CustomFilters.owner_filter | CustomFilters.authorized_chat | CustomFilters.authorized_user , run_async=True)
-dispatcher.add_handler(WAYBACK_HANDLER)
+wayback_handler = CommandHandler(BotCommands.WayBackCommand, wayback,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+dispatcher.add_handler(wayback_handler)

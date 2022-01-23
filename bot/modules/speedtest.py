@@ -1,3 +1,4 @@
+from threading import Thread
 import time
 from charset_normalizer import logging
 from speedtest import Speedtest
@@ -7,7 +8,7 @@ from telegram.ext import CommandHandler
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot import dispatcher, botStartTime
 from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot.helper.telegram_helper.message_utils import sendMessage, deleteMessage, sendPhoto, editMessage
+from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage, deleteMessage, sendPhoto, editMessage
 
 def speedtest(update, context):
     speed = sendMessage("Running Speed Test. Wait about 20 secs.", context.bot, update)
@@ -25,21 +26,21 @@ def speedtest(update, context):
 <b>Country:</b> <code>{result['server']['country']}, {result['server']['cc']}</code>
 <b>Sponsor:</b> <code>{result['server']['sponsor']}</code>
 <b>ISP:</b> <code>{result['client']['isp']}</code>
-
 <b>SpeedTest Results</b>
 <b>Upload:</b> <code>{speed_convert(result['upload'], False)}</code>
 <b>Download:</b>  <code>{speed_convert(result['download'], False)}</code>
 <b>Ping:</b> <code>{result['ping']} ms</code>
 <b>ISP Rating:</b> <code>{result['client']['isprating']}</code>
-
 <b>Bot Uptime:</b> <code>{currentTime}</code>
 '''
     try:
-        sendPhoto(text=string_speed, bot=context.bot, update=update, photo=path)
+        pho = sendPhoto(text=string_speed, bot=context.bot, message=update.message, photo=path)
         deleteMessage(context.bot, speed)
+        Thread(target=auto_delete_message, args=(context.bot, update.message, pho)).start()
     except Exception as g:
         logging.error(str(g))
         editMessage(string_speed, speed)
+        Thread(target=auto_delete_message, args=(context.bot, update.message, speed)).start()
 
 def speed_convert(size, byte=True):
     """Hi human, you can't read bytes?"""
@@ -54,6 +55,6 @@ def speed_convert(size, byte=True):
 
 
 SPEED_HANDLER = CommandHandler(BotCommands.SpeedCommand, speedtest,
-                                                  filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
+    filters=CustomFilters.owner_filter | CustomFilters.authorized_user, run_async=True)
 
 dispatcher.add_handler(SPEED_HANDLER)

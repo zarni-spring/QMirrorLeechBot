@@ -1,5 +1,4 @@
 from threading import Thread
-from telegram import Update
 from telegram.ext import CommandHandler
 
 from bot import dispatcher, LOGGER
@@ -15,7 +14,7 @@ def deletefile(update, context):
     reply_to = update.message.reply_to_message
     if len(args) > 1:
         link = args[1]
-    elif reply_to is not None:
+    elif reply_to:
         link = reply_to.text
     else:
         link = ''

@@ -50,14 +50,14 @@ def editMessage(text: str, message: Message, reply_markup=None):
         LOGGER.error(str(e))
         return
 
-def sendPhoto(text: str, bot, update, photo, reply_markup=None):
+def sendPhoto(text: str, bot, message, photo, reply_markup=None):
     try:
-        return bot.send_photo(chat_id=update.message.chat_id, photo=photo, reply_to_message_id=update.message.message_id,
+        return bot.send_photo(chat_id=message.chat_id, photo=photo, reply_to_message_id=message.message_id,
             caption=text, reply_markup=reply_markup, parse_mode='html')
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
-        return sendPhoto(text, bot, update, photo, reply_markup)
+        return sendPhoto(text, bot, message, photo, reply_markup)
     except Exception as e:
         LOGGER.error(str(e))
         return
