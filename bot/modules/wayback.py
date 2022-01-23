@@ -12,9 +12,15 @@ def wayback(update, context):
     link = None
     sent = sendMessage('Running WayBack. Wait about 20 secs.', context.bot, update)
     if message.reply_to_message: link = message.reply_to_message.text
-    else: link = message.text.split(' ', 1)
-    if len(link) == 1: return editMessage('No url was given for wayback.', sent)
-    link = link[1]
+    else:
+        link = message.text.split(' ', 1)
+        if len(link) == 1:
+            help_msg = "<b>Send link after command:</b>"
+            help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {link}" + "</code>"
+            help_msg += "\n<b>By replying to link:</b>"
+            help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {message}" + "</code>"
+            return editMessage(help_msg, sent)
+        link = link[1]
     try: link = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", link)[0]
     except TypeError: return editMessage('Not a valid link for wayback.', sent)
     retLink = saveWebPage(link)

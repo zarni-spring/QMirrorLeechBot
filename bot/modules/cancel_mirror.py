@@ -52,7 +52,7 @@ def cancel_all(update, context):
                 sleep(0.3)
         else:
             break
-    sendMessage(f'{count} Download(s) has been Cancelled!', context.bot, update)
+    sendMessage(f'{count} Download(s) has been Cancelled.', context.bot, update)
 
 
 
