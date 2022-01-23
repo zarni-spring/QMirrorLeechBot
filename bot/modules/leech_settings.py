@@ -42,7 +42,7 @@ def getleechinfo(from_user):
 
     button = InlineKeyboardMarkup(buttons.build_menu(1))
 
-    text = f"<u>Leech Settings for <a href='tg://user?id={user_id}'>{name}</a></u>\n"\
+    text = f"Leech Settings\nUser: <a href='tg://user?id={user_id}'>{name}</a> (<code>{str(user_id)}</code>)\n"\
            f"Leech Type <b>{ltype}</b>\n"\
            f"Custom Thumbnail <b>{thumbmsg}</b>"
     return text, button
@@ -85,8 +85,9 @@ def setLeechType(update, context):
         else: query.answer(text="Send new settings command.")
     elif data[2] == "showthumb":
         if ospath.lexists(path):
-            msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
-            sendPhoto(text=msg, bot=context.bot, message=message, photo=open(path, 'rb'))
+            msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> (<code>{str(user_id)}</code>)"
+            delo = sendPhoto(text=msg, bot=context.bot, message=message, photo=open(path, 'rb'))
+            Thread(target=auto_delete_message, args=(context.bot, update.message, delo)).start()
         else: query.answer(text="Send new settings command.")
     elif data[2] == "close":
         try:
@@ -106,7 +107,7 @@ def setThumb(update, context):
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
         if DB_URI: DbManger().user_save_thumb(user_id, des_dir)
-        msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a> ({str(user_id)})"
+        msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a> (<code>{str(user_id)}</code>)"
         sendMessage(msg, context.bot, update)
     else: sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
 
