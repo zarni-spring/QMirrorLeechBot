@@ -331,6 +331,7 @@ restart - Restart the Bot
 stats - Bot Usage Stats
 ping - Ping the Bot
 help - All cmds with description
+wayback - Archive a webpage
 ```
 ------
 
