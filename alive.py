@@ -3,12 +3,11 @@ from requests import get as rget
 from os import environ
 from logging import error as logerror
 
-BASE_URL = environ.get('BASE_URL_OF_BOT', None).rstrip("/")
+BASE_URL = environ.get('BASE_URL_OF_BOT', None)
 try:
-    if len(BASE_URL) == 0:
-        raise TypeError
-except TypeError:
-    BASE_URL = None
+    if len(BASE_URL) == 0: raise TypeError
+    if BASE_URL.endswith('/'): BASE_URL = BASE_URL.rstrip('/')
+except TypeError: BASE_URL = None
 PORT = environ.get('PORT', None)
 if PORT is not None and BASE_URL is not None:
     while True:

@@ -168,7 +168,7 @@ class GoogleDriveHelper:
         # File body description
         file_metadata = {
             'name': file_name,
-            'description': 'Uploaded by bot',
+            'description': 'Uploaded by QMirrorLeechBot',
             'mimeType': mime_type,
         }
         if parent_id is not None:
@@ -249,13 +249,9 @@ class GoogleDriveHelper:
                 mime_type = 'Folder'
                 dir_id = self.__create_directory(ospath.basename(ospath.abspath(file_name)), parent_id)
                 result = self.__upload_dir(file_path, dir_id)
-                if result is None:
-                    raise Exception('Upload has been manually cancelled!')
+                if not result: raise Exception('Upload has been manually cancelled.')
                 link = f"https://drive.google.com/folderview?id={dir_id}"
-                if self.is_cancelled:
-                    LOGGER.info("Deleting uploaded data from Drive...")
-                    self.deletefile(link)
-                    return
+                if self.is_cancelled: return
                 LOGGER.info("Uploaded To G-Drive: " + file_name)
         except Exception as e:
             if isinstance(e, RetryError):
@@ -269,8 +265,12 @@ class GoogleDriveHelper:
         finally:
             self.updater.cancel()
             if self.is_cancelled:
+                if mime_type == 'Folder':
+                    LOGGER.info("Deleting uploaded data from Drive...")
+                    link = f"https://drive.google.com/folderview?id={dir_id}"
+                    self.deletefile(link)
                 return
-        self.__listener.onUploadComplete(link, size, self.__total_files, self.__total_folders, mime_type)
+        self.__listener.onUploadComplete(link, size, self.__total_files, self.__total_folders, mime_type, self.name)
 
     @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(3),
            retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
@@ -434,7 +434,7 @@ class GoogleDriveHelper:
     def __create_directory(self, directory_name, parent_id):
         file_metadata = {
             "name": directory_name,
-            "description": "Uploaded by bot",
+            "description": "Uploaded by QMirrorLeechBot",
             "mimeType": self.__G_DRIVE_DIR_MIME_TYPE
         }
         if parent_id is not None:

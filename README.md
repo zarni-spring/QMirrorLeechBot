@@ -7,7 +7,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Some more trackers
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
 - Better YTDL Playlist naming: `%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s`
-- Update every python package before start bot
+- Update all python packages before start bot
 - Custom finished & unfinished string. (You can get from [1](https://coolsymbol.com/) [2](https://changaco.oy.lc/unicode-progress-bars/) [3](https://text-symbols.com/) or leave empty for default)
 ## From Other Repositories
 - qBittorrent
@@ -152,7 +152,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. `Bool`
 - `SERVER_PORT`: Only For VPS even if `IS_VPS` is `False`, which is the **BASE_URL_OF_BOT** Port.
 - `WEB_PINCODE`: If empty or `False` means no more pincode required while qbit web selection. `Bool`
-- `QB_SEED`: If `True` qbit torrent will be seeded after and while uploading until reaching specific ratio or time, edit `MaxRatio` or `GlobalMaxSeedingMinutes` or both from qbittorrent.conf (`-1` means no limit, but u can cancel manually by gid). **NOTE**: Don't change `MaxRatioAction`. `Bool`
+- `QB_SEED`: If `True` QB torrent will be seeded after and while uploading until reaching specific ratio or time, edit `MaxRatio` or `GlobalMaxSeedingMinutes` or both from qbittorrent.conf (`-1` means no limit, but u can cancel manually by gid). **NOTE**: 1. Don't change `MaxRatioAction`, 2. Only works with `/qbmirror` and `/qbzipmirror`. `Bool`
   - **Qbittorrent Note**: To auto cancel dead torrents after specific time, edit these two numbers (999999) in seconds. [1st](https://github.com/anasty17/mirror-leech-telegram-bot/blob/0a8a237295b86cc7ad01291657f8127820871a8f/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L144) for metadata download timeout and [2nd](https://github.com/anasty17/mirror-leech-telegram-bot/blob/0a8a237295b86cc7ad01291657f8127820871a8f/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L197) for stalled download timeout.
 - `TG_SPLIT_SIZE`: Size of split in bytes, leave it empty for max size `2GB`.
 - `AS_DOCUMENT`: Default Telegram file type upload. Empty or `False` means as media. `Bool`
@@ -465,7 +465,7 @@ Where host is the name of extractor (eg. instagram, Twitch). Multiple accounts o
 To Clone or Leech gdtot link follow these steps:
 1. Login/Register to [gdtot](https://new.gdtot.top).
 2. Copy this script and paste it in browser address bar.
-   - **Note**: After pasting it check at the beginning of the script in broswer address bar if `javascript:` exists or not, if not so write it as shown below.
+   - **Note**: After pasting it check at the beginning of the script in broswer address bar if `javascript:` exists or not, if not so write it as shown below.
    ```
    javascript:(function () {
      const input = document.createElement('input');

@@ -1,10 +1,10 @@
 import logging
 import socket
 import faulthandler
-import aria2p
-import qbittorrentapi as qba
-import telegram.ext as tg
 
+from telegram.ext import Updater as tgUpdater
+from qbittorrentapi import Client as qbClient
+from aria2p import API as ariaAPI, Client as ariaClient
 from os import remove as osremove, path as ospath, environ
 from requests import get as rget
 from json import loads as jsnloads
@@ -13,8 +13,6 @@ from time import sleep, time
 from threading import Thread, Lock
 from pyrogram import Client
 from dotenv import load_dotenv
-import pkg_resources
-from subprocess import call
 faulthandler.enable()
 socket.setdefaulttimeout(600)
 botStartTime = time()
@@ -23,9 +21,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
-
-packages = [dist.project_name for dist in pkg_resources.working_set]
-call("pip install --upgrade " + ' '.join(packages), shell=True)
 
 load_dotenv('config.env', override=True)
 
@@ -79,16 +74,15 @@ try:
 except KeyError:
     pass
 
-aria2 = aria2p.API(
-    aria2p.Client(
+aria2 = ariaAPI(
+    ariaClient(
         host="http://localhost",
         port=6800,
         secret="",
     )
 )
 
-def get_client() -> qba.TorrentsAPIMixIn:
-    return qba.Client(host="localhost", port=8090)
+def get_client(): return qbClient(host="localhost", port=8090)
 
 """
 trackers = subprocess.check_output(["curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all | awk '$0'"], shell=True).decode('utf-8')
@@ -154,7 +148,7 @@ try:
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
 except Exception as e:
-    LOGGER.error(f"One or more env variables missing! Exiting now {str(e)}")
+    LOGGER.error(f"One or more env variables missing. Exiting now {str(e)}")
     exit(1)
 
 LOGGER.info("Generating BOT_STRING_SESSION")
@@ -180,7 +174,6 @@ def aria2c_init():
         sleep(40)
         aria2.remove_all(force=True)
         aria2.remove_files(downloads=aria2.get_downloads(), force=True)
-        sleep(2)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
         pass
@@ -506,13 +499,6 @@ try:
     if len(SEARCH_PLUGINS) == 0:
         raise KeyError
     SEARCH_PLUGINS = jsnloads(SEARCH_PLUGINS)
-    qbclient = get_client()
-    qb_plugins = qbclient.search_plugins()
-    if qb_plugins:
-        for plugin in qb_plugins:
-            p = plugin['name']
-            qbclient.search_uninstall_plugin(names=p)
-    qbclient.search_install_plugin(SEARCH_PLUGINS)
 except KeyError:
     SEARCH_PLUGINS = None
 
@@ -523,7 +509,6 @@ except:
     FINISHED_PROGRESS_STR = '●' # '■'
     UN_FINISHED_PROGRESS_STR = '○' # '□'
 
-updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher
 job_queue = updater.job_queue

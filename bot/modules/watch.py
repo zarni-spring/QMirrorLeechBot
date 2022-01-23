@@ -69,7 +69,8 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     try:
         result = ydl.extractMetaData(link, name, True)
     except Exception as e:
-        return sendMessage(str(e), bot, update)
+        msg = str(e).replace('<', ' ').replace('>', ' ')
+        return sendMessage(tag + " " + msg, bot, update)
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}][ext=mp4]+ba/b"
@@ -194,7 +195,7 @@ def select_format(update, context):
         return editMessage("This is old task", msg)
     uid = task_info[1]
     if user_id != uid:
-        return query.answer(text="Don't waste your time!", show_alert=True)
+        return query.answer(text="Don't waste your time.", show_alert=True)
     elif data[2] == "dict":
         query.answer()
         qual = data[3]
@@ -228,7 +229,7 @@ def _auto_cancel(msg, msg_id):
     sleep(60)
     try:
         del listener_dict[msg_id]
-        editMessage('Timed out! Task has been cancelled.', msg)
+        editMessage('Timed out. Task has been cancelled.', msg)
     except:
         pass
 

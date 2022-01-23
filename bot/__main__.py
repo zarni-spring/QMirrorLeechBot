@@ -61,15 +61,14 @@ def stats(update, context):
 
 
 def start(update, context):
-    reply_markup = None
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
-This bot can mirror all your links to Google Drive!
+This bot can mirror all your links to Google Drive.
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
-        sendMarkup(start_string, context.bot, update, reply_markup)
+        sendMarkup(start_string, context.bot, update, None)
     else:
-        sendMarkup('Not Authorized user', context.bot, update, reply_markup)
+        sendMarkup('Not Authorized user', context.bot, update, None)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
