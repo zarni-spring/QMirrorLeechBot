@@ -85,7 +85,7 @@ def setLeechType(update, context):
         else: query.answer(text="Send new settings command.")
     elif data[2] == "showthumb":
         if ospath.lexists(path):
-            msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{update.from_user.full_name}</a> ({str(user_id)})"
+            msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
             sendPhoto(text=msg, bot=context.bot, message=message.reply_to_message, photo=open(path, 'rb'))
         else: query.answer(text="Send new settings command.")
     elif data[2] == "close":
@@ -106,7 +106,7 @@ def setThumb(update, context):
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
         if DB_URI: DbManger().user_save_thumb(user_id, des_dir)
-        msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
+        msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{update.from_user.full_name}</a> ({str(user_id)})"
         sendMessage(msg, context.bot, update)
     else: sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
 
