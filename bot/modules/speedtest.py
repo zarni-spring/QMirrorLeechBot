@@ -35,7 +35,7 @@ def speedtest(update, context):
 <b>Bot Uptime:</b> <code>{currentTime}</code>
 '''
     try:
-        sendPhoto(string_speed, context.bot, update, None, path, 60)
+        sendPhoto(text=string_speed, bot=context.bot, update=update, photo=path)
         deleteMessage(context.bot, speed)
     except Exception as g:
         logging.error(str(g))

@@ -42,7 +42,7 @@ try:
 except TypeError:
     UPSTREAM_REPO = None
 
-if UPSTREAM_REPO is not None:
+if UPSTREAM_REPO:
     if ospath.exists('.git'):
         srun(["rm", "-rf", ".git"])
 
@@ -54,4 +54,4 @@ if UPSTREAM_REPO is not None:
                       && git remote add origin {UPSTREAM_REPO} \
                       && git fetch origin -q \
                       && git reset --hard origin/master -q"], shell=True)
-
+else: logging.error("UPSTREAM_REPO was None.")
