@@ -62,7 +62,7 @@ def setLeechType(update, context):
     user_id = query.from_user.id
     data = query.data
     data = data.split(" ")
-    path = os.path.join(os.getcwd(), "Thumbnails", f"{user_id}.jpg")
+    path = str(os.path.join("Thumbnails", f"{user_id}.jpg"))
     if user_id != int(data[1]): query.answer(text="Not Yours.")
     elif data[2] == "doc":
         if user_id in AS_MEDIA_USERS: AS_MEDIA_USERS.remove(user_id)
@@ -87,7 +87,7 @@ def setLeechType(update, context):
         print(path)
         if ospath.lexists(path):
             msg = f"Thumbnail for: <a href='tg://user?id={user_id}'>{query.from_user.full_name}</a> ({str(user_id)})"
-            sendPhoto(text=msg, bot=context.bot, message=message.reply_to_message, photo=path)
+            sendPhoto(text="a", bot=context.bot, message=message.reply_to_message, photo=path)
         else: query.answer(text="Send new settings command.")
     elif data[2] == "close":
         try:
