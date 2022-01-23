@@ -43,8 +43,8 @@ def getleechinfo(from_user):
     button = InlineKeyboardMarkup(buttons.build_menu(1))
 
     text = f"Leech Settings\nUser: <a href='tg://user?id={user_id}'>{name}</a> (<code>{str(user_id)}</code>)\n"\
-           f"Leech Type <b>{ltype}</b>\n"\
-           f"Custom Thumbnail <b>{thumbmsg}</b>"
+           f"Leech Type: {ltype}\n"\
+           f"Custom Thumbnail: {thumbmsg}"
     return text, button
 
 def editLeechType(message, query):
@@ -108,8 +108,11 @@ def setThumb(update, context):
         osremove(photo_dir)
         if DB_URI: DbManger().user_save_thumb(user_id, des_dir)
         msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a> (<code>{str(user_id)}</code>)"
-        sendMessage(msg, context.bot, update)
-    else: sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
+        todel = sendMessage(msg, context.bot, update)
+        Thread(target=auto_delete_message, args=(context.bot, update.message, todel)).start()
+    else:
+        todel = sendMessage("Reply to a photo to save custom thumbnail.", context.bot, update)
+        Thread(target=auto_delete_message, args=(context.bot, update.message, todel)).start()
 
 leech_set_handler = CommandHandler(BotCommands.LeechSetCommand, leechSet, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 set_thumbnail_handler = CommandHandler(BotCommands.SetThumbCommand, setThumb, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
