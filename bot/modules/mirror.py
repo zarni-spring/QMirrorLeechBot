@@ -205,7 +205,7 @@ class MirrorListener:
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                msg += f'\n<b>cc: </b>{self.tag}\n\n'
+                msg += f'\n<b>User: </b>{self.tag}\n\n'
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
                     msg_id = files[item]
@@ -235,7 +235,7 @@ class MirrorListener:
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
                 msg += f'\n<b>SubFolders: </b>{folders}'
                 msg += f'\n<b>Files: </b>{files}'
-            msg += f'\n<b>cc: </b>{self.tag}'
+            msg += f'\n<b>User: </b>{self.tag}'
             buttons = ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)
@@ -323,7 +323,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     if len(pswdMsg) > 1:
         pswd = pswdMsg[1]
 
-    tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name} (<code>{str(update.message.from_user.id)}</code>)")
+    tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
 
     reply_to = update.message.reply_to_message
     if reply_to is not None:
@@ -339,7 +339,7 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
             or len(link) == 0
         ):
             if not reply_to.from_user.is_bot:
-                tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name} (<code>{str(reply_to.from_user.id)}</code>)")
+                tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
 
             if file is None:
                 reply_text = reply_to.text

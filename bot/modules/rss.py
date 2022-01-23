@@ -196,7 +196,7 @@ def rss_monitor(context):
             LOGGER.error(f"{e} Feed Name: {name} - Feed Link: {data[0]}")
             continue
 
-if DB_URI is not None and RSS_CHAT_ID is not None:
+if DB_URI and RSS_CHAT_ID:
     rss_list_handler = CommandHandler(BotCommands.RssListCommand, rss_list, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     rss_get_handler = CommandHandler(BotCommands.RssGetCommand, rss_get, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     rss_sub_handler = CommandHandler(BotCommands.RssSubCommand, rss_sub, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)

@@ -25,18 +25,16 @@ def shell(update, context):
         reply += f"*Stderr*\n<code>{stderr}</code>\n"
         LOGGER.error(f"Shell - {cmd} - {stderr}")
     if len(reply) > 3000:
-        with open('shell_output.txt', 'w') as file:
+        with open('shellOutput.txt', 'w') as file:
             file.write(reply)
-        with open('shell_output.txt', 'rb') as doc:
+        with open('shellOutput.txt', 'rb') as doc:
             context.bot.send_document(
                 document=doc,
                 filename=doc.name,
                 reply_to_message_id=message.message_id,
                 chat_id=message.chat_id)
-    elif len(reply) != 0:
-        sendMessage(reply, context.bot, update)
-    else:
-        sendMessage('No Reply', context.bot, update)
+    elif len(reply) != 0: sendMessage(reply, context.bot, update)
+    else: sendMessage('No Output', context.bot, update)
 
 
 SHELL_HANDLER = CommandHandler(BotCommands.ShellCommand, shell,

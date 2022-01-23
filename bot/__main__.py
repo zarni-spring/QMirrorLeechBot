@@ -166,6 +166,8 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+<br><br>
+<b>/{BotCommands.WayBackCommand}</b>: Archive a webpage with Wayback Machine
 '''
 
 help = telegraph.create_page(

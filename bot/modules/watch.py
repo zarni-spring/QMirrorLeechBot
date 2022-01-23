@@ -40,12 +40,12 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
     if len(pswdMsg) > 1:
         pswd = pswdMsg[1]
 
-    tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name} (<code>{str(update.message.from_user.id)}</code>)")
+    tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
 
     reply_to = update.message.reply_to_message
     if reply_to:
         link = reply_to.text.strip()
-        tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name} (<code>{str(reply_to.from_user.id)}</code>)")
+        tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
 
     if not is_url(link):
         help_msg = "<b>Send link along with command line:</b>"

@@ -45,5 +45,6 @@ class _BotCommands:
         self.RssSubCommand = 'rsssub'
         self.RssUnSubCommand = 'rssunsub'
         self.RssUnSubAllCommand = 'rssunsuball'
+        self.WayBackCommand = 'wayback'
 
 BotCommands = _BotCommands()

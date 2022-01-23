@@ -19,10 +19,10 @@ def cloneNode(update, context):
     reply_to = update.message.reply_to_message
     if len(args) > 1:
         link = args[1]
-        tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name} (<code>{str(update.message.from_user.id)}</code>)")
+        tag = update.message.from_user.mention_html(f"{update.message.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
     elif reply_to:
         link = reply_to.text
-        tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name} (<code>{str(reply_to.from_user.id)}</code>)")
+        tag = reply_to.from_user.mention_html(f"{reply_to.from_user.first_name}") + f" (<code>{str(update.message.from_user.id)}</code>)"
     else:
         link = ''
     gdtot_link = is_gdtot_link(link)
@@ -77,7 +77,7 @@ def cloneNode(update, context):
                     update_all_messages()
             except IndexError:
                 pass
-        cc = f'\n\n<b>cc: </b>{tag}'
+        cc = f'\n\n<b>User: </b>{tag}'
         if button in ["cancelled", ""]:
             sendMessage(f"{tag} {result}", context.bot, update)
         else:
