@@ -169,6 +169,8 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
 <br><br>
 <b>/{BotCommands.WayBackCommand}</b>: Archive a webpage with Wayback Machine
+<br><br>
+<b>/{BotCommands.VirusTotalCommand}</>: Reply a file to scan with VirusTotal
 '''
 
 help = telegraph.create_page(
