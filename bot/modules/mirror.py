@@ -205,9 +205,14 @@ class MirrorListener:
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                msg += f'\n<b>User: </b>{self.tag}\n\n'
+                first = True
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
+                    if first:
+                        first = False
+                        msg += f'\n<b>User: </b>{self.tag}\n\n'
+                    else:
+                        msg += f'\n<b>User: {self.message.from_user.full_name}</b> (<code>{self.message.from_user.id}</code>)\n\n'
                     msg_id = files[item]
                     link = f"https://t.me/c/{chat_id}/{msg_id}"
                     fmsg += f"{index}. <a href='{link}'>{item}</a>\n"

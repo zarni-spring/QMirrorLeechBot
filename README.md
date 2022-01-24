@@ -12,7 +12,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - More respectful to user
 - Show thumbnail
 - Speedtest with picture
-- Removed all username cc's. Don not trust a username.
+- Removed all username cc's. Never trust a username.
 - WayBack Machine Archiver
 - Delete file/folder from drive with replying message
 ## From Other Repositories
@@ -332,6 +332,7 @@ restart - Restart the Bot
 stats - Bot Usage Stats
 ping - Ping the Bot
 wayback - Archive a webpage
+virustotal - Scan a file or url
 speedtest - Speed Test
 help - All cmds with description
 ```
