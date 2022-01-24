@@ -339,6 +339,7 @@ ping - Ping the Bot
 wayback - Archive a webpage
 virustotal - Scan a file or url
 speedtest - Speed Test
+hash - Calculate hash MD5, SHA1
 help - All cmds with description
 ```
 ------
