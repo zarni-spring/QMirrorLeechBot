@@ -112,9 +112,9 @@ def checkFile(path):
                 stro.append(i)
             details = "\nLink: " + result['permalink'] + \
                 "\nTotal: " + str(result['total'])  + \
-                " | ❌ Positives: " + str(result['positives']) + \
-                " | ✅ Negatives: " + str(len(stro) - int(result['positives']))
-            if len(stro) == 0: return "✅ File is clean like a baby" + details
+                " | Positives: " + str(result['positives']) + \
+                " | Negatives: " + str(len(scans) - int(result['positives']))
+            if len(stro) == 0: return "File is clean like a baby" + details
             else: return "Detections: " + ", ".join(stro) + details
         elif result and 'scan_id' in result:
             stro = ""
