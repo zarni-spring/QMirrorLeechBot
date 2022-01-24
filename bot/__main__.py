@@ -170,7 +170,7 @@ help_string_telegraph = f'''<br>
 <br><br>
 <b>/{BotCommands.WayBackCommand}</b>: Archive a webpage with Wayback Machine
 <br><br>
-<b>/{BotCommands.VirusTotalCommand}</>: Reply a file to scan with VirusTotal
+<b>/{BotCommands.VirusTotalCommand}</b>: Reply a file to scan with VirusTotal
 '''
 
 help = telegraph.create_page(
