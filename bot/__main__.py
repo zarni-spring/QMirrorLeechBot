@@ -21,7 +21,7 @@ from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
-from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, search, rss, wayback, virustotal
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, search, rss, wayback, virustotal, hash
 
 
 def stats(update, context):
@@ -171,6 +171,8 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.WayBackCommand}</b>: Archive a webpage with Wayback Machine
 <br><br>
 <b>/{BotCommands.VirusTotalCommand}</b>: Reply a file to scan with VirusTotal
+<br><br>
+<b>/{BotCommands.HashCommand}</b>: Reply a file to generate hash MD5, SHA1 etc.
 '''
 
 help = telegraph.create_page(

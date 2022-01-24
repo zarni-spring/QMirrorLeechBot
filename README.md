@@ -6,7 +6,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Fully non-credit repo (For protect repo from ban etc.)
 - Some more trackers
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
-- Better YTDL Playlist naming: `%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s`
+- Better YTDL Playlist naming: `"%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s"`
 - Update all python packages before start bot
 - Custom finished & unfinished string. (You can get from [1](https://coolsymbol.com/) [2](https://changaco.oy.lc/unicode-progress-bars/) [3](https://text-symbols.com/) or leave empty for default)
 - More respectful to user
@@ -15,7 +15,11 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Removed all username cc's. Never trust a username.
 - WayBack Machine Archiver
 - VirusTotal File Scanner
-- Delete file/folder from drive with replying message
+- Delete from drive with message
+- File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
+- More Shorteners: `is.gd`, `v.gd`, `git.io`, `da.gd`, `bc.vc`, `pubiza`:
+  - bc.vc sample api: `"2dgdg5f1fgag7cg6f0622&uid=45634"`
+  - pubiza sample api: `"hsdfgCgdgrsdfgsfgfgsdgLsfgXef mainstream"`. Split api key and ad type with a space. Genel içerik için: `mainstream` Yetişkin içerik için: `adult` İçerik Kilidi için: `content_locker`
 ## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent

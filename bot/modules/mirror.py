@@ -423,11 +423,11 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
 
     elif is_mega_link(link):
         if BLOCK_MEGA_LINKS:
-            sendMessage("Mega links are blocked!", bot, update)
+            sendMessage("Mega links are blocked.", bot, update)
             return
         link_type = get_mega_link_type(link)
         if link_type == "folder" and BLOCK_MEGA_FOLDER:
-            sendMessage("Mega folder are blocked!", bot, update)
+            sendMessage("Mega folders are blocked.", bot, update)
         else:
             Thread(target=add_mega_download, args=(link, f'{DOWNLOAD_DIR}{listener.uid}/', listener)).start()
 
