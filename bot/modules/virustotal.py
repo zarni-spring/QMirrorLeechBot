@@ -146,7 +146,7 @@ def humanbytes(size, byte=True):
 def virustotal(update, context):
     if not VIRUSTOTAL_API: return LOGGER.error("VIRUSTOTAL_API not provided.")
     message:Message = update.effective_message
-    VtPath = os.path.join("Virustotal", message.from_user.id)
+    VtPath = os.path.join("Virustotal", str(message.from_user.id))
     if not os.path.exists("Virustotal"): os.makedirs("Virustotal")
     if not os.path.exists(VtPath): os.makedirs(VtPath)
     file = None
