@@ -159,7 +159,7 @@ def virustotal(update, context):
         try:
             editMessage(f"Trying to download. Please wait.", sent)
             filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
-            file = app.download_media(message=message.reply_to_message, file_name=filename)
+            file = app.download_media(message=message.reply_to_message.document, file_name=filename)
         except Exception as e:
             LOGGER.error(e)
             file = None
