@@ -46,5 +46,6 @@ class _BotCommands:
         self.RssUnSubCommand = 'rssunsub'
         self.RssUnSubAllCommand = 'rssunsuball'
         self.WayBackCommand = 'wayback'
+        self.VirusTotalCommand = 'virustotal'
 
 BotCommands = _BotCommands()

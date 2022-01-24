@@ -515,6 +515,19 @@ try:
 except KeyError:
     UPDATE_EVERYTHING_WHEN_RESTART = True
 
+try:
+    VIRUSTOTAL_API = getConfig('VIRUSTOTAL_API')
+    if len(VIRUSTOTAL_API) < 4: raise KeyError
+except KeyError:
+    logging.warning('VIRUSTOTAL_API not provided.')
+    VIRUSTOTAL_API = None
+
+try:
+    VIRUSTOTAL_FREE = getConfig('VIRUSTOTAL_FREE')
+    VIRUSTOTAL_FREE = VIRUSTOTAL_FREE.lower() == 'true'
+except KeyError:
+    VIRUSTOTAL_FREE = True
+
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher
