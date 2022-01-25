@@ -66,14 +66,14 @@ class TgUploader:
             self.__sent_msg = app.get_messages(self.__listener.message.chat.id, self.__listener.uid)
         else:
             self.__sent_msg = app.get_messages(self.__sent_msg.chat.id, self.__sent_msg.message_id)
-        if CUSTOM_FILENAME is not None:
-            cap_mono = f"{CUSTOM_FILENAME} <code>{file_}</code>"
+        if CUSTOM_FILENAME:
+            cap_mono = f"{CUSTOM_FILENAME} <code>{up_path}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)
             up_path = new_path
         else:
-            cap_mono = f"<code>{file_}</code>"
+            cap_mono = f"<code>{up_path}</code>" #cap_mono = f"<code>{file_}</code>"
         notMedia = False
         thumb = self.__thumb
         try:
@@ -183,4 +183,4 @@ class TgUploader:
     def cancel_download(self):
         self.__is_cancelled = True
         LOGGER.info(f"Cancelling Upload: {self.name}")
-        self.__listener.onUploadError('your upload has been stopped!')
+        self.__listener.onUploadError('your upload has been stopped.')
