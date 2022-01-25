@@ -13,10 +13,10 @@ from bot import LOGGER, SHORTENER, SHORTENER_API
 
 def short_url(longurl):
     if not SHORTENER: return longurl
-    elif "v.gd" in SHORTENER:
+    elif ("v.gd" in SHORTENER) or ("is.gd" in SHORTENER):
         try:
             url = quote(longurl)
-            response = rget(f"https://v.gd/create.php?format=json&url={url}&logstats=1")
+            response = rget(f"https://{SHORTENER}/create.php?format=json&url={url}&logstats=1")
             if response.ok:
                 if 'shorturl' in response.json(): return response.json()['shorturl']
             else:
@@ -27,11 +27,6 @@ def short_url(longurl):
             return longurl
     elif "da.gd" in SHORTENER:
         try: return pyShortener().dagd.short(longurl)
-        except Exception as e:
-            LOGGER.error(e)
-            return longurl
-    elif "is.gd" in SHORTENER:
-        try: return pyShortener().isgd.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
