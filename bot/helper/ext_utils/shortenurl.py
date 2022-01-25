@@ -14,8 +14,9 @@ from bot import LOGGER, SHORTENER, SHORTENER_API
 def short_url(longurl):
     if not SHORTENER: return longurl
     if ("is.gd" in SHORTENER) or ("v.gd" in SHORTENER):
-        url = quote(b64encode(longurl.encode("utf-8")))
+        # url = quote(b64encode(longurl.encode("utf-8")))
         url = rget(f"https://{SHORTENER}/create.php?format=json&url={url}&logstats=1").json()
+        LOGGER.info(url)
         if 'shorturl' in url: return url['shorturl']
         else: return longurl
     elif "git.io" in SHORTENER:
