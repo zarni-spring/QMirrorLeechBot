@@ -25,10 +25,7 @@ LOGGER = logging.getLogger(__name__)
 load_dotenv('config.env', override=True)
 
 def getConfig(name: str):
-    try: return environ[name]
-    except Exception as e:
-        LOGGER.error(e)
-        return None
+    return environ[name]
 
 try:
     NETRC_URL = getConfig('NETRC_URL')
@@ -359,10 +356,13 @@ except KeyError:
     WEB_PINCODE = False
 try:
     SHORTENER = getConfig('SHORTENER')
-    SHORTENER_API = getConfig('SHORTENER_API')
 except Exception as e:
     LOGGER.error(e)
     SHORTENER = None
+try:
+    SHORTENER_API = getConfig('SHORTENER_API')
+except Exception as e:
+    LOGGER.error(e)
     SHORTENER_API = None
 try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
