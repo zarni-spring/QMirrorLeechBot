@@ -361,7 +361,8 @@ try:
     LOGGER.info(SHORTENER_API)
     if len(SHORTENER) == 0: SHORTENER = None
     if len(SHORTENER_API) == 0: SHORTENER_API = None
-except KeyError:
+except Exception as e:
+    LOGGER.error(e)
     SHORTENER = None
     SHORTENER_API = None
 try:
@@ -530,9 +531,9 @@ try:
 except KeyError:
     VIRUSTOTAL_FREE = True
 
-LOGGER.info(f"SHORTENER: {SHORTENER}")
-go = "True" if SHORTENER_API else "False"
-LOGGER.info(f"SHORTENER_API: {go}")
+# LOGGER.info(f"SHORTENER: {SHORTENER}")
+# go = "True" if SHORTENER_API else "False"
+# LOGGER.info(f"SHORTENER_API: {go}")
 
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot
