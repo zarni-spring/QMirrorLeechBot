@@ -357,8 +357,8 @@ except KeyError:
 try:
     SHORTENER = getConfig('SHORTENER')
     SHORTENER_API = getConfig('SHORTENER_API')
-    if len(SHORTENER) == 0 or len(SHORTENER_API) == 0:
-        raise KeyError
+    if len(SHORTENER) == 0: Shortener = None
+    if len(SHORTENER_API) == 0: SHORTENER_API = None
 except KeyError:
     SHORTENER = None
     SHORTENER_API = None
