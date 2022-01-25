@@ -72,16 +72,16 @@ def hash(update, context):
             return editMessage("Hashing error. Check Logs.", sent)
         # hash text
         hashFinishTime = time.time()
-        finishedText = "🍆 File: `{}`\n".format(message.reply_to_message.document.file_name)
-        finishedText += "🍇 Size: `{}`\n".format(HumanBytes(message.reply_to_message.document.file_size))
-        finishedText += "🍓 MD5: `{}`\n".format(md5.hexdigest())
-        finishedText += "🍌 SHA1: `{}`\n".format(sha1.hexdigest())
-        finishedText += "🍒 SHA224: `{}`\n".format(sha224.hexdigest())
-        finishedText += "🍑 SHA256: `{}`\n".format(sha256.hexdigest())
-        finishedText += "🥭 SHA512: `{}`\n".format(sha512.hexdigest())
-        finishedText += "🍎 SHA384: `{}`\n".format(sha384.hexdigest())
-        timeTaken = f"🥚 Hash Time: `{TimeFormatter((hashFinishTime - hashStartTime) * 1000)}`"
-        editMessage(f"Calculated file hashes\n{timeTaken}\n\n{finishedText}", sent)
+        finishedText = "🍆 File: <code>{}</code>\n".format(message.reply_to_message.document.file_name)
+        finishedText += "🍇 Size: <code>{}</code>\n".format(HumanBytes(message.reply_to_message.document.file_size))
+        finishedText += "🍓 MD5: <code>{}</code>\n".format(md5.hexdigest())
+        finishedText += "🍌 SHA1: <code>{}</code>\n".format(sha1.hexdigest())
+        finishedText += "🍒 SHA224: <code>{}</code>\n".format(sha224.hexdigest())
+        finishedText += "🍑 SHA256: <code>{}</code>\n".format(sha256.hexdigest())
+        finishedText += "🥭 SHA512: <code>{}</code>\n".format(sha512.hexdigest())
+        finishedText += "🍎 SHA384: <code>{}</code>\n".format(sha384.hexdigest())
+        timeTaken = f"🥚 Hash Time: <code>{TimeFormatter((hashFinishTime - hashStartTime) * 1000)}</code>"
+        editMessage(f"{timeTaken}\n\n{finishedText}", sent)
     else:
         help_msg = "<b>Reply to message including file:</b>"
         help_msg += f"\n<code>/{BotCommands.HashCommand}" + " {message}" + "</code>"
