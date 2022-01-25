@@ -205,14 +205,9 @@ class MirrorListener:
                 sendMessage(msg, self.bot, self.update)
             else:
                 chat_id = str(self.message.chat.id)[4:]
-                first = True
                 fmsg = ''
                 for index, item in enumerate(list(files), start=1):
-                    if first:
-                        first = False
-                        msg += f'\n<b>User: </b>{self.tag}\n\n'
-                    else:
-                        msg += f'\n<b>User: {self.message.from_user.full_name}</b> (<code>{self.message.from_user.id}</code>)\n\n'
+                    msg += f'\n<b>User: </b>{self.tag}\n\n'
                     msg_id = files[item]
                     link = f"https://t.me/c/{chat_id}/{msg_id}"
                     fmsg += f"{index}. <a href='{link}'>{item}</a>\n"
@@ -223,10 +218,8 @@ class MirrorListener:
                 if fmsg != '':
                     sleep(1.5)
                     sendMessage(msg + fmsg, self.bot, self.update)
-            try:
-                clean_download(f'{DOWNLOAD_DIR}{self.uid}')
-            except FileNotFoundError:
-                pass
+            try: clean_download(f'{DOWNLOAD_DIR}{self.uid}')
+            except FileNotFoundError: pass
             with download_dict_lock:
                 del download_dict[self.uid]
                 dcount = len(download_dict)
@@ -242,7 +235,7 @@ class MirrorListener:
                 msg += f'\n<b>Files: </b>{files}'
             msg += f'\n<b>User: </b>{self.tag}'
             buttons = ButtonMaker()
-            link = short_url(link)
+            # link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)
             LOGGER.info(f'Done Uploading {name}')
             if INDEX_URL is not None:
