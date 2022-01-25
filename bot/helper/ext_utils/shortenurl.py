@@ -12,6 +12,7 @@ from bot import LOGGER, SHORTENER, SHORTENER_API
 
 
 def short_url(longurl):
+    LOGGER.info(f"Shortener: {SHORTENER}")
     if not SHORTENER: return longurl
     if ("is.gd" in SHORTENER) or ("v.gd" in SHORTENER):
         # url = quote(b64encode(longurl.encode("utf-8")))
