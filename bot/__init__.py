@@ -357,12 +357,15 @@ except KeyError:
 try:
     SHORTENER = getConfig('SHORTENER')
 except Exception as e:
-    LOGGER.error(e)
+    LOGGER.info(f"SHORTENER is None: {str(e)}")
     SHORTENER = None
 try:
     SHORTENER_API = getConfig('SHORTENER_API')
 except Exception as e:
-    LOGGER.error(e)
+    LOGGER.info(f"SHORTENER_API is None: {str(e)}")
+    SHORTENER_API = None
+if SHORTENER_API and (not SHORTENER): # if not enter shortener
+    LOGGER.info("You did not entered SHORTENER. SHORTENER will not work.")
     SHORTENER_API = None
 try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
