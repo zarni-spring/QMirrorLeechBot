@@ -12,6 +12,7 @@ from bot import LOGGER, SHORTENER, SHORTENER_API
 
 
 def short_url(longurl):
+    if not SHORTENER: return longurl
     if ("is.gd" in SHORTENER) or ("v.gd" in SHORTENER):
         url = quote(b64encode(longurl.encode("utf-8")))
         url = rget(f"https://{SHORTENER}/create.php?format=json&url={url}&logstats=1").json()
@@ -27,7 +28,7 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    if not SHORTENER or not SHORTENER_API : return longurl
+    if not SHORTENER_API: return longurl
     elif "shorte.st" in SHORTENER:
         disable_warnings()
         link = rget(f'http://api.shorte.st/stxt/{SHORTENER_API}/{longurl}', verify=False).text
