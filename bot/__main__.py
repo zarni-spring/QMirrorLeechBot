@@ -68,17 +68,14 @@ This bot can mirror all your links to Google Drive.
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update, None)
-    else:
-        sendMarkup('Not authorized user.', context.bot, update, None)
+    else: sendMarkup('Not authorized user.', context.bot, update, None)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
-    if Interval:
-        Interval[0].cancel()
+    if Interval: Interval[0].cancel()
     alive.kill()
     procs = psprocess(web.pid)
-    for proc in procs.children(recursive=True):
-        proc.kill()
+    for proc in procs.children(recursive=True): proc.kill()
     procs.kill()
     clean_all()
     srun(["python3", "update.py"])

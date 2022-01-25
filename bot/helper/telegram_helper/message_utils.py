@@ -14,7 +14,7 @@ def sendMessage(text: str, bot, update: Update):
     try:
         return bot.send_message(update.message.chat_id,
                             reply_to_message_id=update.message.message_id,
-                            text=text, allow_sending_without_reply=True, parse_mode='HTMl', disable_web_page_preview=True)
+                            text=text, allow_sending_without_reply=True, parse_mode='html', disable_web_page_preview=True)
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
@@ -28,7 +28,7 @@ def sendMarkup(text: str, bot, update: Update, reply_markup: InlineKeyboardMarku
         return bot.send_message(update.message.chat_id,
                             reply_to_message_id=update.message.message_id,
                             text=text, reply_markup=reply_markup, allow_sending_without_reply=True,
-                            parse_mode='HTMl', disable_web_page_preview=True)
+                            parse_mode='html', disable_web_page_preview=True)
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
@@ -41,7 +41,7 @@ def editMessage(text: str, message: Message, reply_markup=None):
     try:
         return bot.edit_message_text(text=text, message_id=message.message_id,
                               chat_id=message.chat.id,reply_markup=reply_markup,
-                              parse_mode='HTMl', disable_web_page_preview=True)
+                              parse_mode='html', disable_web_page_preview=True)
     except RetryAfter as r:
         LOGGER.warning(str(r))
         sleep(r.retry_after * 1.5)
@@ -65,7 +65,7 @@ def sendPhoto(text: str, bot, message, photo, reply_markup=None):
 def sendRss(text: str, bot):
     if rss_session:
         try:
-            return bot.send_message(RSS_CHAT_ID, text, parse_mode='HTMl', disable_web_page_preview=True)
+            return bot.send_message(RSS_CHAT_ID, text, parse_mode='html', disable_web_page_preview=True)
         except RetryAfter as r:
             LOGGER.warning(str(r))
             sleep(r.retry_after * 1.5)
@@ -75,7 +75,7 @@ def sendRss(text: str, bot):
             return
     else:
         try:
-            return rss_session.send_message(RSS_CHAT_ID, text, parse_mode='HTMl', disable_web_page_preview=True)
+            return rss_session.send_message(RSS_CHAT_ID, text, parse_mode='html', disable_web_page_preview=True)
         except FloodWait as e:
             LOGGER.warning(str(e))
             sleep(e.x * 1.5)
