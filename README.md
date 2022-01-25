@@ -17,9 +17,14 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - VirusTotal File Scanner
 - Delete from drive with message
 - File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
-- More Shorteners: `is.gd`, `v.gd`, `git.io`, `da.gd`, `bc.vc`, `pubiza`:
+- More Shorteners:
+  - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
+  - Required signup: `shorte.st`, `bc.vc`, `pubiza`, `linkvertise`, `bit.ly`, `post`, `cutt.ly`, `adf.ly`, `shortcm`, `tinycc`, `tinyurl`, `ouo.io`
   - bc.vc sample api: `"2dgdg5f1fgag7cg6f0622&uid=45634"`
   - pubiza sample api: `"hsdfgCgdgrsdfgsfgfgsdgLsfgXef mainstream"`. Split api key and ad type with a space. Genel içerik için: `mainstream` Yetişkin içerik için: `adult` İçerik Kilidi için: `content_locker`
+  - adfly sample api: `"hsdfgCgdgrsdfgsfgfgsdgLsfgXef 51515155"` Split api key and user id with a space.
+  - shortcm sample api: `"hsdfgCgdgrsdfgsfgfgsdgLsfgXef abcdotcom"` Split api key and domain with a space.
+  - tinycc sample api: `"hsdfgCgdgrsdfgsfgfgsdgLsfgXef tinyccusername"` Split api key and username with a space.
 ## From Other Repositories
 - qBittorrent
 - Select files from Torrent before downloading using qbittorrent
