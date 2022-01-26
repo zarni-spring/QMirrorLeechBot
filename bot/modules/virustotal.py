@@ -137,7 +137,7 @@ def getResultAsReadable(result):
     if validateValue(result, 'sha1'): someInfo += f"\nSHA1: <code>{result['sha1']}</code>"
     if validateValue(result, 'sha256'): someInfo += f"\nSHA256: <code>{result['sha256']}</code>"
     if validateValue(result, 'permalink'): someInfo += f"\nLink: {result['permalink']}"
-    if 'scans' in result:
+    if validateValue(result, 'scans'):
         pos = []
         neg = []
         scans = result['scans']
