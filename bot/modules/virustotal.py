@@ -102,8 +102,8 @@ def get_result(file_path):
     :return: VirusTotal result json / None upon error
     '''
     hash = None
-    file = None
-    url = None
+    file = False
+    url = False
     # url?
     try:
         hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
