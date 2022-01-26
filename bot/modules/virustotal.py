@@ -102,23 +102,22 @@ def get_result(file_path):
     hash = None
     file = False
     url = False
-    # url?
+    # file
     try:
-        hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
-        url = True
-        LOGGER.info("url was True")
-    except Exception:
-        hash = None
-        url = False
-    # file?
-    if not url:
+        file = True if os.path.isfile(file_path) else False
+        LOGGER.info("file was True")
+    except Exception as e:
+        LOGGER.error(e)
+        file = False
+    # url
+    if not file:
         try:
-            file = True if os.path.isfile(file_path) else False
-            LOGGER.info("file was True")
-        except Exception as e:
-            LOGGER.error(e)
-            file = False
-    
+            hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
+            url = True
+            LOGGER.info("url was True")
+        except Exception:
+            hash = None
+            url = False
     if file: hash = getMD5(path=file_path)
     if not (hash and file): hash = file_path
     try:
