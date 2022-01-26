@@ -7,16 +7,16 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Some more trackers
 - Supports all yandex links like yandex.com.tr, yandex.com.ru
 - Better YTDL Playlist naming: `"%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s"`
-- Update all python packages before start bot
+- Update all python packages before start bot (optional)
 - Custom finished & unfinished string. (You can get from [1](https://coolsymbol.com/) [2](https://changaco.oy.lc/unicode-progress-bars/) [3](https://text-symbols.com/) or leave empty for default)
 - More respectful to user
 - Show thumbnail
 - Speedtest with picture
 - Removed all username cc's. Never trust a username.
 - WayBack Machine Archiver
-- VirusTotal File Scanner
-- Delete from drive with message
-- Better file captions. Now writing full path instead of only filename.
+- VirusTotal File Scanner (api required)
+- Delete file / folder from drive with replying message
+- Better file captions. Now writing full path instead of only filename. Before: `Antalya.pdf` After: `/Bursa/Manisa/Antalya.pdf`
 - File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
