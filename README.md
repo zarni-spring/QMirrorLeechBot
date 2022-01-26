@@ -14,7 +14,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Speedtest with picture
 - Removed all username cc's. Never trust a username.
 - WayBack Machine Archiver
-- VirusTotal File / URL Scanner (api required)
+- VirusTotal File / URL / Hash Scanner (api required)
 - Delete file / folder from drive with replying message
 - Better file captions. Now writing full path instead of only filename. Before: `Antalya.pdf` After: `Manisa/Antalya.pdf`
 - File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
