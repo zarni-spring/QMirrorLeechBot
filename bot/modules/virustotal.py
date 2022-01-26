@@ -7,17 +7,20 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
-base_url = 'https://www.virustotal.com/vtapi/v2/file/'
+baseUrlFile = 'https://www.virustotal.com/vtapi/v2/file/'
+baseUrlUrl = 'https://www.virustotal.com/vtapi/v2/url/'
 apiKey = VIRUSTOTAL_API
 
-def get_report(file_hash):
+def get_report(file_hash, link = False):
     '''
     :param file_hash: md5/sha1/sha256
     :return: json response / None
     '''
     try:
         LOGGER.info("VirusTotal - Check for existing report")
-        url = base_url + 'report'
+        url = ""
+        if link: url = baseUrlUrl + 'report'
+        else: url = baseUrlFile + 'report'
         params = {
             'apikey': apiKey,
             'resource': file_hash
@@ -39,32 +42,39 @@ def get_report(file_hash):
         LOGGER.error(e)
         return None
 
-def upload_file(file_path):
+def upload_file(file_path, islink = False):
     '''
     :param file_path: file path to upload
     :return: json response / None
     '''
     try:
-        url = base_url + "scan"
-        if os.path.getsize(file_path) > 32*1024*1024:
-            url = 'https://www.virustotal.com/vtapi/v2/file/scan/upload_url'
-            params = {'apikey':apiKey}
-            response = requests.get(url, params=params)
-            upload_url_json = response.json()
-            url = upload_url_json['upload_url']
-        files = {'file': open(file_path, 'rb')}
-        headers = {"apikey": apiKey}
-        try:
+        url = ""
+        if islink: url = baseUrlUrl + 'scan'
+        else: url = baseUrlFile + 'scan'
+        if islink:
+            params = {
+                'apikey': apiKey,
+                'url': file_path
+            }
+            response = requests.post(url, data=params)
+        else:
+            if os.path.getsize(file_path) > 32*1024*1024:
+                url = 'https://www.virustotal.com/vtapi/v2/file/scan/upload_url'
+                params = {'apikey': apiKey}
+                response = requests.get(url, params=params)
+                upload_url_json = response.json()
+                url = upload_url_json['upload_url']
+            files = {'file': open(file_path, 'rb')}
+            headers = {"apikey": apiKey}
             response = requests.post(url, files=files, data=headers)
-            if response.status_code == 403:
-                LOGGER.error("VirusTotal -  Permission denied, wrong api key?")
-                return None
-        except:
+        if not response:
             LOGGER.error("VirusTotal -  ConnectionError, check internet connectivity")
+            return None
+        if response.status_code == 403:
+            LOGGER.error("VirusTotal -  Permission denied, wrong api key?")
             return None
         json_response = response.json()
         return json_response
-
     except:
         LOGGER.error("VirusTotal -  upload_file")
         return None
@@ -77,12 +87,17 @@ def get_result(file_path):
     :return: VirusTotal result json / None upon error
     '''
     hash = None
+    url = False
     if os.path.isfile(file_path): hash = getMD5(path=file_path)
-    try: hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
-    except Exception: hash = None
+    try:
+        hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
+        url = True
+    except Exception:
+        hash = None
+        url = False
     if not hash: hash = file_path
     try:
-        report = get_report(hash)
+        report = get_report(hash, url)
         if report:
             LOGGER.info("VirusTotal -  Report found.")
             if int(report['response_code']) == 1:
