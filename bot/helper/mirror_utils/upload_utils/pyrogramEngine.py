@@ -68,11 +68,7 @@ class TgUploader:
         if not keption.endswith('/'): keption = keption + '/'
         if not keption.startswith('/'): keption = '/' + keption
         keption = up_path.replace(DOWNLOAD_DIR, '', 1) 
-        zo = keption
-        while True:
-            if ospath.dirname(zo) == '/': break
-            else: zo = ospath.dirname(zo)
-        zo = keption.replace(zo, '', 1)
+        zo = keption.replace(keption.split('/')[0], '', 1)
         if CUSTOM_FILENAME:
             cap_mono = f"{CUSTOM_FILENAME} <code>{zo}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
