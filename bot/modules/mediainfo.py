@@ -16,11 +16,8 @@ def mediainfo(update, context):
     message:Message = update.effective_message
     mediamessage = message.reply_to_message
     # mediainfo control +
-    cmd = 'mediainfo'
-    process = run(cmd, capture_output=True, shell=True)
-    stderr = process.stderr.decode()
-    stdout = process.stdout.decode()
-    if stderr: return LOGGER.error("mediainfo not installed. Read readme.")
+    process = run('mediainfo', capture_output=True, shell=True)
+    if process.stderr.decode(): return LOGGER.error("mediainfo not installed. Read readme.")
     # mediainfo control -
     help_msg = "\n<b>By replying to message (including media):</b>"
     help_msg += f"\n<code>/{BotCommands.MediaInfoCommand}" + " {message}" + "</code>"
