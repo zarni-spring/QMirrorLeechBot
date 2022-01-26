@@ -119,18 +119,24 @@ def getMD5(path):
     return file_hash.hexdigest()
 
 
+def validateValue(result, value):
+    try:
+        result[value]
+        return True
+    except: return False
+
 def getResultAsReadable(result):
     if not result:
         LOGGER.error(result)
         return "Something went wrong. Check Logs."
     someInfo = ""
-    if result['verbose_msg']: someInfo += f"\nMessage: <code>{result['verbose_msg']}</code>"
-    if result['scan_id']: someInfo += f"\nScan ID: <code>{result['scan_id']}</code>"
-    if result['scan_date']: someInfo += f"\nDate: {result['scan_date']}"
-    if result['md5']: someInfo += f"\nMD5: <code>{result['md5']}</code>"
-    if result['sha1']: someInfo += f"\nSHA1: <code>{result['sha1']}</code>"
-    if result['sha256']: someInfo += f"\nSHA256: <code>{result['sha256']}</code>"
-    if result['permalink']: someInfo += f"\nLink: {result['permalink']}"
+    if validateValue(result, 'verbose_msg'): someInfo += f"\nMessage: <code>{result['verbose_msg']}</code>"
+    if validateValue(result, 'scan_id'): someInfo += f"\nScan ID: <code>{result['scan_id']}</code>"
+    if validateValue(result, 'scan_date'): someInfo += f"\nDate: <code>{result['scan_date']}</code>"
+    if validateValue(result, 'md5'): someInfo += f"\nMD5: <code>{result['md5']}</code>"
+    if validateValue(result, 'sha1'): someInfo += f"\nSHA1: <code>{result['sha1']}</code>"
+    if validateValue(result, 'sha256'): someInfo += f"\nSHA256: <code>{result['sha256']}</code>"
+    if validateValue(result, 'permalink'): someInfo += f"\nLink: {result['permalink']}"
     if 'scans' in result:
         pos = []
         neg = []
