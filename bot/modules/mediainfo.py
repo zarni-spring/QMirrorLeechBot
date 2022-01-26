@@ -28,7 +28,6 @@ def mediainfo(update, context):
             break
     if not file: return sendMessage(help_msg, context.bot, update)
     sent = sendMessage('Running mediainfo. Downloading your file.', context.bot, update)
-    file = None
     try:
         VtPath = os.path.join("Mediainfo", str(message.from_user.id))
         if not os.path.exists("Mediainfo"): os.makedirs("Mediainfo")
