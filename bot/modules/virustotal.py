@@ -144,8 +144,8 @@ def getResultAsReadable(result):
         neg = []
         scans = result['scans']
         for i in scans:
-            if not bool((scans[i]['detected'])): neg.append(i)
-            pos.append(i)
+            if bool((scans[i]['detected'])): pos.append(i) 
+            else: neg.append(i)
         return someInfo + "\n\nTotal: " + str(result['total'])  + \
             " | Positives: " + str(result['positives']) + \
             " | Negatives: " + str(len(neg))
