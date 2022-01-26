@@ -162,9 +162,11 @@ def getResultAsReadable(result):
         for i in scans:
             if bool((scans[i]['detected'])): pos.append(i) 
             else: neg.append(i)
-        return someInfo + "\n\nTotal: " + str(result['total'])  + \
+        tore = someInfo + "\n\nTotal: " + str(result['total'])  + \
             " | Positives: " + str(result['positives']) + \
-            " | Negatives: " + str(len(neg)) + "\nDetections: <code>" + ", ".join(pos) + "</code>"
+            " | Negatives: " + str(len(neg))
+        if len(pos) > 0: tore += "\nDetections: <code>" + ", ".join(pos) + "</code>"
+        return tore
     else: return someInfo
 
 
