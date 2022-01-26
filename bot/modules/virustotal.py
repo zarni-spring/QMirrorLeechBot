@@ -114,7 +114,7 @@ def get_result(file_path):
     # file?
     if not url:
         try:
-            file = os.path.exist(file_path)
+            file = os.path.isfile(file_path)
         except Exception as e:
             LOGGER.error(e)
             file = None
