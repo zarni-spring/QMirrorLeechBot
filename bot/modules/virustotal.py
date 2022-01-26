@@ -102,19 +102,23 @@ def get_result(file_path):
     :return: VirusTotal result json / None upon error
     '''
     hash = None
-    url = False
+    file = None
+    url = None
+    # url?
     try:
         hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
         url = True
     except Exception:
         hash = None
-        url = False
-    file = None
-    try: 
-        file = os.path.exist(file_path)
-    except Exception as e:
-        LOGGER.error(e)
-        file = None
+        url = None
+    # file?
+    if not url:
+        try:
+            file = os.path.exist(file_path)
+        except Exception as e:
+            LOGGER.error(e)
+            file = None
+    
     if file: hash = getMD5(path=file_path)
     if (not hash) and (not file): hash = file_path
     try:
