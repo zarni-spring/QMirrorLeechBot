@@ -104,7 +104,7 @@ def get_result(file_path):
                 return report
             elif file_path:
                 LOGGER.info("VirusTotal -  file upload")
-                upload_response = upload_file(file_path)
+                upload_response = upload_file(file_path, url)
                 return upload_response
     except Exception as e: LOGGER.error(e)
 
