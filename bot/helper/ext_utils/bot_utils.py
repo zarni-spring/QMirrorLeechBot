@@ -20,17 +20,17 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "📤 Uploading"
-    STATUS_DOWNLOADING = "📥 Downloading"
-    STATUS_CLONING = "♻️ Cloning "
-    STATUS_WAITING = "💤 Queued "
-    STATUS_FAILED = "🚫 Failed"
-    STATUS_PAUSE = "⛔️ Paused"
-    STATUS_ARCHIVING = "🔐 Archiving"
-    STATUS_EXTRACTING = "📂 Extracting"
-    STATUS_SPLITTING = "✂️ Splitting"
-    STATUS_CHECKING = "📝 Checking"
-    STATUS_SEEDING = "🌧 Seeding"
+    STATUS_UPLOADING = "Uploading 📤"
+    STATUS_DOWNLOADING = "Downloading 📥"
+    STATUS_CLONING = "Cloning ♻️"
+    STATUS_WAITING = "Queued 💤"
+    STATUS_FAILED = "Failed 🚫"
+    STATUS_PAUSE = "Paused ⛔️"
+    STATUS_ARCHIVING = "Archiving 🔐"
+    STATUS_EXTRACTING = "Extracting 📂"
+    STATUS_SPLITTING = "Splitting ✂️"
+    STATUS_CHECKING = "CheckingUp 📝"
+    STATUS_SEEDING = "Seeding 🌧"
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
@@ -125,7 +125,8 @@ def get_readable_message():
                 globals()['PAGE_NO'] -= 1
             START = COUNT
         for index, download in enumerate(list(download_dict.values())[START:], start=1):
-            msg += f"<b>{download.status()}:</b> <code>{download.name()}</code>"
+            msg += f"<b>Name:</b> <code>{download.name()}</code>"
+            msg += f"\n<b>Status:</b> <i>{download.status()}</i>"
             if download.status() not in [
                 MirrorStatus.STATUS_ARCHIVING,
                 MirrorStatus.STATUS_EXTRACTING,

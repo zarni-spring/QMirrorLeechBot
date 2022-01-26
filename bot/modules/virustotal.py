@@ -80,6 +80,20 @@ def upload_file(file_path, islink = False):
         LOGGER.error("VirusTotal -  upload_file")
         return None
 
+
+def getMD5(path):
+    f = open(path, "rb")
+    file_hash = hashlib.md5()
+    chunk = f.read(8192)
+    while chunk:
+        file_hash.update(chunk)
+        chunk = f.read(8192)
+    f.close()
+    try: os.remove(path)
+    except: pass
+    return file_hash.hexdigest()
+
+
 def get_result(file_path):
     '''
     Uoloading a file and getting the approval msg from VT or fetching existing report
@@ -89,15 +103,20 @@ def get_result(file_path):
     '''
     hash = None
     url = False
-    if os.path.exist(file_path): hash = getMD5(path=file_path)
-    else:
-        try:
-            hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
-            url = True
-        except Exception:
-            hash = None
-            url = False
-    if not hash: hash = file_path
+    try:
+        hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
+        url = True
+    except Exception:
+        hash = None
+        url = False
+    file = None
+    try: 
+        file = os.path.exist(file_path)
+    except Exception as e:
+        LOGGER.error(e)
+        file = None
+    if file: hash = getMD5(path=file_path)
+    if (not hash) and (not file): hash = file_path
     try:
         report = get_report(hash, url)
         if report:
@@ -111,17 +130,6 @@ def get_result(file_path):
     except Exception as e: LOGGER.error(e)
 
 
-def getMD5(path):
-    f = open(path, "rb")
-    file_hash = hashlib.md5()
-    chunk = f.read(8192)
-    while chunk:
-        file_hash.update(chunk)
-        chunk = f.read(8192)
-    f.close()
-    try: os.remove(path)
-    except: pass
-    return file_hash.hexdigest()
 
 
 def validateValue(result, value):
