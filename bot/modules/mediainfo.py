@@ -32,7 +32,8 @@ def mediainfo(update, context):
         VtPath = os.path.join("Mediainfo", str(message.from_user.id))
         if not os.path.exists("Mediainfo"): os.makedirs("Mediainfo")
         if not os.path.exists(VtPath): os.makedirs(VtPath)
-        try: filename = os.path.join(VtPath, file.file_name)
+        onlyFileName = file.file_name
+        try: filename = os.path.join(VtPath, onlyFileName)
         except: filename = None
         file = app.download_media(message=file, file_name=filename)
     except Exception as e:
@@ -44,7 +45,7 @@ def mediainfo(update, context):
     cmd = f'mediainfo "{file}"'
     LOGGER.info(cmd)
     process = run(cmd, capture_output=True, shell=True)
-    reply = f"<b>MediaInfo: {file.file_name}</b><br>"
+    reply = f"<b>MediaInfo: {onlyFileName}</b><br>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:
