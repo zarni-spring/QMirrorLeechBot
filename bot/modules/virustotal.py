@@ -16,7 +16,7 @@ def get_report(file_hash):
     :return: json response / None
     '''
     try:
-        LOGGER.info("VirusTotal: Check for existing report")
+        LOGGER.info("VirusTotal - Check for existing report")
         url = base_url + 'report'
         params = {
             'apikey': apiKey,
@@ -26,10 +26,10 @@ def get_report(file_hash):
         try:
             response = requests.get(url, params=params, headers=headers)
             if response.status_code == 403:
-                LOGGER.error("VirusTotal Permission denied, wrong api key?")
+                LOGGER.error("VirusTotal -  Permission denied, wrong api key?")
                 return None
         except:
-            LOGGER.error("VirusTotal ConnectionError, check internet connectivity")
+            LOGGER.error("VirusTotal -  ConnectionError, check internet connectivity")
             return None
         try:
             return response.json()
@@ -57,16 +57,16 @@ def upload_file(file_path):
         try:
             response = requests.post(url, files=files, data=headers)
             if response.status_code == 403:
-                LOGGER.error("VirusTotal Permission denied, wrong api key?")
+                LOGGER.error("VirusTotal -  Permission denied, wrong api key?")
                 return None
         except:
-            LOGGER.error("VirusTotal ConnectionError, check internet connectivity")
+            LOGGER.error("VirusTotal -  ConnectionError, check internet connectivity")
             return None
         json_response = response.json()
         return json_response
 
     except:
-        LOGGER.error("VirusTotal upload_file")
+        LOGGER.error("VirusTotal -  upload_file")
         return None
 
 def get_result(file_path):
@@ -83,16 +83,15 @@ def get_result(file_path):
     if not hash: hash = file_path
     try:
         report = get_report(hash)
-        LOGGER.info(report)
         if report:
-            LOGGER.info("[INFO] Report found.")
+            LOGGER.info("VirusTotal -  Report found.")
             if int(report['response_code']) == 1:
                 return report
             elif file_path:
-                LOGGER.info("[INFO] VirusTotal: file upload")
+                LOGGER.info("VirusTotal -  file upload")
                 upload_response = upload_file(file_path)
                 return upload_response
-    except Exception as e: LOGGER.info(e)
+    except Exception as e: LOGGER.error(e)
 
 
 def getMD5(path):
@@ -106,35 +105,29 @@ def getMD5(path):
 
 
 def getResultAsReadable(result):
-    if result and 'scans' in result:
-        stro = []
-        scans = result['scans']
-        for i in scans:
-            if not bool((scans[i]['detected'])): continue
-            stro.append(i)
-        details = "\nTotal: " + str(result['total'])  + \
-            " | Positives: " + str(result['positives']) + \
-            " | Negatives: " + str(len(scans) - int(result['positives']))
-        if result['verbose_msg']: details += f"Message: <code>{result['verbose_msg']}</code>"
-        if result['scan_id']: details += f"\nScan ID: <code>{result['scan_id']}</code>"
-        if result['md5']: details += f"\nMD5: <code>{result['md5']}</code>"
-        if result['sha1']: details += f"\nSHA1: <code>{result['sha1']}</code>"
-        if result['sha256']: details += f"\nSHA256: <code>{result['sha256']}</code>"
-        if result['permalink']: details += f"\nLink: {result['permalink']}"
-        if len(stro) == 0: return "File is clean like a baby" + details
-        else: return "Detections: " + ", ".join(stro) + details
-    elif result and 'scan_id' in result:
-        stro = ""
-        if result['verbose_msg']: stro += f"Message: <code>{result['verbose_msg']}</code>"
-        if result['scan_id']: stro += f"\nScan ID: <code>{result['scan_id']}</code>"
-        if result['md5']: stro += f"\nMD5: <code>{result['md5']}</code>"
-        if result['sha1']: stro += f"\nSHA1: <code>{result['sha1']}</code>"
-        if result['sha256']: stro += f"\nSHA256: <code>{result['sha256']}</code>"
-        if result['permalink']: stro += f"\nLink: {result['permalink']}"
-        return stro
-    else:
+    if not result:
         LOGGER.error(result)
         return "Something went wrong. Check Logs."
+    someInfo = ""
+    if result['verbose_msg']: someInfo += f"\nMessage: <code>{result['verbose_msg']}</code>"
+    if result['scan_id']: someInfo += f"\nScan ID: <code>{result['scan_id']}</code>"
+    if result['scan_date']: someInfo += f"\nDate: {result['scan_date']}"
+    if result['md5']: someInfo += f"\nMD5: <code>{result['md5']}</code>"
+    if result['sha1']: someInfo += f"\nSHA1: <code>{result['sha1']}</code>"
+    if result['sha256']: someInfo += f"\nSHA256: <code>{result['sha256']}</code>"
+    if result['permalink']: someInfo += f"\nLink: {result['permalink']}"
+    if 'scans' in result:
+        pos = []
+        neg = []
+        scans = result['scans']
+        for i in scans:
+            if not bool((scans[i]['detected'])): neg.append(i)
+            pos.append(i)
+        return someInfo + "\n\nTotal: " + str(result['total'])  + \
+            " | Positives: " + str(result['positives']) + \
+            " | Negatives: " + str(len(neg))
+    else: return someInfo
+
 
 def humanbytes(size, byte=True):
     """Hi human, you can't read bytes?"""
@@ -149,7 +142,7 @@ def humanbytes(size, byte=True):
 
 
 def virustotal(update, context):
-    if not VIRUSTOTAL_API: return LOGGER.error("VIRUSTOTAL_API not provided.")
+    if not VIRUSTOTAL_API: return LOGGER.error("VirusTotal - VIRUSTOTAL_API not provided.")
     message = update.effective_message
     VtPath = os.path.join("Virustotal", str(message.from_user.id))
     if not os.path.exists("Virustotal"): os.makedirs("Virustotal")
