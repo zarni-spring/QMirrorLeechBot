@@ -117,6 +117,7 @@ def getMD5(path):
     while chunk:
         file_hash.update(chunk)
         chunk = f.read(8192)
+    f.close()
     try: os.remove(path)
     except: pass
     return file_hash.hexdigest()
