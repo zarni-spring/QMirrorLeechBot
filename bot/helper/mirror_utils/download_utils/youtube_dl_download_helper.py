@@ -67,7 +67,7 @@ class YoutubeDLHelper:
 
     def __onDownloadProgress(self, d):
         self.__downloading = True
-        if self.__is_cancelled: raise ValueError("Cancelling...")
+        if self.__is_cancelled: raise ValueError("Cancelling.")
         if d['status'] == "finished":
             if self.is_playlist: self._last_downloaded = 0
         elif d['status'] == "downloading":
@@ -146,7 +146,7 @@ class YoutubeDLHelper:
         self.extractMetaData(link, name)
         if self.__is_cancelled: return
         if self.is_playlist:
-            self.opts['outtmpl'] = os.path.join(path, self.name, "%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s")
+            self.opts['outtmpl'] = os.path.join(path, self.name, '%(playlist_title)s %(playlist_index)s.%(n_entries)s %(title)s.%(ext)s')
         else: self.opts['outtmpl'] = os.path.join(path, self.name)
         self.__download(link)
 

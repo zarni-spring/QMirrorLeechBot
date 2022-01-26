@@ -54,7 +54,7 @@ def speed_convert(size, byte=True):
     return f"{round(size, 2)} {units[zero]}"
 
 
-SPEED_HANDLER = CommandHandler(BotCommands.SpeedCommand, speedtest,
+speed_handler = CommandHandler(BotCommands.SpeedCommand, speedtest,
     CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 
-dispatcher.add_handler(SPEED_HANDLER)
+dispatcher.add_handler(speed_handler)

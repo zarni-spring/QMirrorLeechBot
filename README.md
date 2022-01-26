@@ -14,10 +14,11 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Speedtest with picture
 - Removed all username cc's. Never trust a username.
 - WayBack Machine Archiver
-- VirusTotal File Scanner (api required)
+- VirusTotal File / URL Scanner (api required)
 - Delete file / folder from drive with replying message
 - Better file captions. Now writing full path instead of only filename. Before: `Antalya.pdf` After: `Manisa/Antalya.pdf`
 - File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
+- URL Shortener
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
   - Required signup: `shorte.st`, `bc.vc`, `pubiza`, `linkvertise`, `bit.ly`, `post`, `cutt.ly`, `adf.ly`, `shortcm`, `tinycc`, `tinyurl`, `ouo.io`
@@ -170,7 +171,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `SERVER_PORT`: Only For VPS even if `IS_VPS` is `False`, which is the **BASE_URL_OF_BOT** Port.
 - `WEB_PINCODE`: If empty or `False` means no more pincode required while qbit web selection. `Bool`
 - `QB_SEED`: If `True` QB torrent will be seeded after and while uploading until reaching specific ratio or time, edit `MaxRatio` or `GlobalMaxSeedingMinutes` or both from qbittorrent.conf (`-1` means no limit, but u can cancel manually by gid). **NOTE**: 1. Don't change `MaxRatioAction`, 2. Only works with `/qbmirror` and `/qbzipmirror`. `Bool`
-  - **Qbittorrent Note**: To auto cancel dead torrents after specific time, edit these two numbers (999999) in seconds. [1st](https://github.com/anasty17/mirror-leech-telegram-bot/blob/0a8a237295b86cc7ad01291657f8127820871a8f/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L144) for metadata download timeout and [2nd](https://github.com/anasty17/mirror-leech-telegram-bot/blob/0a8a237295b86cc7ad01291657f8127820871a8f/bot/helper/mirror_utils/download_utils/qbit_downloader.py#L197) for stalled download timeout.
+- `QB_TIMEOUT`: Timeout of dead torrents downloading with qBittorrent in seconds.
 - `TG_SPLIT_SIZE`: Size of split in bytes, leave it empty for max size `2GB`.
 - `AS_DOCUMENT`: Default Telegram file type upload. Empty or `False` means as media. `Bool`
 - `EQUAL_SPLITS`: Split files larger than **TG_SPLIT_SIZE** into equal parts size (Not working with zip cmd). `Bool`
@@ -346,6 +347,7 @@ wayback - Archive a webpage
 virustotal - Scan a file or url
 speedtest - Speed Test
 hash - Calculate hash MD5, SHA1
+short - URL Shortener
 help - All cmds with description
 ```
 ------

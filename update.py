@@ -14,7 +14,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 
-
 CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL', None)
 try:
     if len(CONFIG_FILE_URL) == 0:

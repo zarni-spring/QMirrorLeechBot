@@ -13,9 +13,13 @@ from time import sleep, time
 from threading import Thread, Lock
 from pyrogram import Client
 from dotenv import load_dotenv
+
 faulthandler.enable()
+
 socket.setdefaulttimeout(600)
+
 botStartTime = time()
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
@@ -59,8 +63,8 @@ if not ospath.exists('.netrc'):
 srun(["cp", ".netrc", "/root/.netrc"])
 srun(["chmod", "600", ".netrc"])
 srun(["chmod", "+x", "aria.sh"])
-srun(["./aria.sh"], shell=True)
-sleep(0.5)
+a2c = Popen(["./aria.sh"], shell=True)
+sleep(1)
 
 Interval = []
 DRIVES_NAMES = []
@@ -82,7 +86,8 @@ aria2 = ariaAPI(
     )
 )
 
-def get_client(): return qbClient(host="localhost", port=8090)
+def get_client():
+    return qbClient(host="localhost", port=8090)
 
 """
 trackers = subprocess.check_output(["curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all | awk '$0'"], shell=True).decode('utf-8')
@@ -170,10 +175,13 @@ def aria2c_init():
     try:
         logging.info("Initializing Aria2c")
         link = "https://releases.ubuntu.com/21.10/ubuntu-21.10-desktop-amd64.iso.torrent"
-        aria2.add_uris([link], {'dir': DOWNLOAD_DIR})
-        sleep(40)
-        aria2.remove_all(force=True)
-        aria2.remove_files(downloads=aria2.get_downloads(), force=True)
+        dire = DOWNLOAD_DIR.rstrip("/")
+        aria2.add_uris([link], {'dir': dire})
+        sleep(3)
+        downloads = aria2.get_downloads()
+        sleep(30)
+        for download in downloads:
+            aria2.remove([download], force=True, files=True)
     except Exception as e:
         logging.error(f"Aria2c initializing error: {e}")
         pass
@@ -295,6 +303,14 @@ try:
         RSS_DELAY = int(RSS_DELAY)
 except KeyError:
     RSS_DELAY = 900
+try:
+    QB_TIMEOUT = getConfig('QB_TIMEOUT')
+    if len(QB_TIMEOUT) == 0:
+        raise KeyError
+    else:
+        QB_TIMEOUT = int(QB_TIMEOUT)
+except KeyError:
+    QB_TIMEOUT = None
 try:
     BUTTON_FOUR_NAME = getConfig('BUTTON_FOUR_NAME')
     BUTTON_FOUR_URL = getConfig('BUTTON_FOUR_URL')

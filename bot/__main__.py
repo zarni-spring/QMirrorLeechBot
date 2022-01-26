@@ -13,7 +13,9 @@ from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 import time as taym
 from wserver import start_server_async
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, IS_VPS, PORT, alive, web, OWNER_ID, AUTHORIZED_CHATS, LOGGER, Interval, nox, rss_session, AUTO_DELETE_MESSAGE_DURATION
+from bot import bot, app, dispatcher, updater, botStartTime, \
+    IGNORE_PENDING_REQUESTS, IS_VPS, PORT, alive, web, a2c, \
+    OWNER_ID, AUTHORIZED_CHATS, LOGGER, Interval, nox, rss_session, AUTO_DELETE_MESSAGE_DURATION
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import auto_delete_message, sendMessage, sendMarkup, editMessage, sendLogFile
@@ -21,7 +23,8 @@ from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
-from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, speedtest, count, leech_settings, search, rss, wayback, virustotal, hash
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, \
+    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener
 
 
 def stats(update, context):
@@ -68,19 +71,25 @@ This bot can mirror all your links to Google Drive.
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update, None)
-    else: sendMarkup('Not authorized user.', context.bot, update, None)
+    else:
+        sendMarkup('Not authorized user.', context.bot, update, None)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update)
-    if Interval: Interval[0].cancel()
+    if Interval:
+        Interval[0].cancel()
     alive.kill()
     procs = psprocess(web.pid)
-    for proc in procs.children(recursive=True): proc.kill()
+    for proc in procs.children(recursive=True):
+        proc.kill()
     procs.kill()
     clean_all()
     srun(["python3", "update.py"])
-    # Save restart message object in order to reply to it after restarting
     nox.kill()
+    a2cproc = psprocess(a2c.pid)
+    for proc in a2cproc.children(recursive=True):
+        proc.kill()
+    a2cproc.kill()
     with open(".restartmsg", "w") as f:
         f.truncate(0)
         f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
@@ -170,6 +179,8 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.VirusTotalCommand}</b>: Reply a file to scan with VirusTotal
 <br><br>
 <b>/{BotCommands.HashCommand}</b>: Reply a file to generate hash MD5, SHA1 etc.
+<br><br>
+<b>/{BotCommands.ShortenerCommand}</b>: Reply a link to short it.
 '''
 
 help = telegraph.create_page(
@@ -177,35 +188,11 @@ help = telegraph.create_page(
         content=help_string_telegraph,
     )["path"]
 
-help_string = f'''
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
-
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
-
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
-
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
-
-/{BotCommands.RestartCommand}: Restart and update the bot
-
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
-
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
-
-/{BotCommands.ShellCommand}: Run commands in Shell (Only Owner)
-
-/{BotCommands.ExecHelpCommand}: Get help for Executor module (Only Owner)
-'''
-
 def bot_help(update, context):
     button = ButtonMaker()
-    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    button.buildbutton("Click and Read", f"https://telegra.ph/{help}")
     reply_markup = InlineKeyboardMarkup(button.build_menu(1))
-    sendMarkup(help_string, context.bot, update, reply_markup)
+    sendMarkup(f'<a href="https://telegra.ph/{help}">Click and Read</a>', context.bot, update, reply_markup)
 
 botcmds = [
 
@@ -238,7 +225,6 @@ botcmds = [
         (f'{BotCommands.PingCommand}','Ping the bot'),
         (f'{BotCommands.RestartCommand}','Restart the bot'),
         (f'{BotCommands.LogCommand}','Get the bot Log'),
-        (f'{BotCommands.WayBackCommand}','Archive a webpage'),
         (f'{BotCommands.HelpCommand}','Get detailed help')
     ]
 
@@ -284,7 +270,8 @@ def main():
     updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
     LOGGER.info("Bot Started.")
     signal.signal(signal.SIGINT, exit_clean_up)
-    if rss_session: rss_session.start()
+    if rss_session is not None:
+        rss_session.start()
 
 app.start()
 main()

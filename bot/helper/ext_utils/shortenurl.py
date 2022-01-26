@@ -3,7 +3,7 @@
 import random
 
 from pyshorteners import Shortener as pyShortener
-from requests import get as rget
+from requests import get as rget, post as rpost
 from base64 import b64encode
 from urllib.parse import quote
 from urllib3 import disable_warnings
@@ -85,10 +85,13 @@ def short_url(longurl):
             f"https://direct-link.net/{SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
             f"https://file-link.net/{SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}"]
         link = random.choice(linkvertise)
-    elif "bit.ly" in SHORTENER:
+    elif "bitly.com" in SHORTENER:
         try:
-            s = pyShortener(api_key=SHORTENER_API)
-            link = s.bitly.short(longurl)
+            shorten_url = "https://api-ssl.bit.ly/v4/shorten"
+            params = {"long_url": longurl}
+            headers = {"Authorization": f"Bearer {SHORTENER_API}"}
+            response = rpost(shorten_url, json=params, headers=headers).json()
+            link = response["link"]
         except Exception as e:
             LOGGER.error(e)
             link = longurl
@@ -143,7 +146,7 @@ def short_url(longurl):
             LOGGER.error(e)
             link = longurl
     else:
-        try: link = rget(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={longurl}&format=text').text
+        try: link = rget(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={quote(longurl)}&format=text').text
         except Exception as e:
             LOGGER.error(e)
             link = longurl

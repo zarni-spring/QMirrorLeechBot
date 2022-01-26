@@ -48,5 +48,6 @@ class _BotCommands:
         self.WayBackCommand = 'wayback'
         self.VirusTotalCommand = 'virustotal'
         self.HashCommand = 'hash'
+        self.ShortenerCommand = 'short'
 
 BotCommands = _BotCommands()
