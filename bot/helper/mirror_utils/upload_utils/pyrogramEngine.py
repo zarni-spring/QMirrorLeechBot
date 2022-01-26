@@ -70,7 +70,7 @@ class TgUploader:
         zo = keption
         while True:
             if zo == '/': break
-            else: zo = os.path.dirname(zo)
+            else: zo = ospath.dirname(zo)
         if zo.startswith('/'): zo = zo.replace('/', '')
         keption = keption.replace(DOWNLOAD_DIR + zo, '', 1)
         if CUSTOM_FILENAME:
