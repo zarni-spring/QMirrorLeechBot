@@ -125,6 +125,7 @@ def get_result(file_path):
         report = get_report(hash, url)
         if report:
             LOGGER.info("VirusTotal -  Report found.")
+            LOGGER.info(report)
             if int(report['response_code']) == 1:
                 return report
             elif file_path:
