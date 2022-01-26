@@ -41,12 +41,12 @@ def mediainfo(update, context):
         except: pass
         file = None
     if not file: return editMessage("Error when downloading. Try again later.", sent)
-    cmd = ['mediainfo', f'"{file}"']
+    cmd = f'mediainfo "{file}"'
     LOGGER.info(cmd)
     try: os.remove(file)
     except: pass
     process = run(cmd, capture_output=True, shell=True)
-    reply = f"<b>MediaInfo: {filename}</b>"
+    reply = f"<b>MediaInfo: {filename}</b><br>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:

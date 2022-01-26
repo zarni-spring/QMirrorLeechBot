@@ -38,14 +38,18 @@ def hash(update, context):
     help_msg = "<b>Reply to message including file:</b>"
     help_msg += f"\n<code>/{BotCommands.HashCommand}" + " {message}" + "</code>"
     if not mediamessage: return sendMessage(help_msg, context.bot, update)
-    if not (mediamessage.document or mediamessage.video or mediamessage.photo \
-    or mediamessage.audio or mediamessage.voice or mediamessage.animation \
-    or mediamessage.video_note or mediamessage.sticker
-    ): return sendMessage(help_msg, context.bot, update)
+    file = None
+    media_array = [mediamessage.document, mediamessage.video, mediamessage.audio, mediamessage.document, \
+        mediamessage.video, mediamessage.photo, mediamessage.audio, mediamessage.voice, \
+        mediamessage.animation, mediamessage.video_note, mediamessage.sticker]
+    for i in media_array:
+        if i is not None:
+            file = i
+            break
+    if not file: return sendMessage(help_msg, context.bot, update)
     VtPath = os.path.join("Hasher", str(message.from_user.id))
     if not os.path.exists("Hasher"): os.makedirs("Hasher")
     if not os.path.exists(VtPath): os.makedirs(VtPath)
-    file = None
     sent = sendMessage("Trying to download. Please wait.", context.bot, update)
     try:
         filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
