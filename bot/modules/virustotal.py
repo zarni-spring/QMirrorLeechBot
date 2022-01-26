@@ -89,8 +89,6 @@ def getMD5(path):
         file_hash.update(chunk)
         chunk = f.read(8192)
     f.close()
-    try: os.remove(path)
-    except: pass
     return file_hash.hexdigest()
 
 
@@ -213,6 +211,8 @@ def virustotal(update, context):
         else: link = link[1]
     if not link: editMessage(help_msg, sent)
     ret = getResultAsReadable(get_result(link))
+    try: os.remove(path)
+    except: pass
     return editMessage(ret, sent)
 
 
