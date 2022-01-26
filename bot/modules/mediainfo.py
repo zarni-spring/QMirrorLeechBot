@@ -53,10 +53,10 @@ def mediainfo(update, context):
     stdout = process.stdout.decode()
     if len(stdout) != 0:
         reply += f"<b>Stdout:</b><br><br><pre>{stdout}</pre><br>"
-        LOGGER.info(f"mediainfo - {cmd} - {stdout}")
+        # LOGGER.info(f"mediainfo - {cmd} - {stdout}")
     if len(stderr) != 0:
         reply += f"<b>Stderr:</b><br><br><pre>{stderr}</pre>"
-        LOGGER.error(f"mediainfo - {cmd} - {stderr}")
+        # LOGGER.error(f"mediainfo - {cmd} - {stderr}")
     try: os.remove(file)
     except: pass
     help = telegraph.create_page(title='MediaInfo', content=reply)["path"]
