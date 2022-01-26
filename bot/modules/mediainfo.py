@@ -18,18 +18,24 @@ def mediainfo(update, context):
     help_msg = "\n<b>By replying to message (including media):</b>"
     help_msg += f"\n<code>/{BotCommands.MediaInfoCommand}" + " {message}" + "</code>"
     if not mediamessage: return sendMessage(help_msg, context.bot, update)
-    if not (mediamessage.document or mediamessage.video or mediamessage.photo \
-    or mediamessage.audio or mediamessage.voice or mediamessage.animation \
-    or mediamessage.video_note or mediamessage.sticker
-    ): return sendMessage(help_msg, context.bot, update)
+    file = None
+    media_array = [mediamessage.document, mediamessage.video, mediamessage.audio, mediamessage.document, \
+        mediamessage.video, mediamessage.photo, mediamessage.audio, mediamessage.voice, \
+        mediamessage.animation, mediamessage.video_note, mediamessage.sticker]
+    for i in media_array:
+        if i is not None:
+            file = i
+            break
+    if not file: return sendMessage(help_msg, context.bot, update)
     sent = sendMessage('Running mediainfo. Downloading your file.', context.bot, update)
     file = None
     try:
         VtPath = os.path.join("Mediainfo", str(message.from_user.id))
         if not os.path.exists("Mediainfo"): os.makedirs("Mediainfo")
         if not os.path.exists(VtPath): os.makedirs(VtPath)
-        filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
-        file = app.download_media(message=message.reply_to_message.document, file_name=filename)
+        try: filename = os.path.join(VtPath, file.file_name)
+        except: filename = None
+        file = app.download_media(message=file, file_name=filename)
     except Exception as e:
         LOGGER.error(e)
         try: os.remove(file)
@@ -41,7 +47,7 @@ def mediainfo(update, context):
     try: os.remove(file)
     except: pass
     process = run(cmd, capture_output=True, shell=True)
-    reply = f"<h2>MediaInfo: {message.reply_to_message.document.file_name}</h2>"
+    reply = f"<h2>MediaInfo: {filename}</h2>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:
