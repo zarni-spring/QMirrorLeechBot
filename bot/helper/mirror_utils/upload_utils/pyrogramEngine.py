@@ -62,18 +62,25 @@ class TgUploader:
         self.__listener.onUploadComplete(None, size, self.__msgs_dict, None, self.__corrupted, self.name)
 
     def __upload_file(self, up_path, file_, dirpath):
-        if self.__sent_msg == '':
-            self.__sent_msg = app.get_messages(self.__listener.message.chat.id, self.__listener.uid)
-        else:
-            self.__sent_msg = app.get_messages(self.__sent_msg.chat.id, self.__sent_msg.message_id)
+        if self.__sent_msg == '': self.__sent_msg = app.get_messages(self.__listener.message.chat.id, self.__listener.uid)
+        else: self.__sent_msg = app.get_messages(self.__sent_msg.chat.id, self.__sent_msg.message_id)
+        keption = DOWNLOAD_DIR
+        if not keption.endswith('/'): keption = keption + '/'
+        if not keption.startswith('/'): keption = '/' + keption
+        zo = keption
+        while True:
+            if zo == '/': break
+            else: zo = os.path.dirname(zo)
+        if zo.startswith('/'): zo = zo.replace('/', '')
+        keption = keption.replace(DOWNLOAD_DIR + zo, '', 1)
         if CUSTOM_FILENAME:
-            cap_mono = f"{CUSTOM_FILENAME} <code>{up_path}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
+            cap_mono = f"{CUSTOM_FILENAME} <code>{keption}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)
             up_path = new_path
         else:
-            cap_mono = f"<code>{up_path}</code>" #cap_mono = f"<code>{file_}</code>"
+            cap_mono = f"<code>{keption}</code>" #cap_mono = f"<code>{file_}</code>"
         notMedia = False
         thumb = self.__thumb
         try:
