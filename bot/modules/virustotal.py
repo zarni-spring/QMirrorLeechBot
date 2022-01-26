@@ -89,12 +89,13 @@ def get_result(file_path):
     hash = None
     url = False
     if os.path.isfile(file_path): hash = getMD5(path=file_path)
-    try:
-        hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
-        url = True
-    except Exception:
-        hash = None
-        url = False
+    else:
+        try:
+            hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
+            url = True
+        except Exception:
+            hash = None
+            url = False
     if not hash: hash = file_path
     try:
         report = get_report(hash, url)
@@ -110,21 +111,15 @@ def get_result(file_path):
 
 
 def getMD5(path):
-    try:
-        with open(path, "rb") as f:
-            file_hash = hashlib.md5()
-            chunk = f.read(8192)
-            while chunk:
-                file_hash.update(chunk)
-                chunk = f.read(8192)
-        try: os.remove(path)
-        except: pass
-        return file_hash.hexdigest()
-    except Exception as e:
-        LOGGER.error(e)
-        try: os.remove(path)
-        except: pass
-    
+    f = open(path, "rb")
+    file_hash = hashlib.md5()
+    chunk = f.read(8192)
+    while chunk:
+        file_hash.update(chunk)
+        chunk = f.read(8192)
+    try: os.remove(path)
+    except: pass
+    return file_hash.hexdigest()
 
 
 def validateValue(result, value):
@@ -132,6 +127,7 @@ def validateValue(result, value):
         result[value]
         return True
     except: return False
+
 
 def getResultAsReadable(result):
     if not result:
@@ -156,7 +152,7 @@ def getResultAsReadable(result):
             else: neg.append(i)
         return someInfo + "\n\nTotal: " + str(result['total'])  + \
             " | Positives: " + str(result['positives']) + \
-            " | Negatives: " + str(len(neg))
+            " | Negatives: " + str(len(neg)) + "\nDetections: <code>" + ", ".join(pos) + "</code>"
     else: return someInfo
 
 
