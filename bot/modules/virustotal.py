@@ -118,7 +118,7 @@ def get_result(file_path):
             file = False
     
     if file: hash = getMD5(path=file_path)
-    if (not hash) and (not file): hash = file_path
+    if (not hash) or (not file): hash = file_path
     try:
         report = get_report(hash, url)
         if report:
