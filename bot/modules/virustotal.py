@@ -130,7 +130,9 @@ def getResultAsReadable(result):
         LOGGER.error(result)
         return "Something went wrong. Check Logs."
     someInfo = ""
-    if validateValue(result, 'verbose_msg'): someInfo += f"\nMessage: <code>{result['verbose_msg']}</code>"
+    if validateValue(result, 'verbose_msg'):
+        go = "Scanned." if "Scan finished" in result['verbose_msg'] else result['verbose_msg']
+        someInfo += f"\nMessage: <code>{go}</code>"
     if validateValue(result, 'scan_id'): someInfo += f"\nScan ID: <code>{result['scan_id']}</code>"
     if validateValue(result, 'scan_date'): someInfo += f"\nDate: <code>{result['scan_date']}</code>"
     if validateValue(result, 'md5'): someInfo += f"\nMD5: <code>{result['md5']}</code>"
