@@ -119,10 +119,10 @@ def checkFile(path):
         elif result and 'scan_id' in result:
             stro = ""
             stro += f"Result: <code>{result['verbose_msg']}</code>"
-            stro += f"\nScan ID: <code>{result['scan_id']}</code"
-            stro += f"\nMD5: <code>{result['md5']}</code"
-            stro += f"\nSHA1: <code>{result['sha1']}</code"
-            stro += f"\nSHA256: <code>{result['sha256']}</code"
+            stro += f"\nScan ID: <code>{result['scan_id']}</code>"
+            stro += f"\nMD5: <code>{result['md5']}</code>"
+            stro += f"\nSHA1: <code>{result['sha1']}</code>"
+            stro += f"\nSHA256: <code>{result['sha256']}</code>"
             stro += "\nLink: {result['permalink']}"
             return stro
         else:
