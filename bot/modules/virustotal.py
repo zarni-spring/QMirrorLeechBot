@@ -177,7 +177,7 @@ def virustotal(update, context):
         if len(link) != 2: link = None
         else: link = link[1]
     if not link:
-        editMessage("Some error exceed. Please try again later.", sent)
+        editMessage(help_msg, sent)
         try: os.remove(link)
         except: pass
     ret = getResultAsReadable(get_result(link))
