@@ -110,14 +110,14 @@ def get_result(file_path):
         url = True
     except Exception:
         hash = None
-        url = None
+        url = False
     # file?
     if not url:
         try:
-            file = os.path.isfile(file_path)
+            file = True if os.path.isfile(file_path) else False
         except Exception as e:
             LOGGER.error(e)
-            file = None
+            file = False
     
     if file: hash = getMD5(path=file_path)
     if (not hash) and (not file): hash = file_path
