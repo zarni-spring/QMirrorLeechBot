@@ -110,13 +110,21 @@ def get_result(file_path):
 
 
 def getMD5(path):
-    with open(path, "rb") as f:
-        file_hash = hashlib.md5()
-        chunk = f.read(8192)
-        while chunk:
-            file_hash.update(chunk)
+    try:
+        with open(path, "rb") as f:
+            file_hash = hashlib.md5()
             chunk = f.read(8192)
-    return file_hash.hexdigest()
+            while chunk:
+                file_hash.update(chunk)
+                chunk = f.read(8192)
+        try: os.remove(path)
+        except: pass
+        return file_hash.hexdigest()
+    except Exception as e:
+        LOGGER.error(e)
+        try: os.remove(path)
+        except: pass
+    
 
 
 def validateValue(result, value):
@@ -192,10 +200,7 @@ def virustotal(update, context):
         link = message.text.split(' ', 1)
         if len(link) != 2: link = None
         else: link = link[1]
-    if not link:
-        editMessage(help_msg, sent)
-        try: os.remove(link)
-        except: pass
+    if not link: editMessage(help_msg, sent)
     ret = getResultAsReadable(get_result(link))
     return editMessage(ret, sent)
 
