@@ -89,7 +89,7 @@ def get_result(file_path):
     '''
     hash = None
     url = False
-    if os.path.isfile(file_path): hash = getMD5(path=file_path)
+    if os.path.exist(file_path): hash = getMD5(path=file_path)
     else:
         try:
             hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
