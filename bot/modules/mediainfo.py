@@ -14,10 +14,14 @@ from bot.helper.ext_utils.telegraph_helper import telegraph
 
 def mediainfo(update, context):
     message:Message = update.effective_message
+    mediamessage = message.reply_to_message
     help_msg = "\n<b>By replying to message (including media):</b>"
     help_msg += f"\n<code>/{BotCommands.MediaInfoCommand}" + " {message}" + "</code>"
-    if not message.reply_to_message: return sendMessage(help_msg, context.bot, update)
-    if not message.reply_to_message.media: return sendMessage(help_msg, context.bot, update)
+    if not mediamessage: return sendMessage(help_msg, context.bot, update)
+    if not (mediamessage.document or mediamessage.video or mediamessage.photo \
+    or mediamessage.audio or mediamessage.voice or mediamessage.animation \
+    or mediamessage.video_note or mediamessage.sticker
+    ): return sendMessage(help_msg, context.bot, update)
     sent = sendMessage('Running mediainfo. Downloading your file.', context.bot, update)
     file = None
     try:

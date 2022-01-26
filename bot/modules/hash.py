@@ -34,10 +34,14 @@ def TimeFormatter(milliseconds: int) -> str:
 
 def hash(update, context):
     message = update.effective_message
+    mediamessage = message.reply_to_message
     help_msg = "<b>Reply to message including file:</b>"
     help_msg += f"\n<code>/{BotCommands.HashCommand}" + " {message}" + "</code>"
-    if not message.reply_to_message: return sendMessage(help_msg, context.bot, update)
-    if not message.reply_to_message.document: return sendMessage(help_msg, context.bot, update)
+    if not mediamessage: return sendMessage(help_msg, context.bot, update)
+    if not (mediamessage.document or mediamessage.video or mediamessage.photo \
+    or mediamessage.audio or mediamessage.voice or mediamessage.animation \
+    or mediamessage.video_note or mediamessage.sticker
+    ): return sendMessage(help_msg, context.bot, update)
     VtPath = os.path.join("Hasher", str(message.from_user.id))
     if not os.path.exists("Hasher"): os.makedirs("Hasher")
     if not os.path.exists(VtPath): os.makedirs(VtPath)
