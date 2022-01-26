@@ -36,8 +36,7 @@ def mediainfo(update, context):
         VtPath = os.path.join("Mediainfo", str(message.from_user.id))
         if not os.path.exists("Mediainfo"): os.makedirs("Mediainfo")
         if not os.path.exists(VtPath): os.makedirs(VtPath)
-        onlyFileName = file.file_name
-        try: filename = os.path.join(VtPath, onlyFileName)
+        try: filename = os.path.join(VtPath, file.file_name)
         except: filename = None
         file = app.download_media(message=file, file_name=filename)
     except Exception as e:
@@ -46,10 +45,10 @@ def mediainfo(update, context):
         except: pass
         file = None
     if not file: return editMessage("Error when downloading. Try again later.", sent)
-    cmd = f'mediainfo "{file}"'
+    cmd = f'mediainfo "{os.path.basename(file)}"'
     LOGGER.info(cmd)
-    process = run(cmd, capture_output=True, shell=True)
-    reply = f"<b>MediaInfo: {onlyFileName}</b><br>"
+    process = run(cmd, capture_output=True, shell=True, cwd=VtPath)
+    reply = f"<b>MediaInfo: {os.path.basename(file)}</b><br>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:
@@ -61,8 +60,7 @@ def mediainfo(update, context):
     try: os.remove(file)
     except: pass
     help = telegraph.create_page(title='MediaInfo', content=reply)["path"]
-    if CustomFilters.sudo_user or CustomFilters.owner_filter: editMessage(f"https://telegra.ph/{help}", sent)
-    else: editMessage(short_url(f"https://telegra.ph/{help}"), sent)
+    editMessage(short_url(f"https://telegra.ph/{help}"), sent)
 
 
 mediainfo_handler = CommandHandler(BotCommands.MediaInfoCommand, mediainfo,
