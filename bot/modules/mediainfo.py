@@ -46,11 +46,11 @@ def mediainfo(update, context):
     try: os.remove(file)
     except: pass
     process = run(cmd, capture_output=True, shell=True)
-    reply = f"<h2>MediaInfo: {filename}</h2>"
+    reply = f"<b>MediaInfo: {filename}</b>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:
-        reply += f"<b>Stdout:</b><br><br><pre>{stdout}</pre><br><br><br>"
+        reply += f"<b>Stdout:</b><br><br><pre>{stdout}</pre><br>"
         LOGGER.info(f"mediainfo - {cmd} - {stdout}")
     if len(stderr) != 0:
         reply += f"<b>Stderr:</b><br><br><pre>{stderr}</pre>"
