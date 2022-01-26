@@ -1,6 +1,7 @@
 import subprocess
 from telegram import Message
 import re, hashlib, requests, os
+from bot.helper.ext_utils.shortenurl import short_url
 from telegram.ext import CommandHandler
 from bot import LOGGER, VIRUSTOTAL_API, VIRUSTOTAL_FREE, dispatcher, app
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -124,9 +125,7 @@ def getMD5(path):
 
 
 def validateValue(result, value):
-    try:
-        result[value]
-        return True
+    try: return result[value]
     except: return False
 
 
@@ -136,14 +135,14 @@ def getResultAsReadable(result):
         return "Something went wrong. Check Logs."
     someInfo = ""
     if validateValue(result, 'verbose_msg'):
-        go = "Scanned." if "Scan finished" in result['verbose_msg'] else result['verbose_msg']
-        someInfo += f"\nMessage: <code>{go}</code>"
+        go = None if "Scan finished" in result['verbose_msg'] else result['verbose_msg']
+        if go: someInfo += f"\nMessage: <code>{go}</code>"
     if validateValue(result, 'scan_id'): someInfo += f"\nScan ID: <code>{result['scan_id']}</code>"
     if validateValue(result, 'scan_date'): someInfo += f"\nDate: <code>{result['scan_date']}</code>"
     if validateValue(result, 'md5'): someInfo += f"\nMD5: <code>{result['md5']}</code>"
     if validateValue(result, 'sha1'): someInfo += f"\nSHA1: <code>{result['sha1']}</code>"
     if validateValue(result, 'sha256'): someInfo += f"\nSHA256: <code>{result['sha256']}</code>"
-    if validateValue(result, 'permalink'): someInfo += f"\nLink: {result['permalink']}"
+    if validateValue(result, 'permalink'): someInfo += f"\nLink: {short_url(result['permalink'])}"
     if validateValue(result, 'scans'):
         pos = []
         neg = []

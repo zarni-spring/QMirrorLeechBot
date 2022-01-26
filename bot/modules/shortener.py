@@ -6,23 +6,44 @@ from bot import dispatcher
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage, deleteMessage, sendPhoto, editMessage
 
+def getListAsString(liste, splitter = ","):
+    toret = ""
+    for i, item in enumerate(liste):
+        toret += f"<code>{item}</code>"
+        if i != len(liste)-1: toret += f"{splitter} "
+    return toret
+
+
 def shortener(update, context):
     message = update.effective_message
     sent = sendMessage("Shortening", context.bot, update)
     link = None
+    domain = None
     if message.reply_to_message: link = message.reply_to_message.text
     else:
-        link = message.text.split(' ', 1)
-        if len(link) != 2:
+        link = message.text.split(' ')
+        if len(link) < 2 or len(link) > 3:
+            apireq = ["shorte.st", "bc.vc", "pubiza", "linkvertise", "bit.ly", "post", "cutt.ly", "adf.ly", "shortcm", "tinycc", "tinyurl", "ouo.io"]
+            free = ["v.gd", "da.gd", "is.gd", "ttm.sh", "clck.ru", "chilp.it", "osdb", "owly"]
+            apireq = getListAsString(apireq)
+            free = getListAsString(free)
             help_msg = "<b>Send link after command:</b>"
             help_msg += f"\n<code>/{BotCommands.ShortenerCommand}" + " {link}" + "</code>"
+            help_msg += "\n<b>Select shortener:</b>"
+            help_msg += f"\n<code>/{BotCommands.ShortenerCommand} is.gd " + " {link}" + "</code>"
             help_msg += "\n<b>By replying to message (including link):</b>"
             help_msg += f"\n<code>/{BotCommands.ShortenerCommand}" + " {message}" + "</code>"
+            help_msg += "\nAll supported domains: " + free 
+            help_msg += "\nRequires APIKEY: " + apireq
             return editMessage(help_msg, sent)
-        link = link[1]
+        if len(link) == 2:
+            link = link[1]
+        if len(link) == 3:
+            domain = link[1]
+            link = link[2]
     try: link = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", link)[0]
     except TypeError: return editMessage('Not a valid link.', sent)
-    return editMessage(short_url(link), sent)
+    return editMessage(short_url(link, domain), sent)
 
 
 shortener_handler = CommandHandler(BotCommands.ShortenerCommand, shortener,

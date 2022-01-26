@@ -10,13 +10,14 @@ from urllib3 import disable_warnings
 
 from bot import LOGGER, SHORTENER, SHORTENER_API
 
-
-def short_url(longurl):
-    if not SHORTENER: return longurl
-    elif ("v.gd" in SHORTENER) or ("is.gd" in SHORTENER):
+def short_url(longurl, spes=None):
+    if spes: tempvar = spes
+    else: tempvar = SHORTENER
+    if not tempvar: return longurl
+    elif ("v.gd" in tempvar) or ("is.gd" in tempvar):
         try:
             url = quote(longurl)
-            response = rget(f"https://{SHORTENER}/create.php?format=json&url={url}&logstats=1")
+            response = rget(f"https://{tempvar}/create.php?format=json&url={url}&logstats=1")
             if response.ok:
                 if 'shorturl' in response.json(): return response.json()['shorturl']
             else:
@@ -25,32 +26,32 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "da.gd" in SHORTENER:
+    elif "da.gd" in tempvar:
         try: return pyShortener().dagd.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "ttm.sh" in SHORTENER:
+    elif "ttm.sh" in tempvar:
         try: return pyShortener(domain='ttm.sh').nullpointer.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "clck.ru" in SHORTENER:
+    elif "clck.ru" in tempvar:
         try: return pyShortener().clckru.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "chilp.it" in SHORTENER:
+    elif "chilp.it" in tempvar:
         try: return pyShortener().chilpit.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "osdb" in SHORTENER:
+    elif "osdb" in tempvar:
         try: return pyShortener().osdb.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             return longurl
-    elif "owly" in SHORTENER:
+    elif "owly" in tempvar:
         try: return pyShortener().owly.short(longurl)
         except Exception as e:
             LOGGER.error(e)
@@ -59,17 +60,17 @@ def short_url(longurl):
     # requires shortener api
 
     if not SHORTENER_API: return longurl
-    elif "shorte.st" in SHORTENER:
+    elif "shorte.st" in tempvar:
         disable_warnings()
         link = rget(f'http://api.shorte.st/stxt/{SHORTENER_API}/{longurl}', verify=False).text
-    elif "bc.vc" in SHORTENER: # sample SHORTENER_API 2dgdg5f1fgag7cg6f0622&uid=45634
+    elif "bc.vc" in tempvar: # sample SHORTENER_API 2dgdg5f1fgag7cg6f0622&uid=45634
         url = quote(b64encode(longurl.encode("utf-8")))
         try:
             link = rget(f"https://bc.vc/api.php?key={SHORTENER_API}&url={url}", verify=False).text
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "pubiza" in SHORTENER:
+    elif "pubiza" in tempvar:
         try:
             url = quote(b64encode(longurl.encode("utf-8")))
             key, tip = SHORTENER_API.split(' ')
@@ -77,7 +78,7 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "linkvertise" in SHORTENER:
+    elif "linkvertise" in tempvar:
         url = quote(b64encode(longurl.encode("utf-8")))
         linkvertise = [
             f"https://link-to.net/{SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
@@ -85,7 +86,7 @@ def short_url(longurl):
             f"https://direct-link.net/{SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
             f"https://file-link.net/{SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}"]
         link = random.choice(linkvertise)
-    elif "bitly.com" in SHORTENER:
+    elif "bitly.com" in tempvar:
         try:
             shorten_url = "https://api-ssl.bit.ly/v4/shorten"
             params = {"long_url": longurl}
@@ -95,21 +96,21 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "post" in SHORTENER:
+    elif "post" in tempvar:
         try:
             s = pyShortener(api_key=SHORTENER_API)
             link = s.post.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "cutt.ly" in SHORTENER:
+    elif "cutt.ly" in tempvar:
         try:
             s = pyShortener(api_key=SHORTENER_API)
             link = s.cuttly.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "adf.ly" in SHORTENER:
+    elif "adf.ly" in tempvar:
         try:
             key, uid = SHORTENER_API.split(' ')
             s = pyShortener(api_key=key,user_id=uid)
@@ -117,7 +118,7 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "shortcm" in SHORTENER:
+    elif "shortcm" in tempvar:
         try:
             api_key, domain = SHORTENER_API.split(' ')
             s = pyShortener(api_key=api_key, domain=domain)
@@ -125,7 +126,7 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "tinycc" in SHORTENER:
+    elif "tinycc" in tempvar:
         try:
             api_key, login = SHORTENER_API.split(' ')
             s = pyShortener(api_key=api_key, login=login)
@@ -133,20 +134,20 @@ def short_url(longurl):
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "tinyurl" in SHORTENER:
+    elif "tinyurl" in tempvar:
         try:
             link = pyShortener().tinyurl.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             link = longurl
-    elif "ouo.io" in SHORTENER:
+    elif "ouo.io" in tempvar:
         disable_warnings()
         try: link = rget(f'http://ouo.io/api/{SHORTENER_API}?s={longurl}', verify=False).text
         except Exception as e:
             LOGGER.error(e)
             link = longurl
     else:
-        try: link = rget(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={quote(longurl)}&format=text').text
+        try: link = rget(f'https://{tempvar}/api?api={SHORTENER_API}&url={quote(longurl)}&format=text').text
         except Exception as e:
             LOGGER.error(e)
             link = longurl
