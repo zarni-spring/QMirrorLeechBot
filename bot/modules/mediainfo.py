@@ -43,10 +43,8 @@ def mediainfo(update, context):
     if not file: return editMessage("Error when downloading. Try again later.", sent)
     cmd = f'mediainfo "{file}"'
     LOGGER.info(cmd)
-    try: os.remove(file)
-    except: pass
     process = run(cmd, capture_output=True, shell=True)
-    reply = f"<b>MediaInfo: {filename}</b><br>"
+    reply = f"<b>MediaInfo: {file.file_name}</b><br>"
     stderr = process.stderr.decode()
     stdout = process.stdout.decode()
     if len(stdout) != 0:
@@ -55,8 +53,11 @@ def mediainfo(update, context):
     if len(stderr) != 0:
         reply += f"<b>Stderr:</b><br><br><pre>{stderr}</pre>"
         LOGGER.error(f"mediainfo - {cmd} - {stderr}")
+    try: os.remove(file)
+    except: pass
     help = telegraph.create_page(title='MediaInfo', content=reply)["path"]
-    editMessage(short_url(f"https://telegra.ph/{help}"), sent)
+    if CustomFilters.sudo_user or CustomFilters.owner_filter: editMessage(f"https://telegra.ph/{help}", sent)
+    else: editMessage(short_url(f"https://telegra.ph/{help}"), sent)
 
 
 mediainfo_handler = CommandHandler(BotCommands.MediaInfoCommand, mediainfo,
