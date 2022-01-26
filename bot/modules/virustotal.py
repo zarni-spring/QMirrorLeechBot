@@ -118,14 +118,13 @@ def checkFile(path):
             else: return "Detections: " + ", ".join(stro) + details
         elif result and 'scan_id' in result:
             stro = ""
-            stro += result['verbose_msg']
-            stro += "\nScan ID: " + result['scan_id']
-            stro += "\nMD5: " + result['md5']
-            stro += "\nSHA1: " + result['sha1']
-            stro += "\nSHA256: " + result['sha256']
-            stro += "\nLink: " + result['permalink']
-            if len(stro) == 0: print("hata")
-            else: return stro
+            stro += f"Result: <code>{result['verbose_msg']}</code>"
+            stro += f"\nScan ID: <code>{result['scan_id']}</code"
+            stro += f"\nMD5: <code>{result['md5']}</code"
+            stro += f"\nSHA1: <code>{result['sha1']}</code"
+            stro += f"\nSHA256: <code>{result['sha256']}</code"
+            stro += "\nLink: {result['permalink']}"
+            return stro
         else:
             LOGGER.error(result)
             return "Something went wrong. Check Logs."
