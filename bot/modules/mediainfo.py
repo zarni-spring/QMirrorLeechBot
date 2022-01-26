@@ -15,6 +15,13 @@ from bot.helper.ext_utils.telegraph_helper import telegraph
 def mediainfo(update, context):
     message:Message = update.effective_message
     mediamessage = message.reply_to_message
+    # mediainfo control +
+    cmd = 'mediainfo'
+    process = run(cmd, capture_output=True, shell=True)
+    stderr = process.stderr.decode()
+    stdout = process.stdout.decode()
+    if stderr: return LOGGER.error("mediainfo not installed. Read readme.")
+    # mediainfo control -
     help_msg = "\n<b>By replying to message (including media):</b>"
     help_msg += f"\n<code>/{BotCommands.MediaInfoCommand}" + " {message}" + "</code>"
     if not mediamessage: return sendMessage(help_msg, context.bot, update)
