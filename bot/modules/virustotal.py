@@ -69,15 +69,20 @@ def upload_file(file_path):
         LOGGER.error("VirusTotal upload_file")
         return None
 
-def get_result(file_path, file_hash):
+def get_result(file_path):
     '''
     Uoloading a file and getting the approval msg from VT or fetching existing report
     :param file_path: file's path
     :param file_hash: file's hash - md5/sha1/sha256
     :return: VirusTotal result json / None upon error
     '''
+    hash = None
+    if os.path.isfile(file_path): hash = getMD5(path=file_path)
+    try: hash = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", file_path)[0]
+    except Exception: hash = None
+    if not hash: hash = file_path
     try:
-        report = get_report(file_hash)
+        report = get_report(hash)
         LOGGER.info(report)
         if report:
             LOGGER.info("[INFO] Report found.")
@@ -107,20 +112,25 @@ def getResultAsReadable(result):
         for i in scans:
             if not bool((scans[i]['detected'])): continue
             stro.append(i)
-        details = "\nLink: " + result['permalink'] + \
-            "\nTotal: " + str(result['total'])  + \
+        details = "\nTotal: " + str(result['total'])  + \
             " | Positives: " + str(result['positives']) + \
             " | Negatives: " + str(len(scans) - int(result['positives']))
+        if result['verbose_msg']: details += f"Message: <code>{result['verbose_msg']}</code>"
+        if result['scan_id']: details += f"\nScan ID: <code>{result['scan_id']}</code>"
+        if result['md5']: details += f"\nMD5: <code>{result['md5']}</code>"
+        if result['sha1']: details += f"\nSHA1: <code>{result['sha1']}</code>"
+        if result['sha256']: details += f"\nSHA256: <code>{result['sha256']}</code>"
+        if result['permalink']: details += f"\nLink: {result['permalink']}"
         if len(stro) == 0: return "File is clean like a baby" + details
         else: return "Detections: " + ", ".join(stro) + details
     elif result and 'scan_id' in result:
         stro = ""
-        stro += f"Message: <code>{result['verbose_msg']}</code>"
-        stro += f"\nScan ID: <code>{result['scan_id']}</code>"
-        stro += f"\nMD5: <code>{result['md5']}</code>"
-        stro += f"\nSHA1: <code>{result['sha1']}</code>"
-        stro += f"\nSHA256: <code>{result['sha256']}</code>"
-        stro += f"\nLink: {result['permalink']}"
+        if result['verbose_msg']: stro += f"Message: <code>{result['verbose_msg']}</code>"
+        if result['scan_id']: stro += f"\nScan ID: <code>{result['scan_id']}</code>"
+        if result['md5']: stro += f"\nMD5: <code>{result['md5']}</code>"
+        if result['sha1']: stro += f"\nSHA1: <code>{result['sha1']}</code>"
+        if result['sha256']: stro += f"\nSHA256: <code>{result['sha256']}</code>"
+        if result['permalink']: stro += f"\nLink: {result['permalink']}"
         return stro
     else:
         LOGGER.error(result)
@@ -138,24 +148,6 @@ def humanbytes(size, byte=True):
     return f"{round(size, 2)} {units[zero]}"
 
 
-def checkFile(path):
-    if not os.path.isfile(path): return None
-    hash = getMD5(path=path)
-    try:
-        result = get_result(path, hash)
-        return getResultAsReadable(result)
-    except FileNotFoundError as e:
-        LOGGER.info(e)
-
-
-def checkURL(url):
-    try:
-        result = get_result(None, url)
-        return getResultAsReadable(result)
-    except FileNotFoundError as e:
-        LOGGER.info(e)
-
-
 def virustotal(update, context):
     if not VIRUSTOTAL_API: return LOGGER.error("VIRUSTOTAL_API not provided.")
     message = update.effective_message
@@ -168,40 +160,28 @@ def virustotal(update, context):
     help_msg += f"\n<code>/{BotCommands.VirusTotalCommand}" + " {message}" + "</code>"
     sent = sendMessage('Running VirusTotal Scan. Wait for finish.', context.bot, update)
     link = None
-    if not message.reply_to_message:
+    if message.reply_to_message:
+        if message.reply_to_message.document: # file
+            maxsize = 210*1024*1024
+            if VIRUSTOTAL_FREE: maxsize = 32*1024*1024
+            if message.reply_to_message.document.file_size > maxsize:
+                return editMessage(f"File limit is {humanbytes(maxsize)}", sent)
+            try:
+                editMessage(f"Trying to download. Please wait.", sent)
+                filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
+                link = app.download_media(message=message.reply_to_message.document, file_name=filename)
+            except Exception as e: LOGGER.error(e)
+        else: link = message.reply_to_message.text
+    else:
         link = message.text.split(' ', 1)
         if len(link) != 2: link = None
         else: link = link[1]
-    elif message.reply_to_message:
-        link = message.reply_to_message.text
-    try: link = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", link)[0]
-    except Exception as e:
-        LOGGER.error(e)
-        link = None
-    if link: return editMessage(checkURL(link), sent)
-    elif message.reply_to_message and message.reply_to_message.document:
-        file = None
-        maxsize = 210*1024*1024
-        if VIRUSTOTAL_FREE: maxsize = 32*1024*1024
-        if message.reply_to_message.document.file_size > maxsize:
-            return editMessage(f"File limit is {humanbytes(maxsize)}", sent)
-        try:
-            editMessage(f"Trying to download. Please wait.", sent)
-            filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
-            file = app.download_media(message=message.reply_to_message.document, file_name=filename)
-        except Exception as e:
-            LOGGER.error(e)
-            file = None
-        if file:
-            ret = checkFile(file)
-            if ret: editMessage(ret, sent)
-            else: editMessage("Something went wrong.", sent)
-            try: os.remove(file)
-            except: pass
-        else: return editMessage("Error when downloading file.", sent)
-    elif message.reply_to_message and message.reply_to_message.text:
-        editMessage(help_msg, sent)
-    
+    if not link:
+        editMessage("Some error exceed. Please try again later.", sent)
+        try: os.remove(link)
+        except: pass
+    ret = getResultAsReadable(get_result(link))
+    return editMessage(ret, sent)
 
 
 virustotal_handler = CommandHandler(BotCommands.VirusTotalCommand, virustotal,
