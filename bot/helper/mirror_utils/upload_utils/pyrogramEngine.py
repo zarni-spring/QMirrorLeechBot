@@ -67,22 +67,19 @@ class TgUploader:
         keption = DOWNLOAD_DIR
         if not keption.endswith('/'): keption = keption + '/'
         if not keption.startswith('/'): keption = '/' + keption
+        keption = up_path.replace(DOWNLOAD_DIR, '', 1) 
         zo = keption
         while True:
-            LOGGER.info("zo:" + zo)
-            if zo == '/': break
+            if ospath.dirname(zo) == '/': break
             else: zo = ospath.dirname(zo)
-        if zo.startswith('/'): zo = zo.replace('/', '')
-        LOGGER.info("last zo:" + zo)
-        keption = up_path.replace(DOWNLOAD_DIR + zo, '', 1)
         if CUSTOM_FILENAME:
-            cap_mono = f"{CUSTOM_FILENAME} <code>{keption}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
+            cap_mono = f"{CUSTOM_FILENAME} <code>{zo}</code>" #f"{CUSTOM_FILENAME} <code>{file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)
             up_path = new_path
         else:
-            cap_mono = f"<code>{keption}</code>" #cap_mono = f"<code>{file_}</code>"
+            cap_mono = f"<code>{zo}</code>" #cap_mono = f"<code>{file_}</code>"
         notMedia = False
         thumb = self.__thumb
         try:
