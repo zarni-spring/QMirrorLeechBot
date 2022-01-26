@@ -34,58 +34,56 @@ def TimeFormatter(milliseconds: int) -> str:
 
 def hash(update, context):
     message = update.effective_message
+    help_msg = "<b>Reply to message including file:</b>"
+    help_msg += f"\n<code>/{BotCommands.HashCommand}" + " {message}" + "</code>"
+    if not message.reply_to_message: return sendMessage(help_msg, context.bot, update)
+    if not message.reply_to_message.document: return sendMessage(help_msg, context.bot, update)
     VtPath = os.path.join("Hasher", str(message.from_user.id))
     if not os.path.exists("Hasher"): os.makedirs("Hasher")
     if not os.path.exists(VtPath): os.makedirs(VtPath)
     file = None
-    sent = sendMessage('Running Hasher. Wait for finish.', context.bot, update)
-    if message.reply_to_message and message.reply_to_message.document:
-        try:
-            editMessage(f"Trying to download. Please wait.", sent)
-            filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
-            file = app.download_media(message=message.reply_to_message.document, file_name=filename)
-        except Exception as e:
-            LOGGER.error(e)
-            file = None
-    if file:
-        hashStartTime = time.time()
-        try:
-            with open(file, "rb") as f:
-                md5 = hashlib.md5()
-                sha1 = hashlib.sha1()
-                sha224 = hashlib.sha224()
-                sha256 = hashlib.sha256()
-                sha512 = hashlib.sha512()
-                sha384 = hashlib.sha384()
-                while chunk := f.read(8192):
-                    md5.update(chunk)
-                    sha1.update(chunk)
-                    sha224.update(chunk)
-                    sha256.update(chunk)
-                    sha512.update(chunk)
-                    sha384.update(chunk)
-        except Exception as a:
-            LOGGER.info(str(a))
-            f"Hashing error.\n\n{str(a)}"
-            try: os.remove(file)
-            except: pass
-            return editMessage("Hashing error. Check Logs.", sent)
-        # hash text
-        hashFinishTime = time.time()
-        finishedText = "🍆 File: <code>{}</code>\n".format(message.reply_to_message.document.file_name)
-        finishedText += "🍇 Size: <code>{}</code>\n".format(HumanBytes(message.reply_to_message.document.file_size))
-        finishedText += "🍓 MD5: <code>{}</code>\n".format(md5.hexdigest())
-        finishedText += "🍌 SHA1: <code>{}</code>\n".format(sha1.hexdigest())
-        finishedText += "🍒 SHA224: <code>{}</code>\n".format(sha224.hexdigest())
-        finishedText += "🍑 SHA256: <code>{}</code>\n".format(sha256.hexdigest())
-        finishedText += "🥭 SHA512: <code>{}</code>\n".format(sha512.hexdigest())
-        finishedText += "🍎 SHA384: <code>{}</code>\n".format(sha384.hexdigest())
-        timeTaken = f"🥚 Hash Time: <code>{TimeFormatter((hashFinishTime - hashStartTime) * 1000)}</code>"
-        editMessage(f"{timeTaken}\n\n{finishedText}", sent)
-    else:
-        help_msg = "<b>Reply to message including file:</b>"
-        help_msg += f"\n<code>/{BotCommands.HashCommand}" + " {message}" + "</code>"
-        editMessage(help_msg, sent)
+    sent = sendMessage("Trying to download. Please wait.", context.bot, update)
+    try:
+        filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
+        file = app.download_media(message=message.reply_to_message.document, file_name=filename)
+    except Exception as e:
+        LOGGER.error(e)
+        try: os.remove(file)
+        except: pass
+        file = None
+    if not file: return editMessage("Error when downloading. Try again later.", sent)
+    hashStartTime = time.time()
+    try:
+        with open(file, "rb") as f:
+            md5 = hashlib.md5()
+            sha1 = hashlib.sha1()
+            sha224 = hashlib.sha224()
+            sha256 = hashlib.sha256()
+            sha512 = hashlib.sha512()
+            sha384 = hashlib.sha384()
+            while chunk := f.read(8192):
+                md5.update(chunk)
+                sha1.update(chunk)
+                sha224.update(chunk)
+                sha256.update(chunk)
+                sha512.update(chunk)
+                sha384.update(chunk)
+    except Exception as a:
+        LOGGER.info(str(a))
+        try: os.remove(file)
+        except: pass
+        return editMessage("Hashing error. Check Logs.", sent)
+    # hash text
+    finishedText = "🍆 File: <code>{}</code>\n".format(message.reply_to_message.document.file_name)
+    finishedText += "🍇 Size: <code>{}</code>\n".format(HumanBytes(message.reply_to_message.document.file_size))
+    finishedText += "🍓 MD5: <code>{}</code>\n".format(md5.hexdigest())
+    finishedText += "🍌 SHA1: <code>{}</code>\n".format(sha1.hexdigest())
+    finishedText += "🍒 SHA224: <code>{}</code>\n".format(sha224.hexdigest())
+    finishedText += "🍑 SHA256: <code>{}</code>\n".format(sha256.hexdigest())
+    finishedText += "🥭 SHA512: <code>{}</code>\n".format(sha512.hexdigest())
+    finishedText += "🍎 SHA384: <code>{}</code>\n".format(sha384.hexdigest())
+    timeTaken = f"🥚 Hash Time: <code>{TimeFormatter((time.time() - hashStartTime) * 1000)}</code>"
+    editMessage(f"{timeTaken}\n{finishedText}", sent)
     try: os.remove(file)
     except: pass
 

@@ -10,7 +10,6 @@ from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 def wayback(update, context):
     message:Message = update.effective_message
     link = None
-    sent = sendMessage('Running WayBack. Wait about 20 secs.', context.bot, update)
     if message.reply_to_message: link = message.reply_to_message.text
     else:
         link = message.text.split(' ', 1)
@@ -19,10 +18,11 @@ def wayback(update, context):
             help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {link}" + "</code>"
             help_msg += "\n<b>By replying to message (including link):</b>"
             help_msg += f"\n<code>/{BotCommands.WayBackCommand}" + " {message}" + "</code>"
-            return editMessage(help_msg, sent)
+            return sendMessage(help_msg, context.bot, update)
         link = link[1]
     try: link = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", link)[0]
-    except TypeError: return editMessage('Not a valid link for wayback.', sent)
+    except TypeError: return sendMessage('Not a valid link for wayback.', context.bot, update)
+    sent = sendMessage('Running WayBack. Wait about 20 secs.', context.bot, update)
     retLink = saveWebPage(link)
     if not retLink: return editMessage('Cannot archieved. Try again later.', sent)
     editMessage(f'Saved webpage: {retLink}', sent)

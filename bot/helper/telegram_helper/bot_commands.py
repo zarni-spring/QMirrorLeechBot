@@ -49,5 +49,6 @@ class _BotCommands:
         self.VirusTotalCommand = 'virustotal'
         self.HashCommand = 'hash'
         self.ShortenerCommand = 'short'
+        self.MediaInfoCommand = 'mediainfo'
 
 BotCommands = _BotCommands()

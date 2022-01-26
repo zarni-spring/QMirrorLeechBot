@@ -16,7 +16,6 @@ def getListAsString(liste, splitter = ","):
 
 def shortener(update, context):
     message = update.effective_message
-    sent = sendMessage("Shortening", context.bot, update)
     link = None
     domain = None
     if message.reply_to_message: link = message.reply_to_message.text
@@ -35,15 +34,15 @@ def shortener(update, context):
             help_msg += f"\n<code>/{BotCommands.ShortenerCommand}" + " {message}" + "</code>"
             help_msg += "\nAll supported domains: " + free 
             help_msg += "\nRequires APIKEY: " + apireq
-            return editMessage(help_msg, sent)
+            return sendMessage(help_msg, context.bot, update)
         if len(link) == 2:
             link = link[1]
         if len(link) == 3:
             domain = link[1]
             link = link[2]
     try: link = re.match(r"((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z]){2,6}([a-zA-Z0-9\.\&\/\?\:@\-_=#])*", link)[0]
-    except TypeError: return editMessage('Not a valid link.', sent)
-    return editMessage(short_url(link, domain), sent)
+    except TypeError: return sendMessage('Not a valid link.', context.bot, update)
+    return sendMessage(short_url(link, domain), context.bot, update)
 
 
 shortener_handler = CommandHandler(BotCommands.ShortenerCommand, shortener,

@@ -24,7 +24,7 @@ from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_tim
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, \
-    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener
+    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo
 
 
 def stats(update, context):
@@ -181,12 +181,13 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.HashCommand}</b>: Reply a file to generate hash MD5, SHA1 etc.
 <br><br>
 <b>/{BotCommands.ShortenerCommand}</b>: Reply a link to short it.
+<br><br>
+<b>/{BotCommands.MediaInfoCommand}</b>: Reply a file to get mediainfo.
 '''
 
 help = telegraph.create_page(
-        title='Bot Help',
-        content=help_string_telegraph,
-    )["path"]
+    title='Bot Help',
+    content=help_string_telegraph)["path"]
 
 def bot_help(update, context):
     button = ButtonMaker()
