@@ -169,6 +169,8 @@ help_string_telegraph = f'''<br>
 <br>sites: <code>rarbg, 1337x, yts, etzv, tgx, torlock, piratebay, nyaasi, ettv</code><br><br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
+<b>/{BotCommands.RestartCommand}</b> Restart bot. Use <b>/{BotCommands.RestartCommand} dyno</b> for dyno restarting. Use <b>/{BotCommands.RestartCommand} kill</b> to kill dyno.
+<br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
 <br><br>
 <b>/{BotCommands.WayBackCommand}</b>: Archive a webpage with Wayback Machine
