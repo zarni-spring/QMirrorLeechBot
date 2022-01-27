@@ -65,7 +65,7 @@ def getHerokuDetails(h_api_key, h_app_name):
                     pass
         if AppQuotaUsed > 0: abc += f"Usage {app.name}: {get_readable_time(AppQuotaUsed)}"
         if OtherAppsUsage > 0: abc += f" | Other Apps: {get_readable_time(OtherAppsUsage)}"
-        print(abc)
+        return abc
     except Exception as g:
         LOGGER.error(g)
         return None
