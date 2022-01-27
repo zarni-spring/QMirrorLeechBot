@@ -57,13 +57,16 @@ def restart(update, context):
         dynoKill = False
     if dynoRestart:
         LOGGER.info("Dyno Restarting.")
-        sendMessage("Dyno Restarting.", context.bot, update)
+        restart_message = sendMessage("Dyno Restarting.", context.bot, update)
+        with open(".restartmsg", "w") as f:
+            f.truncate(0)
+            f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
         heroku_conn = heroku3.from_key(HEROKU_API_KEY)
         app = heroku_conn.app(HEROKU_APP_NAME)
         app.restart()
     elif dynoKill:
         LOGGER.info("Killing Dyno. MUHAHAHA")
-        sendMessage("Killing Dyno.", context.bot, update)
+        sendMessage("Killed Dyno.", context.bot, update)
         heroku_conn = heroku3.from_key(HEROKU_API_KEY)
         app = heroku_conn.app(HEROKU_APP_NAME)
         proclist = app.process_formation()
@@ -235,9 +238,9 @@ def main():
         asyrun(start_server_async(PORT))
     # Check if the bot is restarting
     if ospath.isfile(".restartmsg"):
-        with open(".restartmsg") as f:
-            chat_id, msg_id = map(int, f)
-        bot.edit_message_text("Restarted successfully.", chat_id, msg_id)
+        with open(".restartmsg") as f: chat_id, msg_id = map(int, f)
+        try: bot.edit_message_text("Restarted successfully.", chat_id, msg_id)
+        except Exception as e: LOGGER.error(e)
         osremove(".restartmsg")
     elif OWNER_ID:
         try:
