@@ -13,7 +13,7 @@ from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 import time as taym
 from wserver import start_server_async
-from bot import bot, app, dispatcher, updater, botStartTime, \
+from bot import HEROKU_API_KEY, HEROKU_APP_NAME, bot, app, dispatcher, updater, botStartTime, \
     IGNORE_PENDING_REQUESTS, IS_VPS, PORT, alive, web, a2c, \
     OWNER_ID, AUTHORIZED_CHATS, LOGGER, Interval, nox, rss_session, AUTO_DELETE_MESSAGE_DURATION
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
@@ -25,7 +25,14 @@ from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, \
     speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo, stats
-
+try: import heroku3
+except ModuleNotFoundError: srun("pip install heroku3", capture_output=False, shell=True)
+try: import heroku3
+except Exception as f:
+    LOGGER.warning("heroku3 cannot imported. add to your deployer requirements.txt file.")
+    LOGGER.warning(f)
+    HEROKU_APP_NAME = None
+    HEROKU_API_KEY = None
 
 def start(update, context):
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
@@ -38,25 +45,40 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
         sendMarkup('Not authorized user.', context.bot, update, None)
 
 def restart(update, context):
-    restart_message = sendMessage("Restarting...", context.bot, update)
-    if Interval:
-        Interval[0].cancel()
-    alive.kill()
-    procs = psprocess(web.pid)
-    for proc in procs.children(recursive=True):
-        proc.kill()
-    procs.kill()
-    clean_all()
-    srun(["python3", "update.py"])
-    nox.kill()
-    a2cproc = psprocess(a2c.pid)
-    for proc in a2cproc.children(recursive=True):
-        proc.kill()
-    a2cproc.kill()
-    with open(".restartmsg", "w") as f:
-        f.truncate(0)
-        f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
-    osexecl(executable, executable, "-m", "bot")
+    cmd = update.effective_message.text.split(' ', 1)
+    dynoRestart = False
+    if len(cmd) == 1: dynoRestart = cmd[1].lower().startswith('d')
+    if (not HEROKU_API_KEY) or (not HEROKU_APP_NAME):
+        LOGGER.info("If you want Heroku features, fill HEROKU_APP_NAME HEROKU_API_KEY vars.")
+        dynoRestart = False
+    if not dynoRestart:
+        LOGGER.info("Normally Restarting.")
+        restart_message = sendMessage("Normally Restarting.", context.bot, update)
+        if Interval:
+            Interval[0].cancel()
+        alive.kill()
+        procs = psprocess(web.pid)
+        for proc in procs.children(recursive=True):
+            proc.kill()
+        procs.kill()
+        clean_all()
+        srun(["python3", "update.py"])
+        nox.kill()
+        a2cproc = psprocess(a2c.pid)
+        for proc in a2cproc.children(recursive=True):
+            proc.kill()
+        a2cproc.kill()
+        with open(".restartmsg", "w") as f:
+            f.truncate(0)
+            f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
+        osexecl(executable, executable, "-m", "bot")
+    else:
+        LOGGER.info("Dyno Restarting.")
+        sendMessage("Dyno Restarting.", context.bot, update)
+        heroku_conn = heroku3.from_key(HEROKU_API_KEY)
+        app = heroku_conn.app(HEROKU_APP_NAME)
+        app.restart()
+
 
 
 def ping(update, context):
