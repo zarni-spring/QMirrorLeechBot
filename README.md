@@ -21,7 +21,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - URL Shortener
 - MediaInfo (To use, add `RUN apt install mediainfo -y` into your deployer Dockerfile. Do not ask me.)
 - Heroku Usage (To use fill `HEROKU_API_KEY` `HEROKU_APP_NAME`)
-- Dyno restarter (To use fill `HEROKU_API_KEY` `HEROKU_APP_NAME`. Usage: `/restart dyno`)
+- Dyno restarter (To use fill `HEROKU_API_KEY` `HEROKU_APP_NAME`. Usage: `/restart dyno`. This will update your bot to latest version, re-set your configs with your new values.)
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
   - Required signup: `shorte.st`, `bc.vc`, `pubiza`, `linkvertise`, `bit.ly`, `post`, `cutt.ly`, `adf.ly`, `shortcm`, `tinycc`, `tinyurl`, `ouo.io`
