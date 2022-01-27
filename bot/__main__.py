@@ -64,7 +64,6 @@ def ping(update, context):
     reply = sendMessage("Starting Ping", context.bot, update)
     end_time = int(round(time() * 1000))
     editMessage(f'{end_time - start_time} ms', reply)
-    Thread(target=auto_delete_message, args=(context.bot, update.message, reply)).start()
 
 
 def log(update, context):

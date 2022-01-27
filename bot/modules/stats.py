@@ -22,7 +22,7 @@ def getHerokuDetails(h_api_key, h_app_name):
     except Exception as f:
         LOGGER.warning("heroku3 cannot imported. add to your deployer requirements.txt file.")
         LOGGER.warning(f)
-        return
+        return None
     if (not h_api_key) or (not h_app_name): return None
     try:
         heroku_api = "https://api.heroku.com"
@@ -100,8 +100,7 @@ def stats(update, context):
             f'<b>Total Upload:</b> {sent} | <b>Total Download:</b> {recv}\n'
     heroku = getHerokuDetails(HEROKU_API_KEY, HEROKU_APP_NAME)
     if heroku: stats += heroku
-    reply_message = sendMessage(stats, context.bot, update)
-    Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
+    sendMessage(stats, context.bot, update)
 
 stats_handler = CommandHandler(BotCommands.StatsCommand, stats,
     filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
