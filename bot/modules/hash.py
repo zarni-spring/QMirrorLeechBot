@@ -52,8 +52,8 @@ def hash(update, context):
     if not os.path.exists(VtPath): os.makedirs(VtPath)
     sent = sendMessage("Trying to download. Please wait.", context.bot, update)
     try:
-        filename = os.path.join(VtPath, message.reply_to_message.document.file_name)
-        file = app.download_media(message=message.reply_to_message.document, file_name=filename)
+        filename = os.path.join(VtPath, file.file_name)
+        file = app.download_media(message=file, file_name=filename)
     except Exception as e:
         LOGGER.error(e)
         try: os.remove(file)
@@ -82,8 +82,8 @@ def hash(update, context):
         except: pass
         return editMessage("Hashing error. Check Logs.", sent)
     # hash text
-    finishedText = "🍆 File: <code>{}</code>\n".format(message.reply_to_message.document.file_name)
-    finishedText += "🍇 Size: <code>{}</code>\n".format(HumanBytes(message.reply_to_message.document.file_size))
+    finishedText = "🍆 File: <code>{}</code>\n".format(file.file_name)
+    finishedText += "🍇 Size: <code>{}</code>\n".format(HumanBytes(file.file_size))
     finishedText += "🍓 MD5: <code>{}</code>\n".format(md5.hexdigest())
     finishedText += "🍌 SHA1: <code>{}</code>\n".format(sha1.hexdigest())
     finishedText += "🍒 SHA224: <code>{}</code>\n".format(sha224.hexdigest())
