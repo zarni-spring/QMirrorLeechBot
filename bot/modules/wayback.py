@@ -2,6 +2,7 @@ from telegram import Message
 import waybackpy, re, random
 from telegram.ext import CommandHandler
 from bot import LOGGER, dispatcher
+from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
@@ -25,7 +26,7 @@ def wayback(update, context):
     sent = sendMessage('Running WayBack. Wait about 20 secs.', context.bot, update)
     retLink = saveWebPage(link)
     if not retLink: return editMessage('Cannot archieved. Try again later.', sent)
-    editMessage(f'Saved webpage: {retLink}', sent)
+    editMessage(f'Saved webpage: {short_url(retLink)}', sent)
 
 
 def saveWebPage(pageurl:str):
@@ -66,7 +67,8 @@ def getRandomUserAgent():
     "Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.7.62 Version/11.01",
     "Opera/9.80 (X11; Linux x86_64; U; pl) Presto/2.7.62 Version/11.00",
     "Opera/9.80 (X11; Linux x86_64; U; Ubuntu/10.10 (maverick); pl) Presto/2.7.62 Version/11.01",
-    "Opera/9.80 (X11; U; Linux i686; en-US; rv:1.9.2.3) Presto/2.2.15 Version/10.10"
+    "Opera/9.80 (X11; U; Linux i686; en-US; rv:1.9.2.3) Presto/2.2.15 Version/10.10",
+    "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.117 Mobile Safari/537.36"
     ]
     return agents[random.randint(0, len(agents)-1)]
 

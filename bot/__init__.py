@@ -372,13 +372,15 @@ except KeyError:
     WEB_PINCODE = False
 try:
     SHORTENER = getConfig('SHORTENER')
+    LOGGER.info(f"using SHORTENER: {SHORTENER}")
 except Exception as e:
-    LOGGER.info(f"SHORTENER is None: {str(e)}")
+    LOGGER.info(f"no using SHORTENER")
     SHORTENER = None
 try:
     SHORTENER_API = getConfig('SHORTENER_API')
+    LOGGER.info("using SHORTENER_API")
 except Exception as e:
-    LOGGER.info(f"SHORTENER_API is None: {str(e)}")
+    LOGGER.warning("no using SHORTENER_API")
     SHORTENER_API = None
 if SHORTENER_API and (not SHORTENER): # if not enter shortener
     LOGGER.info("You did not entered SHORTENER. SHORTENER will not work.")
@@ -549,9 +551,15 @@ try:
 except KeyError:
     VIRUSTOTAL_FREE = True
 
-LOGGER.info(f"SHORTENER: {SHORTENER}")
-go = "True" if SHORTENER_API else "False"
-LOGGER.info(f"SHORTENER_API: {go}")
+try:
+    HEROKU_API_KEY = getConfig('HEROKU_API_KEY')
+    HEROKU_APP_NAME = getConfig('HEROKU_APP_NAME')
+    if len(HEROKU_API_KEY) == 0 or len(HEROKU_APP_NAME) == 0:
+        raise KeyError
+except KeyError:
+    LOGGER.warning("Heroku details not entered.")
+    HEROKU_API_KEY = None
+    HEROKU_APP_NAME = None
 
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot

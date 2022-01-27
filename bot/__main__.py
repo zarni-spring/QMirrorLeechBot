@@ -24,44 +24,7 @@ from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_tim
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, \
-    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo
-
-
-def stats(update, context):
-    currentTime = get_readable_time(time() - botStartTime)
-    total, used, free, disk= disk_usage('/')
-    total = get_readable_file_size(total)
-    used = get_readable_file_size(used)
-    free = get_readable_file_size(free)
-    sent = get_readable_file_size(net_io_counters().bytes_sent)
-    recv = get_readable_file_size(net_io_counters().bytes_recv)
-    cpuUsage = cpu_percent(interval=0.5)
-    p_core = cpu_count(logical=False)
-    t_core = cpu_count(logical=True)
-    swap = swap_memory()
-    swap_p = swap.percent
-    swap_t = get_readable_file_size(swap.total)
-    swap_u = get_readable_file_size(swap.used)
-    memory = virtual_memory()
-    mem_p = memory.percent
-    mem_t = get_readable_file_size(memory.total)
-    mem_a = get_readable_file_size(memory.available)
-    mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>Bot Uptime:</b> {currentTime}\n\n'\
-            f'<b>Total Disk Space:</b> {total}\n'\
-            f'<b>Used:</b> {used} | <b>Free:</b> {free}\n\n'\
-            f'<b>Upload:</b> {sent}\n'\
-            f'<b>Download:</b> {recv}\n\n'\
-            f'<b>CPU:</b> {cpuUsage}%\n'\
-            f'<b>RAM:</b> {mem_p}%\n'\
-            f'<b>DISK:</b> {disk}%\n\n'\
-            f'<b>Physical Cores:</b> {p_core}\n'\
-            f'<b>Total Cores:</b> {t_core}\n\n'\
-            f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_p}%\n'\
-            f'<b>Memory Total:</b> {mem_t}\n'\
-            f'<b>Memory Free:</b> {mem_a}\n'\
-            f'<b>Memory Used:</b> {mem_u}\n'
-    sendMessage(stats, context.bot, update)
+    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo, stats
 
 
 def start(update, context):
@@ -101,6 +64,7 @@ def ping(update, context):
     reply = sendMessage("Starting Ping", context.bot, update)
     end_time = int(round(time() * 1000))
     editMessage(f'{end_time - start_time} ms', reply)
+    Thread(target=auto_delete_message, args=(context.bot, update.message, reply)).start()
 
 
 def log(update, context):
@@ -259,14 +223,11 @@ def main():
                                      filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     help_handler = CommandHandler(BotCommands.HelpCommand,
                                   bot_help, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-    stats_handler = CommandHandler(BotCommands.StatsCommand,
-                                   stats, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
     log_handler = CommandHandler(BotCommands.LogCommand, log, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(ping_handler)
     dispatcher.add_handler(restart_handler)
     dispatcher.add_handler(help_handler)
-    dispatcher.add_handler(stats_handler)
     dispatcher.add_handler(log_handler)
     updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
     LOGGER.info("Bot Started.")

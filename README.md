@@ -19,7 +19,8 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Better file captions. Now writing full path instead of only filename. Before: `Antalya.pdf` After: `Manisa/Antalya.pdf`
 - File Hasher: `MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA512`, `SHA384`
 - URL Shortener
-- MediaInfo (To use, add `RUN apt install mediainfo -y` into your deployer Dockerfile. Do not ask me :P)
+- MediaInfo (To use, add `RUN apt install mediainfo -y` into your deployer Dockerfile. Do not ask me.)
+- Heroku Usage
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
   - Required signup: `shorte.st`, `bc.vc`, `pubiza`, `linkvertise`, `bit.ly`, `post`, `cutt.ly`, `adf.ly`, `shortcm`, `tinycc`, `tinyurl`, `ouo.io`
