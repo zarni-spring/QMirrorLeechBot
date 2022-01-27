@@ -224,13 +224,13 @@ def get_readable_time(seconds: int) -> str:
     (hours, remainder) = divmod(remainder, 3600)
     hours = int(hours)
     if hours != 0:
-        result += f'{hours}h'
+        result += f' {hours}h'
     (minutes, seconds) = divmod(remainder, 60)
     minutes = int(minutes)
     if minutes != 0:
-        result += f'{minutes}m'
+        result += f' {minutes}m'
     seconds = int(seconds)
-    result += f'{seconds}s'
+    result += f' {seconds}s'
     return result
 
 def is_url(url: str):

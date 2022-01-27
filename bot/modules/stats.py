@@ -5,11 +5,9 @@ from bot.helper.ext_utils.bot_utils import get_readable_file_size, get_readable_
 from time import time
 from subprocess import run
 import requests
-import math
-from threading import Thread
 from bot import LOGGER, dispatcher, botStartTime, HEROKU_API_KEY, HEROKU_APP_NAME
 from telegram.ext import CommandHandler
-from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
+from bot.helper.telegram_helper.message_utils import sendMessage
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.modules.wayback import getRandomUserAgent
