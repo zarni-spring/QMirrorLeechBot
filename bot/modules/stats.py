@@ -13,13 +13,16 @@ from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMe
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.modules.wayback import getRandomUserAgent
-try: import heroku3
-except ModuleNotFoundError: run("pip install heroku3", capture_output=False, shell=True)
-try: import heroku3
-except Exception as f: LOGGER.warning("heroku3 cannot imported. add to your deployer requirements.txt file.")
 
 
 def getHerokuDetails(h_api_key, h_app_name):
+    try: import heroku3
+    except ModuleNotFoundError: run("pip install heroku3", capture_output=False, shell=True)
+    try: import heroku3
+    except Exception as f:
+        LOGGER.warning("heroku3 cannot imported. add to your deployer requirements.txt file.")
+        LOGGER.warning(f)
+        return
     if (not h_api_key) or (not h_app_name): return None
     try:
         heroku_api = "https://api.heroku.com"
@@ -98,7 +101,7 @@ def stats(update, context):
             f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_u}% | '\
             f'<b>Memory Total:</b> {mem_t} | '\
             f'<b>Memory Free:</b> {mem_a} | '\
-            f'<b>Memory Used:</b> {mem_u}'
+            f'<b>Memory Used:</b> {mem_u}\n'
     heroku = getHerokuDetails(HEROKU_API_KEY, HEROKU_APP_NAME)
     if heroku: stats += heroku
     reply_message = sendMessage(stats, context.bot, update)
