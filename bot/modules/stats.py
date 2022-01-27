@@ -94,7 +94,7 @@ def stats(update, context):
             f'<b>Memory:</b> {mem_t} | <b>Used:</b> {mem_u} | <b>Free:</b> {mem_a}\n' \
             f'<b>Cores:</b> {t_core} | <b>Physical:</b> {p_core} | <b>Logical:</b> {t_core - p_core}\n' \
             f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_u}% | <b>Free:</b> {swap_f}\n\n'\
-            f'<b>DISK:</b> {disk}% | <b>RAM:</b> {mem_p}% | <b>CPU:</b> {cpuUsage}% | | <b>SWAP:</b> {swap_p}%\n\n' \
+            f'<b>DISK:</b> {disk}% | <b>RAM:</b> {mem_p}% | <b>CPU:</b> {cpuUsage}% | <b>SWAP:</b> {swap_p}%\n\n' \
             f'<b>Total Upload:</b> {sent} | <b>Total Download:</b> {recv}\n\n'
     heroku = getHerokuDetails(HEROKU_API_KEY, HEROKU_APP_NAME)
     if heroku: stats += heroku
