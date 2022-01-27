@@ -38,32 +38,34 @@ def getHerokuDetails(h_api_key, h_app_name):
         path = "/accounts/" + user_id + "/actions/get-quota"
         session = requests.Session()
         result = (session.get(heroku_api + path, headers=headers)).json()
-        # Account Quota
-        quota = result["account_quota"]
+        abc = ""
+        account_quota = result["account_quota"]
         quota_used = result["quota_used"]
-        quota_remain = quota - quota_used
-        quota_percent = math.floor(quota_remain / quota * 100)
-        minutes_remain = quota_remain / 60
-        hours = math.floor(minutes_remain / 60)
-        minutes = math.floor(minutes_remain % 60)
-        day = math.floor(hours / 24)
-
+        quota_remain = account_quota - quota_used
+        abc += f"Account: {get_readable_time(account_quota)} | "
+        abc += f"Used: {get_readable_time(quota_used)} | "
+        abc += f"Free: {get_readable_time(quota_remain)}\n"
         # App Quota
-        Apps = result["apps"]
-        for apps in Apps:
-            if apps.get("app_uuid") == app.id:
-                AppQuotaUsed = apps.get("quota_used") / 60
-                AppPercent = math.floor(apps.get("quota_used") * 100 / quota)
-                break
-        else:
-            AppQuotaUsed = 0
-            AppPercent = 0
-
-        AppHours = math.floor(AppQuotaUsed / 60)
-        AppMinutes = math.floor(AppQuotaUsed % 60)
-        return f"<b>{app.name} Usage:</b> <code>{AppHours}h{AppMinutes}m</code> {AppPercent}%\n" \
-        f"<b>Dyno Remaining:</b> <code>{hours}h{minutes}m</code> {quota_percent}%\n" \
-        f"<b>Estimated Expired:</b> <code>{day}d</code>"
+        AppQuotaUsed = 0
+        OtherAppsUsage = 0
+        for apps in result["apps"]:
+            if str(apps.get("app_uuid")) == str(app.id):
+                try:
+                    AppQuotaUsed = apps.get("quota_used")
+                except Exception as t:
+                    LOGGER.error("error when adding main dyno")
+                    LOGGER.error(t)
+                    pass
+            else:
+                try:
+                    OtherAppsUsage += int(apps.get("quota_used"))
+                except Exception as t:
+                    LOGGER.error("error when adding other dyno")
+                    LOGGER.error(t)
+                    pass
+        if AppQuotaUsed > 0: abc += f"Usage {app.name}: {get_readable_time(AppQuotaUsed)}"
+        if OtherAppsUsage > 0: abc += f" | Other Apps: {get_readable_time(OtherAppsUsage)}"
+        print(abc)
     except Exception as g:
         LOGGER.error(g)
         return None
@@ -83,25 +85,19 @@ def stats(update, context):
     swap_p = swap.percent
     swap_t = get_readable_file_size(swap.total)
     swap_u = get_readable_file_size(swap.used)
+    swap_f = get_readable_file_size(swap.free)
     memory = virtual_memory()
     mem_p = memory.percent
     mem_t = get_readable_file_size(memory.total)
     mem_a = get_readable_file_size(memory.available)
     mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>Bot Uptime:</b> {currentTime} | '\
-            f'<b>Total Disk Space:</b> {total} | '\
-            f'<b>Used:</b> {used} | <b>Free:</b> {free} | '\
-            f'<b>Upload:</b> {sent} | '\
-            f'<b>Download:</b> {recv} | '\
-            f'<b>CPU:</b> {cpuUsage}% | '\
-            f'<b>RAM:</b> {mem_p}% | '\
-            f'<b>DISK:</b> {disk}% | '\
-            f'<b>Physical Cores:</b> {p_core} | '\
-            f'<b>Total Cores:</b> {t_core} | '\
-            f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_u}% | '\
-            f'<b>Memory Total:</b> {mem_t} | '\
-            f'<b>Memory Free:</b> {mem_a} | '\
-            f'<b>Memory Used:</b> {mem_u}\n'
+    stats = f'<b>Bot Uptime:</b> {currentTime}\n'\
+            f'<b>Disk:</b> {total} | <b>Used:</b> {used} | <b>Free:</b> {free}\n' \
+            f'<b>Memory:</b> {mem_t} | <b>Used:</b> {mem_u} | <b>Free:</b> {mem_a}\n' \
+            f'<b>Cores:</b> {t_core} | <b>Physical:</b> {p_core} | <b>Logical:</b> {t_core - p_core}\n' \
+            f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_u}% | <b>Free:</b> {swap_f}\n'\
+            f'<b>DISK:</b> {disk}% | <b>RAM:</b> {mem_p}% | <b>CPU:</b> {cpuUsage}% | | <b>SWAP:</b> {swap_p}%\n' \
+            f'<b>Total Upload:</b> {sent} | <b>Total Download:</b> {recv}\n'
     heroku = getHerokuDetails(HEROKU_API_KEY, HEROKU_APP_NAME)
     if heroku: stats += heroku
     reply_message = sendMessage(stats, context.bot, update)
