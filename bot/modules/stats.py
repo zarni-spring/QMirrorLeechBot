@@ -61,7 +61,8 @@ def getHerokuDetails(h_api_key, h_app_name):
                     LOGGER.error("error when adding other dyno")
                     LOGGER.error(t)
                     pass
-        abc += f"Usage {app.name}: {get_readable_time(AppQuotaUsed)}"
+        LOGGER.info(f"This App: {str(app.name)}")
+        abc += f"App Usage: {get_readable_time(AppQuotaUsed)}"
         abc += f" | Other Apps: {get_readable_time(OtherAppsUsage)}"
         return abc
     except Exception as g:
