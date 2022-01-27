@@ -165,6 +165,7 @@ def get_readable_message():
             if STATUS_LIMIT is not None and index == STATUS_LIMIT:
                 break
         total, used, free, _ = disk_usage('.')
+        total = get_readable_file_size(total)
         free = get_readable_file_size(free)
         used = get_readable_file_size(used)
         currentTime = get_readable_time(time() - botStartTime)
