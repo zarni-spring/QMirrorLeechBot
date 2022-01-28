@@ -9,7 +9,7 @@ from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memo
 from time import time
 from pyrogram import idle
 from sys import executable
-from telegram import ParseMode, InlineKeyboardMarkup
+from telegram import ParseMode, InlineKeyboardMarkup, Update
 from telegram.ext import CommandHandler
 import time as taym
 from wserver import start_server_async
@@ -267,7 +267,7 @@ def main():
     dispatcher.add_handler(restart_handler)
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(log_handler)
-    updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
+    updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS, allowed_updates=Update.ALL_TYPES)
     LOGGER.info("Bot Started.")
     signal.signal(signal.SIGINT, exit_clean_up)
     if rss_session is not None:

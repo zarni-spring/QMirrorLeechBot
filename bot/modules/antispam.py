@@ -41,7 +41,7 @@ def extract_status_change(
 
 
 
-def antispam(update: Update) -> None:
+def antispam(update: Update):
     if update.message.chat.PRIVATE: return
     result = extract_status_change(update.chat_member)
     if result is None: return
@@ -61,8 +61,6 @@ def antispam(update: Update) -> None:
             f"{member_name} is no longer with us. Thanks a lot, {cause_name} ...",
             parse_mode=ParseMode.HTML,
         )
-
-
 
 antispam_handler = ChatMemberHandler(antispam, ChatMemberHandler.CHAT_MEMBER, run_async=True)
 dispatcher.add_handler(antispam_handler)
