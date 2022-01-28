@@ -1,10 +1,8 @@
-from telegram.ext import CommandHandler
-from bot.helper.telegram_helper.filters import CustomFilters
 from bot import LOGGER, dispatcher, app
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage, deleteMessage, sendPhoto, editMessage
 from typing import Tuple, Optional
-
+from telegram.ext import ChatMemberHandler
 from telegram import Update, ChatMember, ParseMode, ChatMemberUpdated
 
 def extract_status_change(
@@ -66,6 +64,5 @@ def antispam(update: Update) -> None:
 
 
 
-antispam_handler = CommandHandler(BotCommands.ShortenerCommand, antispam,
-    filters=CustomFilters.authorized_chat, run_async=True)
+antispam_handler = ChatMemberHandler(antispam, ChatMemberHandler.CHAT_MEMBER, run_async=True)
 dispatcher.add_handler(antispam_handler)
