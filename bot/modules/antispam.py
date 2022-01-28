@@ -42,7 +42,6 @@ def extract_status_change(
 
 
 def antispam(update: Update, context: CallbackContext) -> None:
-    if update.effective_chat.PRIVATE: return
     result = extract_status_change(update.chat_member)
     if result is None: return
     was_member, is_member = result
@@ -50,7 +49,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
     member_name = update.chat_member.new_chat_member.user.mention_html()
 
     if not was_member and is_member:
-        try: app.ban_chat_member(update.effective_chat, update.chat_member.new_chat_member.user.id)
+        try: app.ban_chat_member(update.effective_chat.id, update.chat_member.new_chat_member.user.id)
         except Exception as o: LOGGER.error(o)
         LOGGER.info(
             f"{member_name} was added by {cause_name}. Welcome!",
