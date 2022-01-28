@@ -155,7 +155,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
     if not banned:
         if INTELLIVOID_ANTISPAM: banned = IntelliVoidSpamCheck(update.chat_member.new_chat_member.user.id)
     if not banned: LOGGER.info(f"User is clean: {str(update.chat_member.new_chat_member.user.full_name)}")
-    if banned:
+    else:
         try:
             app.ban_chat_member(group.id, update.chat_member.new_chat_member.user.id)
             success = "Success"
