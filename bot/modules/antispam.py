@@ -1,28 +1,16 @@
 # written by huzunluartemis
 
-from threading import Thread
 from bot import COMBOT_CAS_ANTISPAM, INTELLIVOID_ANTISPAM, LOGGER, SPAMWATCH_ANTISPAM_API, USERGE_ANTISPAM_API, dispatcher, app
-from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
 from telegram.ext import ChatMemberHandler, CallbackContext
 from telegram import Update
 import requests
-from telegram.message import Message
 from telegram.update import Update
 from telegram.error import RetryAfter
-from pyrogram.errors import FloodWait
 from time import sleep
-from asyncore import dispatcher
-import logging
 from typing import Tuple, Optional
+from telegram import Update, Chat, ChatMember, ChatMemberUpdated
+from telegram.ext import CallbackContext, ChatMemberHandler
 
-from telegram import Update, Chat, ChatMember, ParseMode, ChatMemberUpdated
-import telegram
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    CallbackContext,
-    ChatMemberHandler,
-)
 
 
 def extract_status_change(
