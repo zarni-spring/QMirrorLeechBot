@@ -24,7 +24,7 @@ from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_tim
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, \
-    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo, stats
+    speedtest, count, leech_settings, search, rss, wayback, virustotal, hash, shortener, mediainfo, stats, antispam
 try: import heroku3
 except ModuleNotFoundError: srun("pip install heroku3", capture_output=False, shell=True)
 try: import heroku3
