@@ -24,6 +24,10 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Dyno Restarter / Killer (To use fill `HEROKU_API_KEY` `HEROKU_APP_NAME`)
   - Usage: `/restart dyno`. This will update your bot to latest version, re-set your configs with your new values.
   - Usage: `/restart kill`. This will kill your app for save dyno hours.
+- AntiSpam Protections:
+  - SpamWatch AntiSpam: Fill `SPAMWATCH_API` variable.
+  - Combot AntiSpam (CAS): Set `True`
+  - Userge AntiSpam: Fill `USERGE_ANTISPAM_API` variable.
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
   - Required signup: `shorte.st`, `bc.vc`, `pubiza`, `linkvertise`, `bit.ly`, `post`, `cutt.ly`, `adf.ly`, `shortcm`, `tinycc`, `tinyurl`, `ouo.io`

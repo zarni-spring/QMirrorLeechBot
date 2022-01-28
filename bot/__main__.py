@@ -5,7 +5,7 @@ from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun
 from asyncio import run as asyrun
 from threading import Thread
-from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, Process as psprocess
+from psutil import Process as psprocess
 from time import time
 from pyrogram import idle
 from sys import executable

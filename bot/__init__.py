@@ -560,6 +560,28 @@ except KeyError:
     HEROKU_API_KEY = None
     HEROKU_APP_NAME = None
 
+try:
+    SPAMWATCH_API = getConfig('SPAMWATCH_API')
+    if len(SPAMWATCH_API) == 0: raise KeyError
+    else: logging.info('Using SPAMWATCH')
+except KeyError:
+    logging.info('Not using SPAMWATCH')
+    SPAMWATCH_API = None
+
+try:
+    USERGE_ANTISPAM_API = getConfig('USERGE_ANTISPAM_API')
+    if len(USERGE_ANTISPAM_API) == 0: raise KeyError
+    else: logging.info('Using USERGE ANTISPAM')
+except KeyError:
+    logging.info('Not using USERGE ANTISPAM')
+    USERGE_ANTISPAM_API = None
+
+try:
+    COMBOT_CAS = getConfig('COMBOT_CAS')
+    COMBOT_CAS = COMBOT_CAS.lower() == 'true'
+except KeyError:
+    COMBOT_CAS = False
+
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher
