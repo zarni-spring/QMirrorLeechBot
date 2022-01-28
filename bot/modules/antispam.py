@@ -3,49 +3,14 @@
 from threading import Thread
 from bot import COMBOT_CAS_ANTISPAM, INTELLIVOID_ANTISPAM, LOGGER, SPAMWATCH_ANTISPAM_API, USERGE_ANTISPAM_API, dispatcher, app
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
-from typing import Tuple, Optional
 from telegram.ext import ChatMemberHandler, CallbackContext
-from telegram import Update, ChatMember, ChatMemberUpdated
+from telegram import Update
 import requests
-
-def extract_status_change(
-    chat_member_update: ChatMemberUpdated,
-) -> Optional[Tuple[bool, bool]]:
-    """Takes a ChatMemberUpdated instance and extracts whether the 'old_chat_member' was a member
-    of the chat and whether the 'new_chat_member' is a member of the chat. Returns None, if
-    the status didn't change.
-    """
-    status_change = chat_member_update.difference().get("status")
-    old_is_member, new_is_member = chat_member_update.difference().get("is_member", (None, None))
-
-    if status_change is None: return None
-
-    old_status, new_status = status_change
-    was_member = (
-        old_status
-        in [
-            ChatMember.MEMBER,
-            ChatMember.CREATOR,
-            ChatMember.ADMINISTRATOR,
-        ]
-        or (old_status == ChatMember.RESTRICTED and old_is_member is True)
-    )
-    is_member = (
-        new_status
-        in [
-            ChatMember.MEMBER,
-            ChatMember.CREATOR,
-            ChatMember.ADMINISTRATOR,
-        ]
-        or (new_status == ChatMember.RESTRICTED and new_is_member is True)
-    )
-
-    return was_member, is_member
 
 
 def SpamWatchAntiSpamCheck(userid):
-    userid = str(userid)
     if not SPAMWATCH_ANTISPAM_API: return None
+    userid = str(userid)
     api = 'https://api.spamwat.ch'
     session = requests.Session()
     session.headers.update({"Authorization": f"Bearer {SPAMWATCH_ANTISPAM_API}"})
@@ -69,6 +34,7 @@ def SpamWatchAntiSpamCheck(userid):
 
 def CombotAntiSpamCheck(userid):
     if not COMBOT_CAS_ANTISPAM: return None
+    userid = str(userid)
     api = f"https://api.cas.chat/check?user_id={userid}"
     session = requests.Session()
     req = session.request('get', api)
@@ -82,12 +48,14 @@ def CombotAntiSpamCheck(userid):
         time_added = result['time_added']
         info += f"\nOffenses: {offenses}"
         info += f"\nTime: {time_added}"
+        info += f"\nCheck Link: https://cas.chat/query?u={userid}"
     except: pass
     return info
 
 
 def UsergeAntiSpamCheck(userid):
     if not USERGE_ANTISPAM_API: return None
+    userid = str(userid)
     api = f"https://api.userge.tk/ban?api_key={USERGE_ANTISPAM_API}&user_id={userid}"
     session = requests.Session()
     req = session.request('get', api)
@@ -156,6 +124,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
         if INTELLIVOID_ANTISPAM: banned = IntelliVoidSpamCheck(update.chat_member.new_chat_member.user.id)
     if not banned: LOGGER.info(f"User is clean: {str(update.chat_member.new_chat_member.user.full_name)}")
     else:
+        LOGGER.info(banned)
         try:
             app.ban_chat_member(group.id, update.chat_member.new_chat_member.user.id)
             success = "Success"
@@ -163,12 +132,12 @@ def antispam(update: Update, context: CallbackContext) -> None:
             success = "Unsuccess"
             LOGGER.error(o)
         success = "Unsuccess"
-        swtc = f"\nUser: {member_name}"
-        swtc += f"\nAdded by {cause_name}"
-        swtc += f"\nID: <code>{update.chat_member.new_chat_member.user.id}<\code>"
+        swtc = f"{cause_name} Added: {member_name}"
+        swtc += f"\nID: <code>{str(update.chat_member.new_chat_member.user.id)}<\code>"
         swtc += f"\nBan: {success}"
         swtc += f"\n\n{banned}"
-        reply_message = sendMessage(swtc, context.bot, update)
+        try: sendMessage(swtc, context.bot, update)
+        except Exception as t: LOGGER.error(t)
         # Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
 
 if SPAMWATCH_ANTISPAM_API or COMBOT_CAS_ANTISPAM or USERGE_ANTISPAM_API or INTELLIVOID_ANTISPAM:
