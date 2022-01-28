@@ -140,12 +140,12 @@ def antispam(update: Update, context: CallbackContext) -> None:
     group = update.effective_chat
     a = context.bot.get_chat_member(group.id, context.bot.id).can_restrict_members
     if not a: return LOGGER.warning("Give ban permission to bot for spam api.")
-    result = extract_status_change(update.chat_member)
-    if result is None: return
-    was_member, is_member = result
+    # result = extract_status_change(update.chat_member)
+    # if result is None: return
+    # was_member, is_member = result
     cause_name = update.chat_member.from_user.mention_html()
     member_name = update.chat_member.new_chat_member.user.mention_html()
-    if was_member and (not is_member): return
+    # if was_member and (not is_member): return
     banned = None
     if SPAMWATCH_ANTISPAM_API: banned = SpamWatchAntiSpamCheck(update.chat_member.new_chat_member.user.id)
     elif not banned:
@@ -168,7 +168,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
         swtc += f"\nBan: {success}"
         swtc += f"\n\n{banned}"
         reply_message = sendMessage(swtc, context.bot, update)
-        Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
+        # Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
 
 if SPAMWATCH_ANTISPAM_API or COMBOT_CAS_ANTISPAM or USERGE_ANTISPAM_API or INTELLIVOID_ANTISPAM:
     antispam_handler = ChatMemberHandler(antispam, ChatMemberHandler.CHAT_MEMBER, run_async=True)
