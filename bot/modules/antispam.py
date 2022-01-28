@@ -148,12 +148,13 @@ def antispam(update: Update, context: CallbackContext) -> None:
     # if was_member and (not is_member): return
     banned = None
     if SPAMWATCH_ANTISPAM_API: banned = SpamWatchAntiSpamCheck(update.chat_member.new_chat_member.user.id)
-    elif not banned:
+    if not banned:
         if COMBOT_CAS_ANTISPAM: banned = CombotAntiSpamCheck(update.chat_member.new_chat_member.user.id)
-    elif not banned:
+    if not banned:
         if USERGE_ANTISPAM_API: banned = UsergeAntiSpamCheck(update.chat_member.new_chat_member.user.id)
-    elif not banned:
+    if not banned:
         if INTELLIVOID_ANTISPAM: banned = IntelliVoidSpamCheck(update.chat_member.new_chat_member.user.id)
+    if not banned: LOGGER.info(f"User is clean: {str(update.chat_member.new_chat_member.user.full_name)}")
     if banned:
         try:
             app.ban_chat_member(group.id, update.chat_member.new_chat_member.user.id)
