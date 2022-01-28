@@ -26,7 +26,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
   - Usage: `/restart kill`. This will kill your app for save dyno hours.
 - AntiSpam Protections:
   - SpamWatch AntiSpam: Fill `SPAMWATCH_API` variable.
-  - Combot AntiSpam (CAS): Set `True`
+  - Combot AntiSpam (CAS): Set `COMBOT_CAS` to `True`
   - Userge AntiSpam: Fill `USERGE_ANTISPAM_API` variable.
 - More Shorteners:
   - Not required signup: `v.gd`, `da.gd`, `is.gd`, `ttm.sh`, `clck.ru`, `chilp.it`, `osdb`, `owly`
