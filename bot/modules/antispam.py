@@ -1,6 +1,5 @@
 # written by huzunluartemis
 
-from cmath import inf
 from threading import Thread
 from bot import COMBOT_CAS_ANTISPAM, INTELLIVOID_ANTISPAM, LOGGER, SPAMWATCH_ANTISPAM_API, USERGE_ANTISPAM_API, dispatcher, app
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
@@ -14,7 +13,6 @@ from pyrogram.errors import FloodWait
 from time import sleep
 from asyncore import dispatcher
 import logging
-from turtle import up
 from typing import Tuple, Optional
 
 from telegram import Update, Chat, ChatMember, ParseMode, ChatMemberUpdated
