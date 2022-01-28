@@ -33,7 +33,7 @@ except TypeError:
 
 load_dotenv('config.env', override=True)
 
-if environ.get('UPDATE_EVERYTHING_WHEN_RESTART', True):
+if environ.get('UPDATE_EVERYTHING_WHEN_RESTART', 'true').lower() == 'true':
     packages = [dist.project_name for dist in pkg_resources.working_set]
     subprocess.call("pip install --upgrade " + ' '.join(packages), shell=True)
 

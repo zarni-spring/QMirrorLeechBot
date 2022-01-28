@@ -1,7 +1,7 @@
 # written by huzunluartemis
 
 from threading import Thread
-from bot import COMBOT_CAS, LOGGER, SPAMWATCH_API, USERGE_ANTISPAM_API, dispatcher, app
+from bot import COMBOT_CAS_ANTISPAM, INTELLIVOID_ANTISPAM, LOGGER, SPAMWATCH_ANTISPAM_API, USERGE_ANTISPAM_API, dispatcher, app
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
 from typing import Tuple, Optional
 from telegram.ext import ChatMemberHandler, CallbackContext
@@ -43,12 +43,12 @@ def extract_status_change(
     return was_member, is_member
 
 
-def checkSpamWatch(userid):
+def SpamWatchAntiSpamCheck(userid):
     userid = str(userid)
-    if not SPAMWATCH_API: return None
+    if not SPAMWATCH_ANTISPAM_API: return None
     api = 'https://api.spamwat.ch'
     session = requests.Session()
-    session.headers.update({"Authorization": f"Bearer {SPAMWATCH_API}"})
+    session.headers.update({"Authorization": f"Bearer {SPAMWATCH_ANTISPAM_API}"})
     req = session.request('get', f'{api}/banlist/{userid}')
     if not req.status_code == 200: return None
     info = "#Spamwatch Ban Info:"
@@ -68,7 +68,7 @@ def checkSpamWatch(userid):
 
 
 def CombotAntiSpamCheck(userid):
-    if not COMBOT_CAS: return None
+    if not COMBOT_CAS_ANTISPAM: return None
     api = f"https://api.cas.chat/check?user_id={userid}"
     session = requests.Session()
     req = session.request('get', api)
@@ -106,8 +106,37 @@ def UsergeAntiSpamCheck(userid):
     return info
 
 
+def IntelliVoidSpamCheck(userid):
+    if not INTELLIVOID_ANTISPAM: return None
+    userid = str(userid)
+    api = f"https://api.intellivoid.net/spamprotection/v1/lookup?query={userid}"
+    session = requests.Session()
+    req = session.request('get', api)
+    if not bool(req.json()['success']): return None
+    info = "#IntelliVoid Ban Info:"
+    # print(json.dumps(json.loads(req.text), indent=4, sort_keys=True))
+    try:
+        is_potential_spammer = req.json()['results']['attributes']['is_potential_spammer']
+        is_blacklisted = req.json()['results']['attributes']['is_blacklisted']
+        language = req.json()['results']['language_prediction']['language']
+        probability = req.json()['results']['language_prediction']['probability']
+        spam_prediction = req.json()['results']['spam_prediction']['spam_prediction']
+        ham_prediction = req.json()['results']['spam_prediction']['ham_prediction']
+        last_updated = req.json()['results']['last_updated']
+        info += f"\nPotential Spammer: {str(is_potential_spammer)}"
+        info += f"\nBlacklisted: {str(is_blacklisted)}"
+        if language: info += f"\nLanguage: {language}"
+        if probability: info += f"\nProbability: {probability}"
+        if spam_prediction: info += f"\nSpam Prediction: {spam_prediction}"
+        if ham_prediction: info += f"\nHam Prediction: {ham_prediction}"
+        if last_updated: info += f"\nLast Updated: {last_updated}"
+        if language: info += f"\nLanguage: {language}"
+    except: pass
+    return info
+
+
 def antispam(update: Update, context: CallbackContext) -> None:
-    if (not SPAMWATCH_API) and (not COMBOT_CAS) and (not USERGE_ANTISPAM_API): return
+    if (not SPAMWATCH_ANTISPAM_API) and (not COMBOT_CAS_ANTISPAM) and (not USERGE_ANTISPAM_API): return
     group = update.effective_chat
     a = context.bot.get_chat_member(group.id, context.bot.id).can_restrict_members
     if not a: return LOGGER.warning("Give ban permission to bot for spam api.")
@@ -118,11 +147,13 @@ def antispam(update: Update, context: CallbackContext) -> None:
     member_name = update.chat_member.new_chat_member.user.mention_html()
     if was_member and (not is_member): return
     banned = None
-    if SPAMWATCH_API: banned = checkSpamWatch(update.chat_member.new_chat_member.user.id)
+    if SPAMWATCH_ANTISPAM_API: banned = SpamWatchAntiSpamCheck(update.chat_member.new_chat_member.user.id)
     elif not banned:
-        if COMBOT_CAS: banned = CombotAntiSpamCheck(update.chat_member.new_chat_member.user.id)
+        if COMBOT_CAS_ANTISPAM: banned = CombotAntiSpamCheck(update.chat_member.new_chat_member.user.id)
     elif not banned:
         if USERGE_ANTISPAM_API: banned = UsergeAntiSpamCheck(update.chat_member.new_chat_member.user.id)
+    elif not banned:
+        if INTELLIVOID_ANTISPAM: banned = IntelliVoidSpamCheck(update.chat_member.new_chat_member.user.id)
     if banned:
         try:
             app.ban_chat_member(group.id, update.chat_member.new_chat_member.user.id)
@@ -139,7 +170,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
         reply_message = sendMessage(swtc, context.bot, update)
         Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
 
-if SPAMWATCH_API or COMBOT_CAS or USERGE_ANTISPAM_API:
+if SPAMWATCH_ANTISPAM_API or COMBOT_CAS_ANTISPAM or USERGE_ANTISPAM_API or INTELLIVOID_ANTISPAM:
     antispam_handler = ChatMemberHandler(antispam, ChatMemberHandler.CHAT_MEMBER, run_async=True)
     dispatcher.add_handler(antispam_handler)
 else: LOGGER.info('No using any Spam Protection.')

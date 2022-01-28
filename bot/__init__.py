@@ -335,38 +335,31 @@ except KeyError:
     BUTTON_SIX_NAME = None
     BUTTON_SIX_URL = None
 try:
-    STOP_DUPLICATE = getConfig('STOP_DUPLICATE')
-    STOP_DUPLICATE = STOP_DUPLICATE.lower() == 'true'
+    STOP_DUPLICATE = getConfig('STOP_DUPLICATE').lower() == 'true'
 except KeyError:
     STOP_DUPLICATE = False
 try:
-    VIEW_LINK = getConfig('VIEW_LINK')
-    VIEW_LINK = VIEW_LINK.lower() == 'true'
+    VIEW_LINK = getConfig('VIEW_LINK').lower() == 'true'
 except KeyError:
     VIEW_LINK = False
 try:
-    IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE')
-    IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == 'true'
+    IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE').lower() == 'true'
 except KeyError:
     IS_TEAM_DRIVE = False
 try:
-    USE_SERVICE_ACCOUNTS = getConfig('USE_SERVICE_ACCOUNTS')
-    USE_SERVICE_ACCOUNTS = USE_SERVICE_ACCOUNTS.lower() == 'true'
+    USE_SERVICE_ACCOUNTS = getConfig('USE_SERVICE_ACCOUNTS').lower() == 'true'
 except KeyError:
     USE_SERVICE_ACCOUNTS = False
 try:
-    BLOCK_MEGA_FOLDER = getConfig('BLOCK_MEGA_FOLDER')
-    BLOCK_MEGA_FOLDER = BLOCK_MEGA_FOLDER.lower() == 'true'
+    BLOCK_MEGA_FOLDER = getConfig('BLOCK_MEGA_FOLDER').lower() == 'true'
 except KeyError:
     BLOCK_MEGA_FOLDER = False
 try:
-    BLOCK_MEGA_LINKS = getConfig('BLOCK_MEGA_LINKS')
-    BLOCK_MEGA_LINKS = BLOCK_MEGA_LINKS.lower() == 'true'
+    BLOCK_MEGA_LINKS = getConfig('BLOCK_MEGA_LINKS').lower() == 'true'
 except KeyError:
     BLOCK_MEGA_LINKS = False
 try:
-    WEB_PINCODE = getConfig('WEB_PINCODE')
-    WEB_PINCODE = WEB_PINCODE.lower() == 'true'
+    WEB_PINCODE = getConfig('WEB_PINCODE').lower() == 'true'
 except KeyError:
     WEB_PINCODE = False
 try:
@@ -385,8 +378,7 @@ if SHORTENER_API and (not SHORTENER): # if not enter shortener
     LOGGER.info("You did not entered SHORTENER. SHORTENER will not work.")
     SHORTENER_API = None
 try:
-    IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
-    IGNORE_PENDING_REQUESTS = IGNORE_PENDING_REQUESTS.lower() == 'true'
+    IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS").lower() == 'true'
 except KeyError:
     IGNORE_PENDING_REQUESTS = False
 try:
@@ -397,23 +389,19 @@ except KeyError:
     logging.warning('BASE_URL_OF_BOT not provided!')
     BASE_URL = None
 try:
-    IS_VPS = getConfig('IS_VPS')
-    IS_VPS = IS_VPS.lower() == 'true'
+    IS_VPS = getConfig('IS_VPS').lower() == 'true'
 except KeyError:
     IS_VPS = False
 try:
-    AS_DOCUMENT = getConfig('AS_DOCUMENT')
-    AS_DOCUMENT = AS_DOCUMENT.lower() == 'true'
+    AS_DOCUMENT = getConfig('AS_DOCUMENT').lower() == 'true'
 except KeyError:
     AS_DOCUMENT = False
 try:
-    EQUAL_SPLITS = getConfig('EQUAL_SPLITS')
-    EQUAL_SPLITS = EQUAL_SPLITS.lower() == 'true'
+    EQUAL_SPLITS = getConfig('EQUAL_SPLITS').lower() == 'true'
 except KeyError:
     EQUAL_SPLITS = False
 try:
-    QB_SEED = getConfig('QB_SEED')
-    QB_SEED = QB_SEED.lower() == 'true'
+    QB_SEED = getConfig('QB_SEED').lower() == 'true'
 except KeyError:
     QB_SEED = False
 try:
@@ -532,8 +520,7 @@ except:
     UN_FINISHED_PROGRESS_STR = '○' # '□'
 
 try:
-    UPDATE_EVERYTHING_WHEN_RESTART = getConfig('UPDATE_EVERYTHING_WHEN_RESTART')
-    UPDATE_EVERYTHING_WHEN_RESTART = UPDATE_EVERYTHING_WHEN_RESTART.lower() == 'true'
+    UPDATE_EVERYTHING_WHEN_RESTART = getConfig('UPDATE_EVERYTHING_WHEN_RESTART').lower() == 'true'
 except KeyError:
     UPDATE_EVERYTHING_WHEN_RESTART = True
 
@@ -545,8 +532,7 @@ except KeyError:
     VIRUSTOTAL_API = None
 
 try:
-    VIRUSTOTAL_FREE = getConfig('VIRUSTOTAL_FREE')
-    VIRUSTOTAL_FREE = VIRUSTOTAL_FREE.lower() == 'true'
+    VIRUSTOTAL_FREE = getConfig('VIRUSTOTAL_FREE').lower() == 'true'
 except KeyError:
     VIRUSTOTAL_FREE = True
 
@@ -561,26 +547,34 @@ except KeyError:
     HEROKU_APP_NAME = None
 
 try:
-    SPAMWATCH_API = getConfig('SPAMWATCH_API')
-    if len(SPAMWATCH_API) == 0: raise KeyError
-    else: logging.info('Using SPAMWATCH')
+    SPAMWATCH_ANTISPAM_API = getConfig('SPAMWATCH_ANTISPAM_API')
+    if len(SPAMWATCH_ANTISPAM_API) == 0: raise KeyError
+    else: logging.info('Using SPAMWATCH_ANTISPAM_API')
 except KeyError:
-    logging.info('Not using SPAMWATCH')
-    SPAMWATCH_API = None
+    logging.info('Not using SPAMWATCH_ANTISPAM_API')
+    SPAMWATCH_ANTISPAM_API = None
 
 try:
     USERGE_ANTISPAM_API = getConfig('USERGE_ANTISPAM_API')
     if len(USERGE_ANTISPAM_API) == 0: raise KeyError
-    else: logging.info('Using USERGE ANTISPAM')
+    else: logging.info('Using USERGE_ANTISPAM_API')
 except KeyError:
-    logging.info('Not using USERGE ANTISPAM')
+    logging.info('Not using USERGE_ANTISPAM_API')
     USERGE_ANTISPAM_API = None
 
 try:
-    COMBOT_CAS = getConfig('COMBOT_CAS')
-    COMBOT_CAS = COMBOT_CAS.lower() == 'true'
+    COMBOT_CAS_ANTISPAM = getConfig('COMBOT_CAS_ANTISPAM').lower() == 'true'
+    logging.info('Using COMBOT_CAS_ANTISPAM')
 except KeyError:
-    COMBOT_CAS = False
+    logging.info('No using COMBOT_CAS_ANTISPAM')
+    COMBOT_CAS_ANTISPAM = None
+
+try:
+    INTELLIVOID_ANTISPAM = getConfig('INTELLIVOID_ANTISPAM').lower() == 'true'
+    logging.info('Using INTELLIVOID_ANTISPAM')
+except KeyError:
+    logging.info('No using INTELLIVOID_ANTISPAM')
+    INTELLIVOID_ANTISPAM = None
 
 updater = tgUpdater(token=BOT_TOKEN)
 bot = updater.bot
