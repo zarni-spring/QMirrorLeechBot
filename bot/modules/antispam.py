@@ -101,13 +101,16 @@ def UsergeAntiSpamCheck(userid):
         if reason: info += f"\nReason: {reason}"
         if date: info += f"\nDate: {date}"
         if bb_user_name: info += f"\nBanned by: {bb_user_name}"
-        if bb_user_id: info += f" ({bb_user_id})"
+        if bb_user_id: info += f" <a href='tg://user?id={bb_user_id}'>({str(bb_user_id)})</a>"
     except: pass
     return info
 
 
 def antispam(update: Update, context: CallbackContext) -> None:
     if (not SPAMWATCH_API) and (not COMBOT_CAS) and (not USERGE_ANTISPAM_API): return
+    group = update.effective_chat
+    a = context.bot.get_chat_member(group.id, context.bot.id).can_restrict_members
+    if not a: return LOGGER.warning("Give ban permission to bot for spam api.")
     result = extract_status_change(update.chat_member)
     if result is None: return
     was_member, is_member = result
@@ -122,7 +125,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
         if USERGE_ANTISPAM_API: banned = UsergeAntiSpamCheck(update.chat_member.new_chat_member.user.id)
     if banned:
         try:
-            app.ban_chat_member(update.effective_chat.id, update.chat_member.new_chat_member.user.id)
+            app.ban_chat_member(group.id, update.chat_member.new_chat_member.user.id)
             success = "Success"
         except Exception as o:
             success = "Unsuccess"
