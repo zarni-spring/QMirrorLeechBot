@@ -2,7 +2,7 @@ from bot import LOGGER, dispatcher, app
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage, deleteMessage, sendPhoto, editMessage
 from typing import Tuple, Optional
-from telegram.ext import ChatMemberHandler
+from telegram.ext import ChatMemberHandler, CallbackContext
 from telegram import Update, ChatMember, ParseMode, ChatMemberUpdated
 
 def extract_status_change(
@@ -41,7 +41,7 @@ def extract_status_change(
 
 
 
-def antispam(update: Update):
+def antispam(update: Update, context: CallbackContext) -> None:
     if update.message.chat.PRIVATE: return
     result = extract_status_change(update.chat_member)
     if result is None: return
