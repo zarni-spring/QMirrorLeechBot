@@ -180,7 +180,7 @@ def antispam(update: Update, context: CallbackContext) -> None:
     result = extract_status_change(update.chat_member)
     if result is None: return
     was_member, is_member = result
-    if was_member and not is_member: return # user leaved
+    if not is_member: return # user leaved
     cause_name = update.chat_member.from_user.mention_html()
     member_name = update.chat_member.new_chat_member.user.mention_html()
     banned = None
