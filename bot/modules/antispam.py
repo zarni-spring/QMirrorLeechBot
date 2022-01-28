@@ -42,7 +42,7 @@ def extract_status_change(
 
 
 def antispam(update: Update, context: CallbackContext) -> None:
-    if update.message.chat.PRIVATE: return
+    if update.effective_chat.PRIVATE: return
     result = extract_status_change(update.chat_member)
     if result is None: return
     was_member, is_member = result
