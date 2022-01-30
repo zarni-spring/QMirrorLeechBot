@@ -199,7 +199,6 @@ def antispam(update: Update, context: CallbackContext) -> None:
         except Exception as o:
             success = "Unsuccess"
             LOGGER.error(o)
-        success = "Unsuccess"
         swtc = f"{cause_name} Added: {member_name}"
         swtc += f"\nID: <code>{str(update.chat_member.new_chat_member.user.id)}</code>"
         swtc += f"\nBan: {success}"

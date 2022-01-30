@@ -22,8 +22,8 @@ def shortener(update, context):
     else:
         link = message.text.split(' ')
         if len(link) < 2 or len(link) > 3:
-            apireq = ["shorte.st", "bc.vc", "pubiza", "linkvertise", "bit.ly", "post", "cutt.ly", "adf.ly", "shortcm", "tinycc", "tinyurl", "ouo.io"]
-            free = ["v.gd", "da.gd", "is.gd", "ttm.sh", "clck.ru", "chilp.it", "osdb", "owly"]
+            apireq = ["shorte.st", "bc.vc", "pubiza", "linkvertise", "bit.ly", "post", "cutt.ly", "adf.ly", "shortcm", "tinycc", "ouo.io"]
+            free = ["v.gd", "da.gd", "is.gd", "ttm.sh", "clck.ru", "chilp.it", "osdb", "owly", "tinyurl"]
             apireq = getListAsString(apireq)
             free = getListAsString(free)
             help_msg = "<b>Send link after command:</b>"

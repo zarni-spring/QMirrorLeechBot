@@ -56,6 +56,12 @@ def short_url(longurl, spes=None):
         except Exception as e:
             LOGGER.error(e)
             return longurl
+    elif "tinyurl" in tempvar:
+        try:
+            link = pyShortener().tinyurl.short(longurl)
+        except Exception as e:
+            LOGGER.error(e)
+            link = longurl
     
     # requires shortener api
 
@@ -131,12 +137,6 @@ def short_url(longurl, spes=None):
             api_key, login = SHORTENER_API.split(' ')
             s = pyShortener(api_key=api_key, login=login)
             link = s.tinycc.short(longurl)
-        except Exception as e:
-            LOGGER.error(e)
-            link = longurl
-    elif "tinyurl" in tempvar:
-        try:
-            link = pyShortener().tinyurl.short(longurl)
         except Exception as e:
             LOGGER.error(e)
             link = longurl
