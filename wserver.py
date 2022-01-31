@@ -361,7 +361,7 @@ $('input[type="checkbox"]').change(function(e) {
     });
     function humanFileSize(size) {
         var i = -1;
-        var byteUnits = [' KiB', ' MiB', ' GiB', ' TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        var byteUnits = [' KB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
         do {
             size = size / 1024;
             i++;

@@ -32,7 +32,7 @@ class MirrorStatus:
     STATUS_CHECKING = "CheckingUp 📝"
     STATUS_SEEDING = "Seeding 🌧"
 
-SIZE_UNITS = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']
+SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
 class setInterval:
@@ -54,13 +54,13 @@ class setInterval:
 
 def get_readable_file_size(size_in_bytes) -> str:
     if size_in_bytes is None:
-        return '0 B'
+        return '0B'
     index = 0
     while size_in_bytes >= 1024:
         size_in_bytes /= 1024
         index += 1
     try:
-        return f'{round(size_in_bytes, 2)} {SIZE_UNITS[index]}'
+        return f'{round(size_in_bytes, 2)}{SIZE_UNITS[index]}'
     except IndexError:
         return 'File too large'
 
@@ -165,11 +165,9 @@ def get_readable_message():
             if STATUS_LIMIT is not None and index == STATUS_LIMIT:
                 break
         total, used, free, _ = disk_usage('.')
-        total = get_readable_file_size(total)
         free = get_readable_file_size(free)
-        used = get_readable_file_size(used)
         currentTime = get_readable_time(time() - botStartTime)
-        bmsg = f"<b>RAM:</b> {virtual_memory().percent}% | <b>Disk:</b> {total} | <b>Free:</b> {free} | <b>Used:</b> {used}"
+        bmsg = f"<b>CPU:</b> {cpu_percent()}% | <b>FREE:</b> {free}"
         for download in list(download_dict.values()):
             speedy = download.speed()
             if download.status() == MirrorStatus.STATUS_DOWNLOADING:
@@ -184,7 +182,8 @@ def get_readable_message():
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        bmsg += f"\n<b>CPU:</b> {cpu_percent()}% | <b>DL:</b> {dlspeed}/s | <b>UL:</b> {ulspeed}/s | <b>Bot Uptime:</b> {currentTime}"
+        bmsg += f"\n<b>RAM:</b> {virtual_memory().percent}% | <b>UPTIME:</b> {currentTime}"
+        bmsg += f"\n<b>DL:</b> {dlspeed}/s | <b>UL:</b> {ulspeed}/s"
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
             msg += f"<b>Page:</b> {PAGE_NO}/{pages} | <b>Tasks:</b> {tasks}\n"
             buttons = ButtonMaker()

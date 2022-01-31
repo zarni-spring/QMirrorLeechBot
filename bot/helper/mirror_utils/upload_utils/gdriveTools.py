@@ -249,9 +249,11 @@ class GoogleDriveHelper:
                 mime_type = 'Folder'
                 dir_id = self.__create_directory(ospath.basename(ospath.abspath(file_name)), parent_id)
                 result = self.__upload_dir(file_path, dir_id)
-                if not result: raise Exception('Upload has been manually cancelled.')
+                if result is None:
+                    raise Exception('Upload has been manually cancelled')
                 link = f"https://drive.google.com/folderview?id={dir_id}"
-                if self.is_cancelled: return
+                if self.is_cancelled:
+                    return
                 LOGGER.info("Uploaded To G-Drive: " + file_name)
         except Exception as e:
             if isinstance(e, RetryError):

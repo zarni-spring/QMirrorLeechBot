@@ -182,8 +182,10 @@ class TgUploader:
     @property
     def speed(self):
         with self.__resource_lock:
-            try: return self.uploaded_bytes / (time() - self.__start_time)
-            except ZeroDivisionError: return 0
+            try:
+                return self.uploaded_bytes / (time() - self.__start_time)
+            except ZeroDivisionError:
+                return 0
 
     def cancel_download(self):
         self.__is_cancelled = True

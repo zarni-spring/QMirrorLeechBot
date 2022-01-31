@@ -23,11 +23,14 @@ def cancel_mirror(update, context):
         mirror_message = update.message.reply_to_message
         with download_dict_lock:
             keys = list(download_dict.keys())
-            try: dl = download_dict[mirror_message.message_id]
-            except: pass
-    if len(args) == 1 and (not mirror_message or mirror_message.message_id not in keys):
-        msg = f"Reply to active <code>/{BotCommands.MirrorCommand}</code> message which was used to start the download" + \
-            f"or send <code>/{BotCommands.CancelMirror} GID</code> to cancel it."
+            try:
+                dl = download_dict[mirror_message.message_id]
+            except:
+                pass
+    if len(args) == 1 and (
+        not mirror_message or mirror_message.message_id not in keys
+    ):
+        msg = f"Reply to active <code>/{BotCommands.MirrorCommand}</code> message which was used to start the download or send <code>/{BotCommands.CancelMirror} GID</code> to cancel it."
         sendMessage(msg, context.bot, update)
         return
     if dl.status() == MirrorStatus.STATUS_ARCHIVING:

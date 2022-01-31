@@ -67,9 +67,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
         return sendMessage(tag + " " + msg, bot, update)
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
-            video_format = f"bv*[height<={i}][ext=mp4]+ba/b"
+            video_format = f"bv*[height<={i}][ext=mp4]"
             buttons.sbutton(f"{i}-mp4", f"qu {msg_id} {video_format} t")
-            video_format = f"bv*[height<={i}][ext=webm]+ba/b"
+            video_format = f"bv*[height<={i}][ext=webm]"
             buttons.sbutton(f"{i}-webm", f"qu {msg_id} {video_format} t")
         buttons.sbutton("Audios", f"qu {msg_id} audio t")
         buttons.sbutton("Best Videos", f"qu {msg_id} {best_video} t")
@@ -112,9 +112,9 @@ def _watch(bot, update, isZip=False, isLeech=False, pswd=None, tag=None):
                     fps = qual_fps_ext[1]
                     ext = qual_fps_ext[2]
                     if fps != '':
-                        video_format = f"bv*[height={height}][fps={fps}][ext={ext}]+ba/b"
+                        video_format = f"bv*[height={height}][fps={fps}][ext={ext}]"
                     else:
-                        video_format = f"bv*[height={height}][ext={ext}]+ba/b"
+                        video_format = f"bv*[height={height}][ext={ext}]"
                     size = list(formats_dict[forDict].values())[0]
                     buttonName = f"{forDict} ({get_readable_file_size(size)})"
                     buttons.sbutton(str(buttonName), f"qu {msg_id} {video_format}")
@@ -149,9 +149,9 @@ def _qual_subbuttons(task_id, qual, msg):
             sbr = index - 1
             tbr = f"<{tbrs[sbr]}"
         if fps != '':
-            video_format = f"bv*[height={height}][fps={fps}][ext={ext}][tbr{tbr}]+ba/b"
+            video_format = f"bv*[height={height}][fps={fps}][ext={ext}][tbr{tbr}]"
         else:
-            video_format = f"bv*[height={height}][ext={ext}][tbr{tbr}]+ba/b"
+            video_format = f"bv*[height={height}][ext={ext}][tbr{tbr}]"
         size = formats_dict[qual][br]
         buttonName = f"{br}K ({get_readable_file_size(size)})"
         buttons.sbutton(str(buttonName), f"qu {task_id} {video_format}")
@@ -210,6 +210,9 @@ def select_format(update, context):
         link = task_info[2]
         name = task_info[3]
         qual = data[2]
+        if qual.startswith('bv*['): # To not exceed telegram button bytes limits. Temp solution.
+            height = resplit(r'\[|\]', qual, maxsplit=2)[1]
+            qual = qual + f"+ba/b[{height}]"
         if len(data) == 4:
             playlist = True
         else:

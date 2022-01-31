@@ -35,7 +35,8 @@ def getleechinfo(from_user):
         thumbmsg = "Exists"
         buttons.sbutton("Delete Thumbnail", f"leechset {user_id} thumb")
         buttons.sbutton("Show Thumbnail", f"leechset {user_id} showthumb")
-    else: thumbmsg = "Not Exists"
+    else:
+        thumbmsg = "Not Exists"
 
     if AUTO_DELETE_MESSAGE_DURATION == -1:
         buttons.sbutton("Close", f"leechset {user_id} close")
@@ -93,20 +94,23 @@ def setLeechType(update, context):
         try:
             query.message.delete()
             query.message.reply_to_message.delete()
-        except: pass
+        except:
+            pass
 
 def setThumb(update, context):
     user_id = update.message.from_user.id
     reply_to = update.message.reply_to_message
-    if reply_to and reply_to.photo:
+    if reply_to is not None and reply_to.photo:
         path = "Thumbnails/"
-        if not ospath.isdir(path): mkdir(path)
+        if not ospath.isdir(path):
+            mkdir(path)
         photo_msg = app.get_messages(update.message.chat.id, reply_to_message_ids=update.message.message_id)
         photo_dir = app.download_media(photo_msg, file_name=path)
         des_dir = ospath.join(path, str(user_id) + ".jpg")
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
-        if DB_URI: DbManger().user_save_thumb(user_id, des_dir)
+        if DB_URI is not None:
+            DbManger().user_save_thumb(user_id, des_dir)
         msg = f"Custom thumbnail saved for: <a href='tg://user?id={user_id}'>{update.message.from_user.full_name}</a> (<code>{str(user_id)}</code>)"
         todel = sendMessage(msg, context.bot, update)
         Thread(target=auto_delete_message, args=(context.bot, update.message, todel)).start()

@@ -14,14 +14,14 @@ def mirror_status(update, context):
     with download_dict_lock:
         if len(download_dict) == 0:
             reply_message = sendMessage('I am empty.', context.bot, update)
-            return Thread(target=auto_delete_message, args=(context.bot, message, reply_message)).start()
+            return Thread(target=auto_delete_message, args=(context.bot, update.message, reply_message)).start()
     index = update.effective_chat.id
     with status_reply_dict_lock:
         if index in status_reply_dict.keys():
             deleteMessage(context.bot, status_reply_dict[index])
             del status_reply_dict[index]
     sendStatusMessage(update, context.bot)
-    return Thread(target=auto_delete_message, args=(context.bot, update.message)).start()
+    deleteMessage(context.bot, update.message)
 
 def status_pages(update, context):
     query = update.callback_query
@@ -29,8 +29,10 @@ def status_pages(update, context):
     data = data.split(' ')
     query.answer()
     done = turn(data)
-    if done: update_all_messages()
-    else: query.message.delete()
+    if done:
+        update_all_messages()
+    else:
+        query.message.delete()
 
 
 mirror_status_handler = CommandHandler(BotCommands.StatusCommand, mirror_status,

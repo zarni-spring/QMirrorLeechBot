@@ -26,6 +26,7 @@ def speedtest(update, context):
 <b>Country:</b> <code>{result['server']['country']}, {result['server']['cc']}</code>
 <b>Sponsor:</b> <code>{result['server']['sponsor']}</code>
 <b>ISP:</b> <code>{result['client']['isp']}</code>
+
 <b>SpeedTest Results</b>
 <b>Upload:</b> <code>{speed_convert(result['upload'], False)}</code>
 <b>Download:</b>  <code>{speed_convert(result['download'], False)}</code>
@@ -47,7 +48,7 @@ def speed_convert(size, byte=True):
     if not byte: size = size / 8 # byte or bit ?
     power = 2 ** 10
     zero = 0
-    units = {0: "", 1: "KiB/s", 2: "MiB/s", 3: "GiB/s", 4: "TiB/s"}
+    units = {0: "B/s", 1: "KB/s", 2: "MB/s", 3: "GB/s", 4: "TB/s"}
     while size > power:
         size /= power
         zero += 1

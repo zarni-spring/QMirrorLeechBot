@@ -13,7 +13,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
-
 CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL', None)
 try:
     if len(CONFIG_FILE_URL) == 0:
@@ -36,7 +35,7 @@ load_dotenv('config.env', override=True)
 if environ.get('UPDATE_EVERYTHING_WHEN_RESTART', 'true').lower() == 'true':
     packages = [dist.project_name for dist in pkg_resources.working_set]
     subprocess.call("pip install --upgrade " + ' '.join(packages), shell=True)
-
+subprocess.call("pip install waybackpy pyshorteners heroku3", shell=True)
 UPSTREAM_REPO = environ.get('UPSTREAM_REPO', None)
 try:
     if len(UPSTREAM_REPO) == 0:
@@ -44,7 +43,7 @@ try:
 except TypeError:
     UPSTREAM_REPO = None
 
-if UPSTREAM_REPO:
+if UPSTREAM_REPO is not None:
     if ospath.exists('.git'):
         srun(["rm", "-rf", ".git"])
 
